@@ -5,10 +5,9 @@ import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Shield, Mail, Lock, ArrowLeft, Loader2, UserPlus } from 'lucide-react';
+import { Shield, Mail, Lock, ArrowLeft, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { z } from 'zod';
-import { supabase } from '@/integrations/supabase/client';
 
 const loginSchema = z.object({
   email: z.string().email('Email invalide'),
@@ -17,13 +16,8 @@ const loginSchema = z.object({
 
 export default function AdminAuth() {
   const [loading, setLoading] = useState(false);
-  const [bootstrapLoading, setBootstrapLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [showBootstrap, setShowBootstrap] = useState(false);
-  const [isBootstrapMode, setIsBootstrapMode] = useState(false);
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
   
   const { signIn, user, role } = useAuth();
   const navigate = useNavigate();
@@ -33,22 +27,6 @@ export default function AdminAuth() {
       navigate('/dashboard');
     }
   }, [user, role, navigate]);
-
-  // Check if admin exists
-  useEffect(() => {
-    const checkAdminExists = async () => {
-      const { data, error } = await supabase
-        .from('user_roles')
-        .select('id')
-        .eq('role', 'admin')
-        .limit(1);
-      
-      if (!error && (!data || data.length === 0)) {
-        setShowBootstrap(true);
-      }
-    };
-    checkAdminExists();
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -80,64 +58,6 @@ export default function AdminAuth() {
     }
   };
 
-  const handleBootstrap = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setBootstrapLoading(true);
-
-    try {
-      const validation = loginSchema.safeParse({ email, password });
-      if (!validation.success) {
-        toast.error(validation.error.errors[0].message);
-        setBootstrapLoading(false);
-        return;
-      }
-
-      if (!firstName.trim() || !lastName.trim()) {
-        toast.error('Veuillez remplir tous les champs');
-        setBootstrapLoading(false);
-        return;
-      }
-
-      const { data, error } = await supabase.functions.invoke('bootstrap-admin', {
-        body: {
-          email: email.trim().toLowerCase(),
-          password,
-          first_name: firstName.trim(),
-          last_name: lastName.trim(),
-        },
-      });
-
-      if (error) {
-        toast.error(error.message || 'Erreur lors de la création du compte admin');
-        return;
-      }
-
-      if (data?.error) {
-        if (data.error === 'Admin already exists') {
-          toast.error('Un administrateur existe déjà');
-          setShowBootstrap(false);
-          setIsBootstrapMode(false);
-        } else {
-          toast.error(data.error);
-        }
-        return;
-      }
-
-      toast.success('Compte administrateur créé ! Vous pouvez maintenant vous connecter.');
-      setIsBootstrapMode(false);
-      setShowBootstrap(false);
-      // Reset form but keep email
-      setPassword('');
-      setFirstName('');
-      setLastName('');
-    } catch (error) {
-      console.error('Bootstrap error:', error);
-      toast.error('Une erreur est survenue lors de la création du compte');
-    } finally {
-      setBootstrapLoading(false);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-background flex">
       {/* Left side - Form */}
@@ -158,173 +78,61 @@ export default function AdminAuth() {
                 <Shield className="h-6 w-6 text-destructive-foreground" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold">
-                  {isBootstrapMode ? 'Créer le compte Admin' : 'Administration'}
-                </h1>
+                <h1 className="text-2xl font-bold">Administration</h1>
                 <p className="text-sm text-muted-foreground">
-                  {isBootstrapMode 
-                    ? 'Configuration initiale de la plateforme'
-                    : 'Accès réservé aux administrateurs'
-                  }
+                  Accès réservé aux administrateurs
                 </p>
               </div>
             </div>
 
-            {isBootstrapMode ? (
-              <form onSubmit={handleBootstrap} className="space-y-5">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="firstName">Prénom</Label>
-                    <Input
-                      id="firstName"
-                      type="text"
-                      value={firstName}
-                      onChange={(e) => setFirstName(e.target.value)}
-                      placeholder="Prénom"
-                      required
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="lastName">Nom</Label>
-                    <Input
-                      id="lastName"
-                      type="text"
-                      value={lastName}
-                      onChange={(e) => setLastName(e.target.value)}
-                      placeholder="Nom"
-                      required
-                    />
-                  </div>
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email administrateur</Label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="admin@classconnect.com"
+                    className="pl-10"
+                    required
+                  />
                 </div>
+              </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email administrateur</Label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="email"
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="admin@classconnect.com"
-                      className="pl-10"
-                      required
-                    />
-                  </div>
+              <div className="space-y-2">
+                <Label htmlFor="password">Mot de passe</Label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    className="pl-10"
+                    required
+                  />
                 </div>
+              </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="password">Mot de passe</Label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="password"
-                      type="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="••••••••"
-                      className="pl-10"
-                      required
-                    />
-                  </div>
-                </div>
+              <Button 
+                type="submit" 
+                className="w-full bg-destructive hover:bg-destructive/90" 
+                size="lg"
+                disabled={loading}
+              >
+                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Se connecter en tant qu'Admin
+              </Button>
+            </form>
 
-                <Button 
-                  type="submit" 
-                  className="w-full bg-destructive hover:bg-destructive/90" 
-                  size="lg"
-                  disabled={bootstrapLoading}
-                >
-                  {bootstrapLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  Créer le compte Admin
-                </Button>
-
-                <Button 
-                  type="button"
-                  variant="ghost"
-                  className="w-full"
-                  onClick={() => setIsBootstrapMode(false)}
-                >
-                  Annuler
-                </Button>
-              </form>
-            ) : (
-              <>
-                <form onSubmit={handleSubmit} className="space-y-5">
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email administrateur</Label>
-                    <div className="relative">
-                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        id="email"
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="admin@classconnect.com"
-                        className="pl-10"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="password">Mot de passe</Label>
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        id="password"
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="••••••••"
-                        className="pl-10"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <Button 
-                    type="submit" 
-                    className="w-full bg-destructive hover:bg-destructive/90" 
-                    size="lg"
-                    disabled={loading}
-                  >
-                    {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    Se connecter en tant qu'Admin
-                  </Button>
-                </form>
-
-                {showBootstrap && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="mt-6 p-4 bg-muted rounded-lg border"
-                  >
-                    <div className="flex items-center gap-2 mb-2">
-                      <UserPlus className="h-5 w-5 text-primary" />
-                      <span className="font-medium">Première configuration</span>
-                    </div>
-                    <p className="text-sm text-muted-foreground mb-3">
-                      Aucun administrateur n'existe encore. Créez le premier compte admin pour configurer la plateforme.
-                    </p>
-                    <Button 
-                      variant="outline" 
-                      className="w-full"
-                      onClick={() => setIsBootstrapMode(true)}
-                    >
-                      Créer le premier Admin
-                    </Button>
-                  </motion.div>
-                )}
-
-                {!showBootstrap && (
-                  <div className="mt-6 text-center text-sm text-muted-foreground">
-                    <p>L'inscription admin n'est pas disponible.</p>
-                    <p>Contactez le support pour obtenir un accès.</p>
-                  </div>
-                )}
-              </>
-            )}
+            <div className="mt-6 text-center text-sm text-muted-foreground">
+              <p>L'inscription admin n'est pas disponible.</p>
+              <p>Contactez le support pour obtenir un accès.</p>
+            </div>
           </motion.div>
         </div>
       </div>
