@@ -22,6 +22,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useBlogPost } from "@/hooks/useBlog";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { getBlogImage } from "@/lib/blogImages";
 
 export default function BlogPostPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -100,6 +101,7 @@ export default function BlogPostPage() {
   }
 
   const publishDate = post.published_at || post.created_at;
+  const imageUrl = getBlogImage(post.slug, post.featured_image_url);
 
   return (
     <>
@@ -118,10 +120,10 @@ export default function BlogPostPage() {
         {/* Header */}
         <article>
           {/* Featured Image */}
-          {post.featured_image_url && (
+          {imageUrl && (
             <div className="relative h-[40vh] lg:h-[50vh] overflow-hidden">
               <img
-                src={post.featured_image_url}
+                src={imageUrl}
                 alt={post.title}
                 className="w-full h-full object-cover"
               />
@@ -151,7 +153,7 @@ export default function BlogPostPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className={`py-8 ${post.featured_image_url ? "-mt-32 relative z-10" : ""}`}
+                className={`py-8 ${imageUrl ? "-mt-32 relative z-10" : ""}`}
               >
                 <div className="flex flex-wrap items-center gap-2 mb-4">
                   {post.category && (
