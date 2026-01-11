@@ -23,6 +23,7 @@ import { useBlogPost } from "@/hooks/useBlog";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { getBlogImage } from "@/lib/blogImages";
+import { MarkdownRenderer } from "@/components/blog/MarkdownRenderer";
 
 export default function BlogPostPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -206,9 +207,10 @@ export default function BlogPostPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
-                className="prose prose-lg max-w-none pb-12"
-                dangerouslySetInnerHTML={{ __html: post.content }}
-              />
+                className="pb-12"
+              >
+                <MarkdownRenderer content={post.content} />
+              </motion.div>
 
               {/* Gallery */}
               {post.gallery_images && post.gallery_images.length > 0 && (
