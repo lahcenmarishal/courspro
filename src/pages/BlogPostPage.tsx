@@ -18,7 +18,7 @@ import { Footer } from "@/components/landing/Footer";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
 import { useBlogPost } from "@/hooks/useBlog";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -140,12 +140,11 @@ export default function BlogPostPage() {
                 animate={{ opacity: 1, x: 0 }}
                 className="pt-8"
               >
-                <Link
-                  to="/blog"
-                  className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  <ArrowLeft className="h-4 w-4 mr-1" />
-                  Retour au blog
+                <Link to="/blog">
+                  <Button variant="outline" className="gap-2">
+                    <ArrowLeft className="h-4 w-4" />
+                    Retour au blog
+                  </Button>
                 </Link>
               </motion.div>
 
@@ -173,20 +172,6 @@ export default function BlogPostPage() {
                 </h1>
 
                 <div className="flex flex-wrap items-center gap-6 text-sm text-muted-foreground">
-                  {post.author && (
-                    <div className="flex items-center gap-2">
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage src={post.author.avatar_url || undefined} />
-                        <AvatarFallback>
-                          {post.author.first_name?.[0]}
-                          {post.author.last_name?.[0]}
-                        </AvatarFallback>
-                      </Avatar>
-                      <span>
-                        {post.author.first_name} {post.author.last_name}
-                      </span>
-                    </div>
-                  )}
                   <span className="flex items-center gap-1">
                     <Calendar className="h-4 w-4" />
                     {format(new Date(publishDate), "d MMMM yyyy", { locale: fr })}
