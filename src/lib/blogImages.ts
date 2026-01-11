@@ -15,6 +15,12 @@ export const blogImageMap: Record<string, string> = {
 };
 
 // Helper function to get blog image by slug
-export function getBlogImage(slug: string, fallbackUrl?: string | null): string | undefined {
-  return blogImageMap[slug] || fallbackUrl || undefined;
+// Priority: database URL (if it's a full URL) > local image map > undefined
+export function getBlogImage(slug: string, databaseUrl?: string | null): string | undefined {
+  // If database has a full URL (http/https), use it - this allows admins to override
+  if (databaseUrl && (databaseUrl.startsWith('http://') || databaseUrl.startsWith('https://'))) {
+    return databaseUrl;
+  }
+  // Otherwise fallback to local image map
+  return blogImageMap[slug] || undefined;
 }
