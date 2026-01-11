@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 import type { BlogPost } from "@/hooks/useBlog";
+import { getBlogImage } from "@/lib/blogImages";
 
 interface BlogCardProps {
   post: BlogPost;
@@ -12,14 +13,15 @@ interface BlogCardProps {
 
 export function BlogCard({ post }: BlogCardProps) {
   const publishDate = post.published_at || post.created_at;
+  const imageUrl = getBlogImage(post.slug, post.featured_image_url);
 
   return (
     <Card className="group overflow-hidden border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg">
       <Link to={`/blog/${post.slug}`}>
-        {post.featured_image_url && (
+        {imageUrl && (
           <div className="aspect-video overflow-hidden">
             <img
-              src={post.featured_image_url}
+              src={imageUrl}
               alt={post.title}
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             />
