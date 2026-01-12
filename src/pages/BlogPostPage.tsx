@@ -118,6 +118,20 @@ export default function BlogPostPage() {
       <Navbar />
 
       <main className="min-h-screen pt-20">
+        {/* Back link - Fixed top left */}
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="fixed top-24 left-4 z-50"
+        >
+          <Link to="/blog">
+            <Button variant="outline" className="gap-2 bg-background shadow-lg border">
+              <ArrowLeft className="h-4 w-4" />
+              Retour au blog
+            </Button>
+          </Link>
+        </motion.div>
+
         {/* Header */}
         <article>
           {/* Featured Image */}
@@ -134,19 +148,6 @@ export default function BlogPostPage() {
 
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto">
-              {/* Back link */}
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="pt-8 relative z-20"
-              >
-                <Link to="/blog">
-                  <Button variant="outline" className="gap-2 bg-background shadow-md">
-                    <ArrowLeft className="h-4 w-4" />
-                    Retour au blog
-                  </Button>
-                </Link>
-              </motion.div>
 
               {/* Title & Meta */}
               <motion.header
