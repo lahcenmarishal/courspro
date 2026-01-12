@@ -8,8 +8,10 @@ import { BlogCard } from "@/components/blog/BlogCard";
 import { BlogFilters } from "@/components/blog/BlogFilters";
 import { Input } from "@/components/ui/input";
 import { usePublicBlogPosts, useCategories } from "@/hooks/useBlog";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export default function BlogPage() {
+  const { t } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -46,10 +48,10 @@ export default function BlogPage() {
   return (
     <>
       <Helmet>
-        <title>Blog | EduVirtual - Articles et Ressources Éducatives</title>
+        <title>{t("blog.metaTitle")}</title>
         <meta
           name="description"
-          content="Découvrez nos articles éducatifs, conseils et ressources pour réussir vos études. Cours téléchargeables et contenus exclusifs."
+          content={t("blog.metaDescription")}
         />
       </Helmet>
 
@@ -67,13 +69,13 @@ export default function BlogPage() {
             >
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
                 <BookOpen className="h-4 w-4" />
-                Blog & Ressources
+                {t("blog.badge")}
               </div>
               <h1 className="text-4xl lg:text-5xl font-bold mb-4">
-                Articles & <span className="gradient-text">Cours</span>
+                {t("blog.title")} <span className="gradient-text">{t("blog.titleHighlight")}</span>
               </h1>
               <p className="text-lg text-muted-foreground">
-                Explorez nos articles éducatifs et téléchargez des cours gratuits pour améliorer votre apprentissage.
+                {t("blog.description")}
               </p>
             </motion.div>
 
@@ -88,7 +90,7 @@ export default function BlogPage() {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <Input
                   type="text"
-                  placeholder="Rechercher un article..."
+                  placeholder={t("blog.search")}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10 h-12"
@@ -117,11 +119,11 @@ export default function BlogPage() {
             ) : filteredPosts.length === 0 ? (
               <div className="text-center py-20">
                 <BookOpen className="h-12 w-12 mx-auto text-muted-foreground/50 mb-4" />
-                <h3 className="text-lg font-medium mb-2">Aucun article trouvé</h3>
+                <h3 className="text-lg font-medium mb-2">{t("blog.noArticles")}</h3>
                 <p className="text-muted-foreground">
                   {searchQuery
-                    ? "Essayez avec d'autres mots-clés"
-                    : "De nouveaux articles arrivent bientôt !"}
+                    ? t("blog.noArticles.search")
+                    : t("blog.noArticles.empty")}
                 </p>
               </div>
             ) : (
