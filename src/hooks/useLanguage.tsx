@@ -472,6 +472,12 @@ const fr: Record<string, string> = {
   "blog.downloadError": "Erreur lors du téléchargement",
   "blog.metaTitle": "Blog | EduVirtual - Articles et Ressources Éducatives",
   "blog.metaDescription": "Découvrez nos articles éducatifs, conseils et ressources pour réussir vos études. Cours téléchargeables et contenus exclusifs.",
+  "blog.categories": "Catégories",
+  "blog.all": "Tous",
+  "blog.popularTags": "Tags populaires",
+  "blog.clearFilters": "Effacer les filtres",
+  "blog.read": "Lire",
+  "blog.min": "min",
 
   // College Page
   "college.badge": "Programme Collège",
@@ -1045,6 +1051,12 @@ const ar: Record<string, string> = {
   "blog.downloadError": "خطأ في التحميل",
   "blog.metaTitle": "المدونة | إيدو فرتشوال - مقالات وموارد تعليمية",
   "blog.metaDescription": "اكتشف مقالاتنا التعليمية ونصائحنا ومواردنا للنجاح في دراستك. دروس قابلة للتحميل ومحتوى حصري.",
+  "blog.categories": "الفئات",
+  "blog.all": "الكل",
+  "blog.popularTags": "الوسوم الشائعة",
+  "blog.clearFilters": "مسح الفلاتر",
+  "blog.read": "اقرأ",
+  "blog.min": "د",
 
   // College Page
   "college.badge": "برنامج الإعدادي",
