@@ -18,6 +18,10 @@ export function BlogCard({ post }: BlogCardProps) {
   const imageUrl = getBlogImage(post.slug, post.featured_image_url);
   const dateLocale = language === 'ar' ? ar : fr;
 
+  // Get translated content based on language
+  const title = language === 'ar' && post.title_ar ? post.title_ar : post.title;
+  const excerpt = language === 'ar' && post.excerpt_ar ? post.excerpt_ar : post.excerpt;
+
   return (
     <Card className="group overflow-hidden border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg">
       <Link to={`/blog/${post.slug}`}>
@@ -46,12 +50,12 @@ export function BlogCard({ post }: BlogCardProps) {
           </div>
 
           <h3 className="text-lg font-semibold mb-2 line-clamp-2 group-hover:text-primary transition-colors">
-            {post.title}
+            {title}
           </h3>
 
-          {post.excerpt && (
+          {excerpt && (
             <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
-              {post.excerpt}
+              {excerpt}
             </p>
           )}
 
