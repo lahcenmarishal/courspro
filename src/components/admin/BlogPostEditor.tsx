@@ -67,16 +67,21 @@ import { cn } from "@/lib/utils";
 
 const formSchema = z.object({
   title: z.string().min(1, "Le titre est requis"),
+  title_ar: z.string().optional(),
   slug: z.string().min(1, "Le slug est requis"),
   excerpt: z.string().optional(),
+  excerpt_ar: z.string().optional(),
   content: z.string().min(1, "Le contenu est requis"),
+  content_ar: z.string().optional(),
   category_id: z.string().optional(),
   tags: z.string().optional(),
   status: z.enum(["draft", "published"]),
   published_at: z.date().optional().nullable(),
   scheduled_at: z.date().optional().nullable(),
   meta_title: z.string().optional(),
+  meta_title_ar: z.string().optional(),
   meta_description: z.string().optional(),
+  meta_description_ar: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -108,16 +113,21 @@ export function BlogPostEditor({ post, categories, onClose }: BlogPostEditorProp
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: post?.title || "",
+      title_ar: post?.title_ar || "",
       slug: post?.slug || "",
       excerpt: post?.excerpt || "",
+      excerpt_ar: post?.excerpt_ar || "",
       content: post?.content || "",
+      content_ar: post?.content_ar || "",
       category_id: post?.category_id || undefined,
       tags: post?.tags?.join(", ") || "",
       status: post?.status || "draft",
       published_at: post?.published_at ? new Date(post.published_at) : null,
       scheduled_at: post?.scheduled_at ? new Date(post.scheduled_at) : null,
       meta_title: post?.meta_title || "",
+      meta_title_ar: post?.meta_title_ar || "",
       meta_description: post?.meta_description || "",
+      meta_description_ar: post?.meta_description_ar || "",
     },
   });
 
@@ -240,9 +250,12 @@ export function BlogPostEditor({ post, categories, onClose }: BlogPostEditorProp
 
     const postData = {
       title: values.title,
+      title_ar: values.title_ar || null,
       slug: values.slug,
       excerpt: values.excerpt || null,
+      excerpt_ar: values.excerpt_ar || null,
       content: values.content,
+      content_ar: values.content_ar || null,
       featured_image_url: featuredImage,
       gallery_images: galleryImages,
       category_id: values.category_id || null,
@@ -255,7 +268,9 @@ export function BlogPostEditor({ post, categories, onClose }: BlogPostEditorProp
           : null,
       scheduled_at: values.scheduled_at?.toISOString() || null,
       meta_title: values.meta_title || null,
+      meta_title_ar: values.meta_title_ar || null,
       meta_description: values.meta_description || null,
+      meta_description_ar: values.meta_description_ar || null,
       og_image_url: featuredImage,
     };
 
@@ -370,6 +385,119 @@ export function BlogPostEditor({ post, categories, onClose }: BlogPostEditorProp
                 </FormItem>
               )}
             />
+
+            {/* Arabic Translation Section */}
+            <Accordion type="single" collapsible className="border rounded-lg">
+              <AccordionItem value="arabic" className="border-0">
+                <AccordionTrigger className="px-4 hover:no-underline">
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">🇲🇦</span>
+                    <span>Traduction Arabe</span>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent className="px-4 pb-4 space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="title_ar"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Titre (العربية)</FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            placeholder="عنوان المقال"
+                            dir="rtl"
+                            className="text-right"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="excerpt_ar"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Extrait (العربية)</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            {...field}
+                            placeholder="وصف مختصر للمقال..."
+                            rows={2}
+                            dir="rtl"
+                            className="text-right"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="content_ar"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Contenu (العربية)</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            {...field}
+                            placeholder="<p>محتوى المقال بتنسيق HTML...</p>"
+                            rows={10}
+                            dir="rtl"
+                            className="font-mono text-sm text-right"
+                          />
+                        </FormControl>
+                        <FormDescription>
+                          Utilisez du HTML pour la mise en forme
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <FormField
+                      control={form.control}
+                      name="meta_title_ar"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Meta Title (العربية)</FormLabel>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              placeholder="العنوان لمحركات البحث"
+                              dir="rtl"
+                              className="text-right"
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="meta_description_ar"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Meta Description (العربية)</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              {...field}
+                              rows={2}
+                              dir="rtl"
+                              className="text-right"
+                              placeholder="وصف للمقال"
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
 
             {/* Files Section */}
             <div className="space-y-3">

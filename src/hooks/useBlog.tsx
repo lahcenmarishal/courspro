@@ -23,9 +23,12 @@ export interface BlogFile {
 export interface BlogPost {
   id: string;
   title: string;
+  title_ar: string | null;
   slug: string;
   excerpt: string | null;
+  excerpt_ar: string | null;
   content: string;
+  content_ar: string | null;
   featured_image_url: string | null;
   gallery_images: string[];
   author_id: string;
@@ -35,7 +38,9 @@ export interface BlogPost {
   published_at: string | null;
   scheduled_at: string | null;
   meta_title: string | null;
+  meta_title_ar: string | null;
   meta_description: string | null;
+  meta_description_ar: string | null;
   og_image_url: string | null;
   reading_time_minutes: number;
   created_at: string;
@@ -51,19 +56,24 @@ export interface BlogPost {
 
 export interface CreateBlogPostData {
   title: string;
+  title_ar?: string | null;
   slug: string;
-  excerpt?: string;
+  excerpt?: string | null;
+  excerpt_ar?: string | null;
   content: string;
-  featured_image_url?: string;
+  content_ar?: string | null;
+  featured_image_url?: string | null;
   gallery_images?: string[];
-  category_id?: string;
+  category_id?: string | null;
   tags?: string[];
   status: "draft" | "published";
-  published_at?: string;
-  scheduled_at?: string;
-  meta_title?: string;
-  meta_description?: string;
-  og_image_url?: string;
+  published_at?: string | null;
+  scheduled_at?: string | null;
+  meta_title?: string | null;
+  meta_title_ar?: string | null;
+  meta_description?: string | null;
+  meta_description_ar?: string | null;
+  og_image_url?: string | null;
 }
 
 // Categories

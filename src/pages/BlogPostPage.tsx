@@ -106,14 +106,21 @@ export default function BlogPostPage() {
   const publishDate = post.published_at || post.created_at;
   const imageUrl = getBlogImage(post.slug, post.featured_image_url);
 
+  // Get translated content based on language
+  const title = language === 'ar' && post.title_ar ? post.title_ar : post.title;
+  const excerpt = language === 'ar' && post.excerpt_ar ? post.excerpt_ar : post.excerpt;
+  const content = language === 'ar' && post.content_ar ? post.content_ar : post.content;
+  const metaTitle = language === 'ar' && post.meta_title_ar ? post.meta_title_ar : post.meta_title;
+  const metaDescription = language === 'ar' && post.meta_description_ar ? post.meta_description_ar : post.meta_description;
+
   return (
     <>
       <Helmet>
-        <title>{post.meta_title || post.title} | EduVirtual Blog</title>
-        <meta name="description" content={post.meta_description || post.excerpt || ""} />
+        <title>{metaTitle || title} | EduVirtual Blog</title>
+        <meta name="description" content={metaDescription || excerpt || ""} />
         {post.og_image_url && <meta property="og:image" content={post.og_image_url} />}
-        <meta property="og:title" content={post.meta_title || post.title} />
-        <meta property="og:description" content={post.meta_description || post.excerpt || ""} />
+        <meta property="og:title" content={metaTitle || title} />
+        <meta property="og:description" content={metaDescription || excerpt || ""} />
         <link rel="canonical" href={`${window.location.origin}/blog/${post.slug}`} />
       </Helmet>
 
@@ -171,7 +178,7 @@ export default function BlogPostPage() {
                 </div>
 
                 <h1 className="text-3xl lg:text-4xl xl:text-5xl font-bold mb-6">
-                  {post.title}
+                  {title}
                 </h1>
 
                 <div className="flex flex-wrap items-center gap-6 text-sm text-muted-foreground">
@@ -197,7 +204,7 @@ export default function BlogPostPage() {
                 transition={{ delay: 0.2 }}
                 className="pb-12"
               >
-                <MarkdownRenderer content={post.content} />
+                <MarkdownRenderer content={content} />
               </motion.div>
 
               {/* Gallery */}
