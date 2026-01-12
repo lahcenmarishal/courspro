@@ -12,7 +12,7 @@ import {
   Share2
 } from "lucide-react";
 import { format } from "date-fns";
-import { fr } from "date-fns/locale";
+import { fr, ar } from "date-fns/locale";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
 import { Badge } from "@/components/ui/badge";
@@ -24,14 +24,16 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { getBlogImage } from "@/lib/blogImages";
 import { MarkdownRenderer } from "@/components/blog/MarkdownRenderer";
+import { useLanguage } from "@/hooks/useLanguage";
 
 export default function BlogPostPage() {
+  const { t, language } = useLanguage();
   const { slug } = useParams<{ slug: string }>();
   const { data: post, isLoading, error } = useBlogPost(slug || "");
+  const dateLocale = language === 'ar' ? ar : fr;
 
   const handleDownload = async (fileUrl: string, fileName: string) => {
     try {
-      // Create a temporary link to download
       const link = document.createElement("a");
       link.href = fileUrl;
       link.download = fileName;
@@ -39,9 +41,9 @@ export default function BlogPostPage() {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      toast.success("Téléchargement démarré");
+      toast.success(t("blog.downloadStarted"));
     } catch {
-      toast.error("Erreur lors du téléchargement");
+      toast.error(t("blog.downloadError"));
     }
   };
 
@@ -54,7 +56,7 @@ export default function BlogPostPage() {
       });
     } else {
       await navigator.clipboard.writeText(window.location.href);
-      toast.success("Lien copié dans le presse-papiers");
+      toast.success(t("blog.linkCopied"));
     }
   };
 
@@ -88,11 +90,11 @@ export default function BlogPostPage() {
       <>
         <Navbar />
         <main className="min-h-screen pt-20 flex flex-col items-center justify-center">
-          <h1 className="text-2xl font-bold mb-4">Article non trouvé</h1>
+          <h1 className="text-2xl font-bold mb-4">{t("blog.notFound")}</h1>
           <Link to="/blog">
             <Button>
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Retour au blog
+              {t("blog.backToBlog")}
             </Button>
           </Link>
         </main>
@@ -127,7 +129,7 @@ export default function BlogPostPage() {
           <Link to="/blog">
             <Button variant="outline" className="gap-2 bg-background shadow-lg border">
               <ArrowLeft className="h-4 w-4" />
-              Retour au blog
+              {t("blog.backToBlog")}
             </Button>
           </Link>
         </motion.div>
@@ -175,15 +177,15 @@ export default function BlogPostPage() {
                 <div className="flex flex-wrap items-center gap-6 text-sm text-muted-foreground">
                   <span className="flex items-center gap-1">
                     <Calendar className="h-4 w-4" />
-                    {format(new Date(publishDate), "d MMMM yyyy", { locale: fr })}
+                    {format(new Date(publishDate), "d MMMM yyyy", { locale: dateLocale })}
                   </span>
                   <span className="flex items-center gap-1">
                     <Clock className="h-4 w-4" />
-                    {post.reading_time_minutes} min de lecture
+                    {post.reading_time_minutes} {t("blog.readingTime")}
                   </span>
                   <Button variant="ghost" size="sm" onClick={handleShare}>
                     <Share2 className="h-4 w-4 mr-1" />
-                    Partager
+                    {t("blog.share")}
                   </Button>
                 </div>
               </motion.header>
@@ -206,7 +208,7 @@ export default function BlogPostPage() {
                   transition={{ delay: 0.3 }}
                   className="py-8 border-t border-border"
                 >
-                  <h3 className="text-xl font-semibold mb-4">Galerie</h3>
+                  <h3 className="text-xl font-semibold mb-4">{t("blog.gallery")}</h3>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     {post.gallery_images.map((img, index) => (
                       <img
@@ -230,7 +232,7 @@ export default function BlogPostPage() {
                 >
                   <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
                     <FileText className="h-5 w-5 text-primary" />
-                    Fichiers téléchargeables
+                    {t("blog.downloadableFiles")}
                   </h3>
                   <div className="grid gap-3">
                     {post.files.map((file) => (
@@ -249,7 +251,7 @@ export default function BlogPostPage() {
                             onClick={() => handleDownload(file.file_url, file.file_name)}
                           >
                             <Download className="h-4 w-4 mr-2" />
-                            Télécharger
+                            {t("blog.download")}
                           </Button>
                         </CardContent>
                       </Card>
