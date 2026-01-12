@@ -11,7 +11,8 @@ import {
   Trash2,
   Eye,
   EyeOff,
-  Calendar as CalendarIcon
+  Calendar as CalendarIcon,
+  Languages
 } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
@@ -62,6 +63,7 @@ import {
   type BlogCategory,
   type BlogFile
 } from "@/hooks/useBlog";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -99,6 +101,7 @@ export function BlogPostEditor({ post, categories, onClose }: BlogPostEditorProp
   const [files, setFiles] = useState<BlogFile[]>(post?.files || []);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [uploadingFile, setUploadingFile] = useState(false);
+  const [translating, setTranslating] = useState(false);
   
   const featuredInputRef = useRef<HTMLInputElement>(null);
   const galleryInputRef = useRef<HTMLInputElement>(null);
@@ -138,6 +141,46 @@ export function BlogPostEditor({ post, categories, onClose }: BlogPostEditorProp
     form.setValue("title", value);
     if (!post) {
       form.setValue("slug", generateSlug(value));
+    }
+  };
+
+  const handleTranslateToArabic = async () => {
+    const title = form.getValues("title");
+    const excerpt = form.getValues("excerpt");
+    const content = form.getValues("content");
+    const meta_title = form.getValues("meta_title");
+    const meta_description = form.getValues("meta_description");
+
+    if (!title && !content) {
+      toast.error("Veuillez d'abord remplir le titre ou le contenu en français");
+      return;
+    }
+
+    setTranslating(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("translate-blog", {
+        body: { title, excerpt, content, meta_title, meta_description }
+      });
+
+      if (error) {
+        console.error("Translation error:", error);
+        toast.error("Erreur lors de la traduction");
+        return;
+      }
+
+      // Update form fields with translations
+      if (data.title_ar) form.setValue("title_ar", data.title_ar);
+      if (data.excerpt_ar) form.setValue("excerpt_ar", data.excerpt_ar);
+      if (data.content_ar) form.setValue("content_ar", data.content_ar);
+      if (data.meta_title_ar) form.setValue("meta_title_ar", data.meta_title_ar);
+      if (data.meta_description_ar) form.setValue("meta_description_ar", data.meta_description_ar);
+
+      toast.success("Traduction arabe générée avec succès !");
+    } catch (error) {
+      console.error("Translation error:", error);
+      toast.error("Erreur lors de la traduction");
+    } finally {
+      setTranslating(false);
     }
   };
 
@@ -396,6 +439,27 @@ export function BlogPostEditor({ post, categories, onClose }: BlogPostEditorProp
                   </div>
                 </AccordionTrigger>
                 <AccordionContent className="px-4 pb-4 space-y-4">
+                  <div className="flex justify-end">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={handleTranslateToArabic}
+                      disabled={translating}
+                      className="gap-2"
+                    >
+                      {translating ? (
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                          Traduction en cours...
+                        </>
+                      ) : (
+                        <>
+                          <Languages className="h-4 w-4" />
+                          Traduire automatiquement avec l'IA
+                        </>
+                      )}
+                    </Button>
+                  </div>
                   <FormField
                     control={form.control}
                     name="title_ar"
