@@ -2,6 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import type { BlogCategory } from "@/hooks/useBlog";
+import { useLanguage } from "@/hooks/useLanguage";
 
 interface BlogFiltersProps {
   categories: BlogCategory[];
@@ -20,20 +21,21 @@ export function BlogFilters({
   onCategoryChange,
   onTagChange,
 }: BlogFiltersProps) {
+  const { t } = useLanguage();
   const hasFilters = selectedCategory || selectedTag;
 
   return (
     <div className="space-y-4">
       {/* Categories */}
       <div>
-        <h4 className="text-sm font-medium mb-2 text-muted-foreground">Catégories</h4>
+        <h4 className="text-sm font-medium mb-2 text-muted-foreground">{t("blog.categories")}</h4>
         <div className="flex flex-wrap gap-2">
           <Button
             variant={!selectedCategory ? "default" : "outline"}
             size="sm"
             onClick={() => onCategoryChange(null)}
           >
-            Tous
+            {t("blog.all")}
           </Button>
           {categories.map((cat) => (
             <Button
@@ -51,7 +53,7 @@ export function BlogFilters({
       {/* Tags */}
       {allTags.length > 0 && (
         <div>
-          <h4 className="text-sm font-medium mb-2 text-muted-foreground">Tags populaires</h4>
+          <h4 className="text-sm font-medium mb-2 text-muted-foreground">{t("blog.popularTags")}</h4>
           <div className="flex flex-wrap gap-2">
             {allTags.slice(0, 10).map((tag) => (
               <Badge
@@ -79,7 +81,7 @@ export function BlogFilters({
           className="text-muted-foreground"
         >
           <X className="h-4 w-4 mr-1" />
-          Effacer les filtres
+          {t("blog.clearFilters")}
         </Button>
       )}
     </div>

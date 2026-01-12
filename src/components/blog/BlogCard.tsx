@@ -3,17 +3,20 @@ import { Clock, Calendar, ArrowRight, Tag } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { format } from "date-fns";
-import { fr } from "date-fns/locale";
+import { fr, ar } from "date-fns/locale";
 import type { BlogPost } from "@/hooks/useBlog";
 import { getBlogImage } from "@/lib/blogImages";
+import { useLanguage } from "@/hooks/useLanguage";
 
 interface BlogCardProps {
   post: BlogPost;
 }
 
 export function BlogCard({ post }: BlogCardProps) {
+  const { t, language } = useLanguage();
   const publishDate = post.published_at || post.created_at;
   const imageUrl = getBlogImage(post.slug, post.featured_image_url);
+  const dateLocale = language === 'ar' ? ar : fr;
 
   return (
     <Card className="group overflow-hidden border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg">
@@ -56,15 +59,15 @@ export function BlogCard({ post }: BlogCardProps) {
             <div className="flex items-center gap-4">
               <span className="flex items-center gap-1">
                 <Calendar className="h-3.5 w-3.5" />
-                {format(new Date(publishDate), "d MMM yyyy", { locale: fr })}
+                {format(new Date(publishDate), "d MMM yyyy", { locale: dateLocale })}
               </span>
               <span className="flex items-center gap-1">
                 <Clock className="h-3.5 w-3.5" />
-                {post.reading_time_minutes} min
+                {post.reading_time_minutes} {t("blog.min")}
               </span>
             </div>
             <span className="flex items-center gap-1 text-primary opacity-0 group-hover:opacity-100 transition-opacity">
-              Lire <ArrowRight className="h-3.5 w-3.5" />
+              {t("blog.read")} <ArrowRight className="h-3.5 w-3.5" />
             </span>
           </div>
         </CardContent>
