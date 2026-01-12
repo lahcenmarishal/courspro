@@ -138,10 +138,10 @@ export default function BlogPostPage() {
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="pt-8"
+                className="pt-8 relative z-20"
               >
                 <Link to="/blog">
-                  <Button variant="outline" className="gap-2">
+                  <Button variant="outline" className="gap-2 bg-background shadow-md">
                     <ArrowLeft className="h-4 w-4" />
                     Retour au blog
                   </Button>
