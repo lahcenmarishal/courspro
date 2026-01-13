@@ -156,7 +156,7 @@ export default function TeachersTeamPage() {
               className="text-center"
             >
               <div className="text-3xl md:text-4xl font-bold text-primary">
-                {teachers.reduce((acc, teacher) => acc + (teacher.years_experience || 0), 0)}+
+                20+
               </div>
               <div className="text-sm text-muted-foreground">{t("teachers.stats.experience")}</div>
             </motion.div>

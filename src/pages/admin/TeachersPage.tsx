@@ -460,9 +460,9 @@ export default function TeachersPage() {
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-foreground">
-                    {teachers.reduce((acc, t) => acc + (t.years_experience || 0), 0)}
+                    20+
                   </div>
-                  <div className="text-xs text-muted-foreground">Années exp.</div>
+                  <div className="text-xs text-muted-foreground">Ans d'expérience</div>
                 </div>
               </div>
             </CardContent>
