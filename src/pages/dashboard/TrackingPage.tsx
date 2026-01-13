@@ -49,61 +49,10 @@ export default function TrackingPage() {
   });
 
   useEffect(() => {
-    if (user && role === 'parent') {
-      fetchChildren();
-    } else if (user) {
+    if (user) {
       fetchStudentData(user.id);
     }
-  }, [user, role]);
-
-  useEffect(() => {
-    const studentId = searchParams.get('student');
-    if (studentId) {
-      setSelectedChild(studentId);
-      fetchStudentData(studentId);
-    } else if (children.length > 0 && !selectedChild) {
-      setSelectedChild(children[0].id);
-      fetchStudentData(children[0].id);
-    }
-  }, [searchParams, children]);
-
-  const fetchChildren = async () => {
-    try {
-      const { data: parentStudents } = await supabase
-        .from('parent_student')
-        .select('student_id')
-        .eq('parent_id', user?.id);
-
-      if (parentStudents && parentStudents.length > 0) {
-        const childrenData: Child[] = [];
-        for (const ps of parentStudents) {
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('user_id, first_name, last_name')
-            .eq('user_id', ps.student_id)
-            .single();
-
-          const { data: enrollment } = await supabase
-            .from('student_enrollments')
-            .select('class_id, classes(name, levels(name))')
-            .eq('student_id', ps.student_id)
-            .single();
-
-          if (profile) {
-            childrenData.push({
-              id: profile.user_id,
-              name: `${profile.first_name} ${profile.last_name}`,
-              className: (enrollment?.classes as any)?.name || 'Non inscrit',
-              levelName: (enrollment?.classes as any)?.levels?.name || '',
-            });
-          }
-        }
-        setChildren(childrenData);
-      }
-    } catch (error) {
-      console.error('Error fetching children:', error);
-    }
-  };
+  }, [user]);
 
   const fetchStudentData = async (studentId: string) => {
     setLoading(true);
@@ -217,7 +166,7 @@ export default function TrackingPage() {
 
   return (
     <div className="min-h-screen bg-background flex">
-      <DashboardSidebar role={role || 'parent'} />
+      <DashboardSidebar role="student" />
       
       <main className="flex-1 p-8 overflow-auto">
         <div className="max-w-7xl mx-auto space-y-8">
@@ -227,20 +176,6 @@ export default function TrackingPage() {
               <h1 className="text-3xl font-bold">Suivi scolaire</h1>
               <p className="text-muted-foreground">Progression et performances académiques</p>
             </div>
-            {role === 'parent' && children.length > 0 && (
-              <Select value={selectedChild} onValueChange={(v) => { setSelectedChild(v); fetchStudentData(v); }}>
-                <SelectTrigger className="w-64">
-                  <SelectValue placeholder="Sélectionner un enfant" />
-                </SelectTrigger>
-                <SelectContent>
-                  {children.map(child => (
-                    <SelectItem key={child.id} value={child.id}>
-                      {child.name} - {child.className}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
           </div>
 
           {/* Stats Cards */}

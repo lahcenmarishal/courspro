@@ -20,7 +20,7 @@ import { z } from 'zod';
 import { cn } from '@/lib/utils';
 import studentsHeroImage from '@/assets/students-hero-auth.jpg';
 
-type AppRole = 'admin' | 'teacher' | 'student' | 'parent';
+type AppRole = 'admin' | 'teacher' | 'student';
 
 // Packs par niveau
 const primaireCollegePlans = [
@@ -176,7 +176,7 @@ export default function Auth() {
   const [password, setPassword] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  const [role, setRole] = useState<'student' | 'parent'>('student');
+  // Role is now always student for signup
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   
   const { signIn, signUp, user } = useAuth();
@@ -192,7 +192,6 @@ export default function Auth() {
   const signupSchema = loginSchema.extend({
     firstName: z.string().min(2, t('auth.firstNameMinLength')),
     lastName: z.string().min(2, t('auth.lastNameMinLength')),
-    role: z.enum(['student', 'parent'] as const),
   });
 
   useEffect(() => {
@@ -243,8 +242,7 @@ export default function Auth() {
           email, 
           password, 
           firstName, 
-          lastName, 
-          role 
+          lastName
         });
         
         if (!validation.success) {
@@ -253,7 +251,7 @@ export default function Auth() {
           return;
         }
 
-        const { error } = await signUp(email, password, firstName, lastName, role);
+        const { error } = await signUp(email, password, firstName, lastName, 'student');
         if (error) {
           if (error.message.includes('already registered')) {
             toast.error(t('auth.emailAlreadyUsed'));
@@ -548,20 +546,6 @@ export default function Auth() {
                   </div>
                 </div>
 
-                {!isLogin && (
-                  <div className="space-y-2">
-                    <Label htmlFor="role">{t('auth.iAm')}</Label>
-                    <Select value={role} onValueChange={(value: 'student' | 'parent') => setRole(value)}>
-                      <SelectTrigger>
-                        <SelectValue placeholder={t('auth.selectProfile')} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="student">{t('auth.student')}</SelectItem>
-                        <SelectItem value="parent">{t('auth.parent')}</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                )}
 
                 {!isLogin && selectedPlan && (
                   <div className="p-3 bg-muted rounded-lg text-sm">

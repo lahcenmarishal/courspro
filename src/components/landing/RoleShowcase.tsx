@@ -1,10 +1,9 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { Shield, BookOpen, GraduationCap, Users, Check, Calendar, Video, FileText, Bell, CreditCard, BarChart3, Settings, MessageSquare, Award, Eye } from "lucide-react";
+import { Shield, BookOpen, GraduationCap, Users, Check, Calendar, Video, FileText, Bell, CreditCard, BarChart3, Settings, MessageSquare, Award } from "lucide-react";
 import { cn } from "@/lib/utils";
 import teacherImage from "@/assets/teacher-portrait.jpg";
 import studentImage from "@/assets/student-learning.jpg";
-import parentImage from "@/assets/parent-child-learning.jpg";
 import { useLanguage } from "@/hooks/useLanguage";
 
 const colorClasses = {
@@ -49,17 +48,6 @@ export const RoleShowcase = () => {
         { icon: Award, text: t("roles.feature.viewGrades") },
         { icon: Bell, text: t("roles.feature.importantNotifications") },
         { icon: BookOpen, text: t("roles.feature.resourcesReplays") },
-      ],
-    },
-    {
-      id: "parent", title: t("roles.parent"), subtitle: t("roles.parent.subtitle"), icon: Users, color: "primary", image: parentImage,
-      features: [
-        { icon: Eye, text: t("roles.feature.attendanceTracking") },
-        { icon: Award, text: t("roles.feature.gradesAccess") },
-        { icon: Bell, text: t("roles.feature.schoolNotifications") },
-        { icon: MessageSquare, text: t("roles.feature.teacherCommunication") },
-        { icon: Calendar, text: t("roles.feature.schoolCalendar") },
-        { icon: BarChart3, text: t("roles.feature.studentProgress") },
       ],
     },
   ];

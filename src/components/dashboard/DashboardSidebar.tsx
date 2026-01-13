@@ -27,7 +27,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
-type Role = "admin" | "teacher" | "student" | "parent";
+type Role = "admin" | "teacher" | "student";
 
 interface DashboardSidebarProps {
   role: Role;
@@ -71,27 +71,16 @@ const studentLinks = [
   { label: "Messages", href: "/dashboard/messages", icon: MessageSquare },
 ];
 
-const parentLinks = [
-  { label: "Tableau de bord", href: "/dashboard", icon: LayoutDashboard },
-  { label: "Suivi scolaire", href: "/dashboard/tracking", icon: BarChart3 },
-  { label: "Présences", href: "/dashboard/attendance", icon: Clock },
-  { label: "Notes", href: "/dashboard/grades", icon: Award },
-  { label: "Calendrier", href: "/dashboard/calendar", icon: Calendar },
-  { label: "Messages", href: "/dashboard/messages", icon: MessageSquare },
-];
-
 const linksByRole: Record<Role, typeof adminLinks> = {
   admin: adminLinks,
   teacher: teacherLinks,
   student: studentLinks,
-  parent: parentLinks,
 };
 
 const roleLabels: Record<Role, string> = {
   admin: "Administration",
   teacher: "Enseignant",
   student: "Élève",
-  parent: "Parent",
 };
 
 export const DashboardSidebar = ({ role }: DashboardSidebarProps) => {

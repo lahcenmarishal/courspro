@@ -54,41 +54,8 @@ export default function GradesPage() {
   const [selectedChild, setSelectedChild] = useState<string>("");
 
   useEffect(() => {
-    if (role === "parent") {
-      fetchChildren();
-    } else {
-      fetchGrades(user?.id);
-    }
+    fetchGrades(user?.id);
   }, [user, role]);
-
-  const fetchChildren = async () => {
-    if (!user) return;
-    
-    const { data } = await supabase
-      .from("parent_student")
-      .select("student_id")
-      .eq("parent_id", user.id);
-
-    if (data && data.length > 0) {
-      const childIds = data.map(d => d.student_id);
-      const { data: profiles } = await supabase
-        .from("profiles")
-        .select("user_id, first_name, last_name")
-        .in("user_id", childIds);
-
-      const childrenData = profiles?.map(p => ({
-        id: p.user_id,
-        name: `${p.first_name} ${p.last_name}`
-      })) || [];
-
-      setChildren(childrenData);
-      if (childrenData.length > 0) {
-        setSelectedChild(childrenData[0].id);
-        fetchGrades(childrenData[0].id);
-      }
-    }
-    setLoading(false);
-  };
 
   const fetchGrades = async (studentId?: string) => {
     if (!studentId) {
@@ -172,18 +139,16 @@ export default function GradesPage() {
 
   const subjects = [...new Set(grades.map(g => g.subject?.name).filter(Boolean))];
 
-  if (!role) return null;
-
   return (
     <div className="min-h-screen bg-muted/30 flex">
-      <DashboardSidebar role={role} />
+      <DashboardSidebar role={role || "student"} />
       
       <main className="flex-1 p-8">
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-2xl font-bold flex items-center gap-2">
               <Award className="h-6 w-6 text-primary" />
-              {role === "parent" ? "Notes de mes enfants" : "Notes & Bulletins"}
+              Notes & Bulletins
             </h1>
             <p className="text-muted-foreground">
               Consultez les résultats et moyennes
@@ -195,27 +160,6 @@ export default function GradesPage() {
             Télécharger le bulletin
           </Button>
         </div>
-
-        {/* Child selector for parents */}
-        {role === "parent" && children.length > 0 && (
-          <div className="mb-6">
-            <Select value={selectedChild} onValueChange={(value) => {
-              setSelectedChild(value);
-              fetchGrades(value);
-            }}>
-              <SelectTrigger className="w-64">
-                <SelectValue placeholder="Sélectionner un enfant" />
-              </SelectTrigger>
-              <SelectContent>
-                {children.map(child => (
-                  <SelectItem key={child.id} value={child.id}>
-                    {child.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        )}
 
         {/* Overall Stats */}
         <div className="grid md:grid-cols-3 gap-6 mb-8">

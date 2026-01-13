@@ -5,7 +5,6 @@ import { Loader2 } from 'lucide-react';
 import AdminDashboard from './dashboard/AdminDashboard';
 import TeacherDashboard from './dashboard/TeacherDashboard';
 import StudentDashboard from './dashboard/StudentDashboard';
-import ParentDashboard from './dashboard/ParentDashboard';
 
 export default function Dashboard() {
   const { user, role, loading } = useAuth();
@@ -39,9 +38,6 @@ export default function Dashboard() {
     case 'teacher':
       return <TeacherDashboard />;
     case 'student':
-      return <StudentDashboard />;
-    case 'parent':
-      return <ParentDashboard />;
     default:
       return <StudentDashboard />;
   }

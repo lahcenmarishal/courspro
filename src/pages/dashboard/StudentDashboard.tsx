@@ -47,7 +47,7 @@ const StudentDashboard = () => {
   const [schedule, setSchedule] = useState<ScheduleItem[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const isParent = role === 'parent';
+  // Role is always student now
 
   useEffect(() => {
     if (user) {
@@ -68,24 +68,7 @@ const StudentDashboard = () => {
       let studentId = user.id;
       let studentProfile = profileData;
 
-      if (isParent) {
-        const { data: childRelation } = await supabase
-          .from('parent_student')
-          .select('student_id')
-          .eq('parent_id', user.id)
-          .limit(1)
-          .single();
-
-        if (childRelation) {
-          studentId = childRelation.student_id;
-          const { data: childProfile } = await supabase
-            .from('profiles')
-            .select('first_name, last_name')
-            .eq('user_id', studentId)
-            .single();
-          studentProfile = childProfile;
-        }
-      }
+      // Fetch enrollment data for the student
 
       const { data: enrollmentData } = await supabase
         .from('student_enrollments')
@@ -167,7 +150,7 @@ const StudentDashboard = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-muted/30 flex flex-col lg:flex-row">
-        <DashboardSidebar role={isParent ? "parent" : "student"} />
+        <DashboardSidebar role="student" />
         <main className="flex-1 flex items-center justify-center p-4">
           <div className="text-center space-y-4">
             <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
@@ -180,7 +163,7 @@ const StudentDashboard = () => {
 
   return (
     <div className="min-h-screen bg-muted/30 flex flex-col lg:flex-row">
-      <DashboardSidebar role={isParent ? "parent" : "student"} />
+      <DashboardSidebar role="student" />
       
       <main className="flex-1 p-4 lg:p-8">
         {/* Header */}
@@ -243,12 +226,10 @@ const StudentDashboard = () => {
                 <h2 className="text-lg lg:text-xl font-bold mb-1 text-foreground">{highlightedClass.subject}</h2>
                 <p className="text-sm lg:text-base text-muted-foreground">{highlightedClass.teacher}</p>
               </div>
-              {!isParent && (
-                <Button variant="default" size="sm" className="w-full sm:w-auto lg:size-lg">
-                  <Play className="h-4 w-4 lg:h-5 lg:w-5 mr-2" />
-                  Rejoindre le cours
-                </Button>
-              )}
+              <Button variant="default" size="sm" className="w-full sm:w-auto lg:size-lg">
+                <Play className="h-4 w-4 lg:h-5 lg:w-5 mr-2" />
+                Rejoindre le cours
+              </Button>
             </div>
           </motion.div>
         )}
