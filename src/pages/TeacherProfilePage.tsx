@@ -9,7 +9,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useLanguage } from "@/hooks/useLanguage";
-import { formatExperience } from "@/lib/formatExperience";
 import { 
   Loader2, 
   GraduationCap,
@@ -213,7 +212,7 @@ export default function TeacherProfilePage() {
                       </div>
                       <div>
                         <p className="text-xs text-muted-foreground">{t("teacherProfile.experience")}</p>
-                        <p className="font-medium text-foreground">{formatExperience(teacher.years_experience, t("teachers.years"))}</p>
+                        <p className="font-medium text-foreground">{teacher.years_experience} {t("teachers.years")}</p>
                       </div>
                     </motion.div>
                   )}

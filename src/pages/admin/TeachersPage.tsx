@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { formatExperienceFr, calculateTotalExperience } from "@/lib/formatExperience";
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -461,7 +460,7 @@ export default function TeachersPage() {
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-foreground">
-                    {calculateTotalExperience(teachers)}+
+                    {teachers.reduce((acc, t) => acc + (t.years_experience || 0), 0)}
                   </div>
                   <div className="text-xs text-muted-foreground">Années exp.</div>
                 </div>
@@ -627,9 +626,13 @@ export default function TeachersPage() {
                         )}
                       </TableCell>
                       <TableCell>
-                        <span className="text-sm">
-                          {formatExperienceFr(teacher.years_experience)}
-                        </span>
+                        {teacher.years_experience ? (
+                          <span className="text-sm">
+                            {teacher.years_experience} an{teacher.years_experience > 1 ? "s" : ""}
+                          </span>
+                        ) : (
+                          <span className="text-muted-foreground text-sm">-</span>
+                        )}
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-1">
@@ -729,7 +732,7 @@ export default function TeachersPage() {
                       <div className="text-xs text-muted-foreground">Expérience</div>
                       <div className="text-sm font-medium">
                         {selectedTeacher.years_experience
-                          ? formatExperienceFr(selectedTeacher.years_experience)
+                          ? `${selectedTeacher.years_experience} an${selectedTeacher.years_experience > 1 ? "s" : ""}`
                           : "Non renseigné"}
                       </div>
                     </div>

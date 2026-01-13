@@ -9,7 +9,6 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useLanguage } from "@/hooks/useLanguage";
-import { formatExperience, formatTotalExperience } from "@/lib/formatExperience";
 import { 
   Loader2, 
   Search, 
@@ -157,7 +156,7 @@ export default function TeachersTeamPage() {
               className="text-center"
             >
               <div className="text-3xl md:text-4xl font-bold text-primary">
-                {formatTotalExperience(teachers)}
+                {teachers.reduce((acc, teacher) => acc + (teacher.years_experience || 0), 0)}+
               </div>
               <div className="text-sm text-muted-foreground">{t("teachers.stats.experience")}</div>
             </motion.div>
@@ -275,7 +274,7 @@ export default function TeachersTeamPage() {
                           {teacher.years_experience && teacher.years_experience > 0 && (
                             <div className="flex items-center gap-1 text-xs text-muted-foreground">
                               <Clock className="h-3 w-3 text-primary" />
-                              <span>{formatExperience(teacher.years_experience, t("teachers.years"))}</span>
+                              <span>{teacher.years_experience} {t("teachers.years")}</span>
                             </div>
                           )}
                           {teacher.city && (
