@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { formatExperienceFr } from "@/lib/formatExperience";
+import { formatExperienceFr, calculateTotalExperience } from "@/lib/formatExperience";
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -461,7 +461,7 @@ export default function TeachersPage() {
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-foreground">
-                    {teachers.reduce((acc, t) => acc + (t.years_experience || 0), 0)}
+                    {calculateTotalExperience(teachers)}+
                   </div>
                   <div className="text-xs text-muted-foreground">Années exp.</div>
                 </div>
