@@ -266,8 +266,8 @@ export default function TeachersPage() {
   };
 
   const handleAddTeacher = async () => {
-    if (!addForm.first_name || !addForm.last_name || !addForm.email) {
-      toast.error("Veuillez remplir le prénom, nom et email");
+    if (!addForm.first_name || !addForm.last_name) {
+      toast.error("Veuillez remplir le prénom et le nom");
       return;
     }
     setSaving(true);
@@ -971,7 +971,7 @@ export default function TeachersPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="add_email">Email *</Label>
+                  <Label htmlFor="add_email">Email</Label>
                   <Input
                     id="add_email"
                     type="email"
@@ -979,7 +979,7 @@ export default function TeachersPage() {
                     onChange={(e) =>
                       setAddForm({ ...addForm, email: e.target.value })
                     }
-                    placeholder="email@example.com"
+                    placeholder="email@example.com (optionnel)"
                   />
                 </div>
                 <div className="space-y-2">
