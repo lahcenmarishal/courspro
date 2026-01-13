@@ -57,43 +57,12 @@ export default function AttendancePage() {
   const [selectedClass, setSelectedClass] = useState<string>("all");
 
   useEffect(() => {
-    if (role === "parent") {
-      fetchChildren();
-    } else if (role === "teacher") {
+    if (role === "teacher") {
       fetchClasses();
     } else {
       fetchAttendance(user?.id);
     }
   }, [user, role]);
-
-  const fetchChildren = async () => {
-    if (!user) return;
-    
-    const { data } = await supabase
-      .from("parent_student")
-      .select("student_id")
-      .eq("parent_id", user.id);
-
-    if (data && data.length > 0) {
-      const childIds = data.map(d => d.student_id);
-      const { data: profiles } = await supabase
-        .from("profiles")
-        .select("user_id, first_name, last_name")
-        .in("user_id", childIds);
-
-      const childrenData = profiles?.map(p => ({
-        id: p.user_id,
-        name: `${p.first_name} ${p.last_name}`
-      })) || [];
-
-      setChildren(childrenData);
-      if (childrenData.length > 0) {
-        setSelectedChild(childrenData[0].id);
-        fetchAttendance(childrenData[0].id);
-      }
-    }
-    setLoading(false);
-  };
 
   const fetchClasses = async () => {
     if (!user) return;
@@ -208,27 +177,6 @@ export default function AttendancePage() {
             </p>
           </div>
         </div>
-
-        {/* Child/Class selector */}
-        {role === "parent" && children.length > 0 && (
-          <div className="mb-6">
-            <Select value={selectedChild} onValueChange={(value) => {
-              setSelectedChild(value);
-              fetchAttendance(value);
-            }}>
-              <SelectTrigger className="w-64">
-                <SelectValue placeholder="Sélectionner un enfant" />
-              </SelectTrigger>
-              <SelectContent>
-                {children.map(child => (
-                  <SelectItem key={child.id} value={child.id}>
-                    {child.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        )}
 
         {role === "teacher" && classes.length > 0 && (
           <div className="mb-6">

@@ -33,7 +33,6 @@ export const Navbar = () => {
       case 'admin': return { label: t('nav.adminDashboard'), path: '/dashboard' };
       case 'teacher': return { label: t('nav.teacherDashboard'), path: '/dashboard' };
       case 'student': return { label: t('nav.studentDashboard'), path: '/dashboard' };
-      case 'parent': return { label: t('nav.parentDashboard'), path: '/dashboard' };
       default: return { label: t('nav.dashboard'), path: '/dashboard' };
     }
   };
