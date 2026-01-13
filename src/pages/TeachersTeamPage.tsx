@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useLanguage } from "@/hooks/useLanguage";
-import { formatExperience } from "@/lib/formatExperience";
+import { formatExperience, formatTotalExperience } from "@/lib/formatExperience";
 import { 
   Loader2, 
   Search, 
@@ -157,7 +157,7 @@ export default function TeachersTeamPage() {
               className="text-center"
             >
               <div className="text-3xl md:text-4xl font-bold text-primary">
-                {teachers.reduce((acc, teacher) => acc + (teacher.years_experience || 0), 0)}+
+                {formatTotalExperience(teachers)}
               </div>
               <div className="text-sm text-muted-foreground">{t("teachers.stats.experience")}</div>
             </motion.div>

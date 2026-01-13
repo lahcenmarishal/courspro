@@ -23,3 +23,21 @@ export const formatExperienceFr = (years: number | null | undefined): string => 
   
   return `${years} an${years > 1 ? "s" : ""}`;
 };
+
+/**
+ * Calculate total experience from an array, capping each individual at 20
+ */
+export const calculateTotalExperience = (items: { years_experience?: number | null }[]): number => {
+  return items.reduce((acc, item) => {
+    const exp = item.years_experience || 0;
+    return acc + Math.min(exp, 20);
+  }, 0);
+};
+
+/**
+ * Format total experience for display (with + suffix)
+ */
+export const formatTotalExperience = (items: { years_experience?: number | null }[]): string => {
+  const total = calculateTotalExperience(items);
+  return `${total}+`;
+};
