@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useLanguage } from "@/hooks/useLanguage";
+import { formatExperience } from "@/lib/formatExperience";
 import { 
   Loader2, 
   Search, 
@@ -274,7 +275,7 @@ export default function TeachersTeamPage() {
                           {teacher.years_experience && teacher.years_experience > 0 && (
                             <div className="flex items-center gap-1 text-xs text-muted-foreground">
                               <Clock className="h-3 w-3 text-primary" />
-                              <span>{teacher.years_experience} {t("teachers.years")}</span>
+                              <span>{formatExperience(teacher.years_experience, t("teachers.years"))}</span>
                             </div>
                           )}
                           {teacher.city && (

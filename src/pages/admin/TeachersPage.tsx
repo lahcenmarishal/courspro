@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import { formatExperienceFr } from "@/lib/formatExperience";
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -626,13 +627,9 @@ export default function TeachersPage() {
                         )}
                       </TableCell>
                       <TableCell>
-                        {teacher.years_experience ? (
-                          <span className="text-sm">
-                            {teacher.years_experience} an{teacher.years_experience > 1 ? "s" : ""}
-                          </span>
-                        ) : (
-                          <span className="text-muted-foreground text-sm">-</span>
-                        )}
+                        <span className="text-sm">
+                          {formatExperienceFr(teacher.years_experience)}
+                        </span>
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-1">
@@ -732,7 +729,7 @@ export default function TeachersPage() {
                       <div className="text-xs text-muted-foreground">Expérience</div>
                       <div className="text-sm font-medium">
                         {selectedTeacher.years_experience
-                          ? `${selectedTeacher.years_experience} an${selectedTeacher.years_experience > 1 ? "s" : ""}`
+                          ? formatExperienceFr(selectedTeacher.years_experience)
                           : "Non renseigné"}
                       </div>
                     </div>
