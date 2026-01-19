@@ -116,7 +116,7 @@ export default function BlogPostPage() {
   return (
     <>
       <Helmet>
-        <title>{metaTitle || title} | EduVirtual Blog</title>
+        <title>{metaTitle || title} | CoursPro Blog</title>
         <meta name="description" content={metaDescription || excerpt || ""} />
         {post.og_image_url && <meta property="og:image" content={post.og_image_url} />}
         <meta property="og:title" content={metaTitle || title} />

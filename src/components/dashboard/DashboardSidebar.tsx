@@ -116,7 +116,7 @@ export const DashboardSidebar = ({ role }: DashboardSidebarProps) => {
             <GraduationCap className="h-5 w-5 text-primary-foreground" />
           </div>
           <div>
-            <div className="font-bold text-foreground">EduVirtual</div>
+            <div className="font-bold text-foreground">CoursPro</div>
             <div className="text-xs text-muted-foreground">{roleLabels[role]}</div>
           </div>
         </Link>
@@ -180,7 +180,7 @@ export const DashboardSidebar = ({ role }: DashboardSidebarProps) => {
               <GraduationCap className="h-4 w-4 text-primary-foreground" />
             </div>
             <div>
-              <div className="font-bold text-sm text-foreground">EduVirtual</div>
+              <div className="font-bold text-sm text-foreground">CoursPro</div>
               <div className="text-xs text-muted-foreground">{roleLabels[role]}</div>
             </div>
           </Link>
