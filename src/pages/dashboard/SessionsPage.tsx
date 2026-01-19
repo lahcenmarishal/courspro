@@ -161,15 +161,20 @@ export default function SessionsPage() {
     setScheduleSlots(data || []);
   };
 
-  const generateMeetLink = () => {
-    // Generate a random Google Meet-style link
-    const chars = 'abcdefghijklmnopqrstuvwxyz';
-    const generateSegment = (length: number) => 
-      Array.from({ length }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+  const generateJitsiLink = () => {
+    // Generate a unique Jitsi Meet room name
+    const timestamp = Date.now().toString(36);
+    const randomPart = Math.random().toString(36).substring(2, 8);
     
-    const link = `https://meet.google.com/${generateSegment(3)}-${generateSegment(4)}-${generateSegment(3)}`;
+    // Get subject and class info for a meaningful room name
+    const slot = scheduleSlots.find(s => s.id === selectedSlot);
+    const subjectName = slot?.assignment?.subject?.name?.replace(/\s+/g, '') || 'Cours';
+    const className = slot?.assignment?.class?.name?.replace(/\s+/g, '') || '';
+    
+    const roomName = `CoursPro-${subjectName}-${className}-${timestamp}${randomPart}`;
+    const link = `https://meet.jit.si/${roomName}`;
     setMeetLink(link);
-    toast.info("Lien généré (format Google Meet). Pour de vrais liens, intégrez Google Calendar.");
+    toast.success("Lien Jitsi Meet généré avec succès!");
   };
 
   const handleCreateSession = async () => {
@@ -388,19 +393,19 @@ export default function SessionsPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label>Lien Google Meet</Label>
+                    <Label>Lien Jitsi Meet</Label>
                     <div className="flex gap-2">
                       <Input 
-                        placeholder="https://meet.google.com/xxx-xxxx-xxx"
+                        placeholder="https://meet.jit.si/CoursPro-MaClasse"
                         value={meetLink}
                         onChange={(e) => setMeetLink(e.target.value)}
                       />
-                      <Button type="button" variant="outline" onClick={generateMeetLink}>
-                        <Link2 className="h-4 w-4" />
+                      <Button type="button" variant="outline" onClick={generateJitsiLink} title="Générer un lien Jitsi">
+                        <Video className="h-4 w-4" />
                       </Button>
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      Cliquez sur l'icône pour générer un lien exemple
+                      Cliquez sur l'icône pour générer automatiquement un lien Jitsi Meet gratuit
                     </p>
                   </div>
 
@@ -660,17 +665,20 @@ export default function SessionsPage() {
             </DialogHeader>
             <div className="space-y-4 pt-4">
               <div className="space-y-2">
-                <Label>Lien Google Meet</Label>
+                <Label>Lien Jitsi Meet</Label>
                 <div className="flex gap-2">
                   <Input 
-                    placeholder="https://meet.google.com/xxx-xxxx-xxx"
+                    placeholder="https://meet.jit.si/CoursPro-MaClasse"
                     value={meetLink}
                     onChange={(e) => setMeetLink(e.target.value)}
                   />
-                  <Button type="button" variant="outline" onClick={generateMeetLink}>
-                    <Link2 className="h-4 w-4" />
+                  <Button type="button" variant="outline" onClick={generateJitsiLink} title="Générer un lien Jitsi">
+                    <Video className="h-4 w-4" />
                   </Button>
                 </div>
+                <p className="text-xs text-muted-foreground">
+                  Jitsi Meet est gratuit et open-source, aucun compte requis
+                </p>
               </div>
 
               <div className="space-y-2">
