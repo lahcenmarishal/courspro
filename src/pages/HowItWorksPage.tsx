@@ -43,7 +43,7 @@ const HowItWorksPage = () => {
   ];
 
   useEffect(() => {
-    document.title = `${t("howItWorks.pageTitle")} | EduVirtual`;
+    document.title = `${t("howItWorks.pageTitle")} | CoursPro`;
   }, [t]);
 
   return (

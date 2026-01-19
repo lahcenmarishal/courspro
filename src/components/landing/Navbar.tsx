@@ -58,7 +58,7 @@ export const Navbar = () => {
             <div className="h-10 w-10 rounded-xl gradient-primary flex items-center justify-center shadow-md">
               <GraduationCap className="h-5 w-5 text-primary-foreground" />
             </div>
-            <span className="text-xl font-bold">EduVirtual</span>
+            <span className="text-xl font-bold">CoursPro</span>
           </Link>
 
           <div className="hidden md:flex items-center gap-8">

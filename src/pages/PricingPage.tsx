@@ -8,7 +8,7 @@ const PricingPage = () => {
   const { t, language } = useLanguage();
 
   useEffect(() => {
-    document.title = `${t("pricing.pageTitle")} | EduVirtual`;
+    document.title = `${t("pricing.pageTitle")} | CoursPro`;
   }, [t]);
 
   return (

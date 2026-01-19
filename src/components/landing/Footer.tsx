@@ -74,7 +74,7 @@ export const Footer = () => {
               <div className="h-10 w-10 rounded-xl gradient-primary flex items-center justify-center">
                 <GraduationCap className="h-5 w-5 text-primary-foreground" />
               </div>
-              <span className="text-xl font-bold">EduVirtual</span>
+              <span className="text-xl font-bold">CoursPro</span>
             </Link>
             <p className="text-background/60 text-sm mb-6 max-w-xs">
               {t("footer.description")}
@@ -82,7 +82,7 @@ export const Footer = () => {
             <div className="space-y-2 text-sm text-background/60">
               <div className="flex items-center gap-2">
                 <Mail className="h-4 w-4" />
-                <span>contact@eduvirtual.ma</span>
+                <span>contact@courspro.com</span>
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="h-4 w-4" />
