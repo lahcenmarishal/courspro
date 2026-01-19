@@ -24,7 +24,8 @@ import {
   Trash2,
   Link2,
   Search,
-  Filter
+  Filter,
+  MonitorPlay
 } from "lucide-react";
 import {
   Dialog,
@@ -50,6 +51,7 @@ import {
 } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
+import { JitsiMeetWidget } from "@/components/JitsiMeetWidget";
 
 interface ScheduleSlot {
   id: string;
@@ -94,6 +96,9 @@ export default function SessionsPage() {
   const [meetLink, setMeetLink] = useState("");
   const [notes, setNotes] = useState("");
   const [editingSession, setEditingSession] = useState<Session | null>(null);
+  
+  // Jitsi widget state
+  const [activeJitsiSession, setActiveJitsiSession] = useState<Session | null>(null);
 
   useEffect(() => {
     fetchSessions();
@@ -593,14 +598,24 @@ export default function SessionsPage() {
 
                           <div className="flex items-center gap-2">
                             {session.google_meet_link && (
-                              <Button 
-                                size="sm" 
-                                className="bg-green-600 hover:bg-green-700"
-                                onClick={() => window.open(session.google_meet_link!, '_blank')}
-                              >
-                                <Play className="h-4 w-4 mr-2" />
-                                Rejoindre
-                              </Button>
+                              <>
+                                <Button 
+                                  size="sm" 
+                                  className="bg-primary hover:bg-primary/90"
+                                  onClick={() => setActiveJitsiSession(session)}
+                                >
+                                  <MonitorPlay className="h-4 w-4 mr-2" />
+                                  Rejoindre ici
+                                </Button>
+                                <Button 
+                                  size="sm" 
+                                  variant="outline"
+                                  onClick={() => window.open(session.google_meet_link!, '_blank')}
+                                  title="Ouvrir dans un nouvel onglet"
+                                >
+                                  <ExternalLink className="h-4 w-4" />
+                                </Button>
+                              </>
                             )}
                             
                             {(role === "admin" || role === "teacher") && (
@@ -703,6 +718,16 @@ export default function SessionsPage() {
           </DialogContent>
         </Dialog>
       </main>
+
+      {/* Jitsi Meet Widget */}
+      {activeJitsiSession && activeJitsiSession.google_meet_link && (
+        <JitsiMeetWidget
+          roomName={activeJitsiSession.google_meet_link}
+          displayName={user?.email?.split('@')[0] || 'Utilisateur'}
+          subject={activeJitsiSession.schedule_slot?.assignment?.subject?.name || 'Cours en ligne'}
+          onClose={() => setActiveJitsiSession(null)}
+        />
+      )}
     </div>
   );
 }
