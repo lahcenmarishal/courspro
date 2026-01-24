@@ -25,7 +25,8 @@ import {
   Link2,
   Search,
   Filter,
-  MonitorPlay
+  MonitorPlay,
+  PlayCircle
 } from "lucide-react";
 import {
   Dialog,
@@ -52,6 +53,7 @@ import {
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { JitsiMeetWidget } from "@/components/JitsiMeetWidget";
+import { SessionAttendanceList } from "@/components/SessionAttendanceList";
 
 interface ScheduleSlot {
   id: string;
@@ -95,10 +97,12 @@ export default function SessionsPage() {
   const [sessionDate, setSessionDate] = useState<Date | undefined>(new Date());
   const [meetLink, setMeetLink] = useState("");
   const [notes, setNotes] = useState("");
+  const [recordingUrl, setRecordingUrl] = useState("");
   const [editingSession, setEditingSession] = useState<Session | null>(null);
   
   // Jitsi widget state
   const [activeJitsiSession, setActiveJitsiSession] = useState<Session | null>(null);
+  const [attendanceSessionId, setAttendanceSessionId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchSessions();
@@ -218,6 +222,7 @@ export default function SessionsPage() {
         .update({
           google_meet_link: meetLink || null,
           notes: notes || null,
+          recording_url: recordingUrl || null,
           status: editingSession.status
         })
         .eq("id", editingSession.id);
@@ -271,6 +276,7 @@ export default function SessionsPage() {
     setEditingSession(session);
     setMeetLink(session.google_meet_link || "");
     setNotes(session.notes || "");
+    setRecordingUrl(session.recording_url || "");
     setIsEditDialogOpen(true);
   };
 
@@ -279,6 +285,7 @@ export default function SessionsPage() {
     setSessionDate(new Date());
     setMeetLink("");
     setNotes("");
+    setRecordingUrl("");
   };
 
   const getStatusBadge = (status: string) => {
@@ -639,6 +646,19 @@ export default function SessionsPage() {
                                     Terminer
                                   </Button>
                                 )}
+                                {(session.status === "in_progress" || session.status === "completed") && (
+                                  <Popover>
+                                    <PopoverTrigger asChild>
+                                      <Button variant="outline" size="sm">
+                                        <Users className="h-4 w-4 mr-2" />
+                                        Présences
+                                      </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-80" align="end">
+                                      <SessionAttendanceList sessionId={session.id} />
+                                    </PopoverContent>
+                                  </Popover>
+                                )}
                                 <Button 
                                   variant="ghost" 
                                   size="icon"
@@ -658,9 +678,25 @@ export default function SessionsPage() {
                           </div>
                         </div>
 
-                        {session.notes && (
-                          <div className="mt-4 p-3 bg-muted/50 rounded-lg text-sm">
-                            <span className="font-medium">Notes:</span> {session.notes}
+                        {(session.notes || session.recording_url) && (
+                          <div className="mt-4 space-y-2">
+                            {session.recording_url && (
+                              <a 
+                                href={session.recording_url} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-2 p-3 bg-primary/5 rounded-lg text-sm hover:bg-primary/10 transition-colors"
+                              >
+                                <PlayCircle className="h-4 w-4 text-primary" />
+                                <span className="font-medium">Voir l'enregistrement</span>
+                                <ExternalLink className="h-3 w-3 ml-auto text-muted-foreground" />
+                              </a>
+                            )}
+                            {session.notes && (
+                              <div className="p-3 bg-muted/50 rounded-lg text-sm">
+                                <span className="font-medium">Notes:</span> {session.notes}
+                              </div>
+                            )}
                           </div>
                         )}
                       </CardContent>
@@ -697,6 +733,18 @@ export default function SessionsPage() {
               </div>
 
               <div className="space-y-2">
+                <Label>Lien d'enregistrement (optionnel)</Label>
+                <Input 
+                  placeholder="https://youtube.com/watch?v=... ou lien Drive"
+                  value={recordingUrl}
+                  onChange={(e) => setRecordingUrl(e.target.value)}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Ajoutez un lien YouTube, Google Drive ou autre pour l'enregistrement
+                </p>
+              </div>
+
+              <div className="space-y-2">
                 <Label>Notes</Label>
                 <Textarea 
                   placeholder="Notes pour cette séance..."
@@ -725,6 +773,7 @@ export default function SessionsPage() {
           roomName={activeJitsiSession.google_meet_link}
           displayName={user?.email?.split('@')[0] || 'Utilisateur'}
           subject={activeJitsiSession.schedule_slot?.assignment?.subject?.name || 'Cours en ligne'}
+          sessionId={activeJitsiSession.id}
           onClose={() => setActiveJitsiSession(null)}
         />
       )}
