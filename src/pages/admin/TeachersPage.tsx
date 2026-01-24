@@ -82,6 +82,7 @@ export default function TeachersPage() {
   const [addAvatarPreview, setAddAvatarPreview] = useState<string | null>(null);
   const [editAvatarPreview, setEditAvatarPreview] = useState<string | null>(null);
   const [newPassword, setNewPassword] = useState("");
+  const [newEmail, setNewEmail] = useState("");
 
   // Edit form state
   const [editForm, setEditForm] = useState({
@@ -388,12 +389,17 @@ export default function TeachersPage() {
 
   const handleSetPassword = (teacher: Teacher) => {
     setSelectedTeacher(teacher);
+    setNewEmail(teacher.email || "");
     setNewPassword("");
     setPasswordDialogOpen(true);
   };
 
   const handleSavePassword = async () => {
     if (!selectedTeacher) return;
+    if (!newEmail || !newEmail.includes("@")) {
+      toast.error("Veuillez entrer un email valide");
+      return;
+    }
     if (!newPassword || newPassword.length < 6) {
       toast.error("Le mot de passe doit contenir au moins 6 caractères");
       return;
@@ -412,7 +418,8 @@ export default function TeachersPage() {
             "Authorization": `Bearer ${session?.access_token}`,
           },
           body: JSON.stringify({
-            user_id: selectedTeacher.user_id,
+            profile_id: selectedTeacher.id,
+            email: newEmail,
             new_password: newPassword,
           }),
         }
@@ -424,9 +431,11 @@ export default function TeachersPage() {
         throw new Error(result.error || "Erreur lors de la mise à jour");
       }
 
-      toast.success(`Mot de passe mis à jour! Connexion: ${selectedTeacher.email} / ${newPassword}`);
+      toast.success(`Compte configuré! Connexion: ${newEmail} / ${newPassword}`);
       setPasswordDialogOpen(false);
       setNewPassword("");
+      setNewEmail("");
+      fetchTeachers();
     } catch (error) {
       console.error("Error updating password:", error);
       toast.error(error instanceof Error ? error.message : "Erreur lors de la mise à jour du mot de passe");
@@ -1237,11 +1246,21 @@ export default function TeachersPage() {
                 <div className="p-4 bg-muted rounded-lg">
                   <p className="text-sm text-muted-foreground">Enseignant</p>
                   <p className="font-medium">{selectedTeacher.first_name} {selectedTeacher.last_name}</p>
-                  <p className="text-sm text-muted-foreground">{selectedTeacher.email}</p>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="new_password">Nouveau mot de passe</Label>
+                  <Label htmlFor="teacher_email">Email de connexion *</Label>
+                  <Input
+                    id="teacher_email"
+                    type="email"
+                    value={newEmail}
+                    onChange={(e) => setNewEmail(e.target.value)}
+                    placeholder="exemple@email.com"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="new_password">Mot de passe *</Label>
                   <Input
                     id="new_password"
                     type="password"
@@ -1260,7 +1279,10 @@ export default function TeachersPage() {
                   >
                     Annuler
                   </Button>
-                  <Button onClick={handleSavePassword} disabled={saving || newPassword.length < 6}>
+                  <Button 
+                    onClick={handleSavePassword} 
+                    disabled={saving || newPassword.length < 6 || !newEmail.includes("@")}
+                  >
                     {saving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
                     Enregistrer
                   </Button>
