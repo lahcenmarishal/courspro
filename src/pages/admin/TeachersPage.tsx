@@ -41,7 +41,8 @@ import {
   Plus,
   Trash2,
   Upload,
-  Image
+  Image,
+  Key
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -73,12 +74,14 @@ export default function TeachersPage() {
   const [viewDialogOpen, setViewDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [addAvatarFile, setAddAvatarFile] = useState<File | null>(null);
   const [editAvatarFile, setEditAvatarFile] = useState<File | null>(null);
   const [addAvatarPreview, setAddAvatarPreview] = useState<string | null>(null);
   const [editAvatarPreview, setEditAvatarPreview] = useState<string | null>(null);
+  const [newPassword, setNewPassword] = useState("");
 
   // Edit form state
   const [editForm, setEditForm] = useState({
@@ -383,6 +386,55 @@ export default function TeachersPage() {
     }
   };
 
+  const handleSetPassword = (teacher: Teacher) => {
+    setSelectedTeacher(teacher);
+    setNewPassword("");
+    setPasswordDialogOpen(true);
+  };
+
+  const handleSavePassword = async () => {
+    if (!selectedTeacher) return;
+    if (!newPassword || newPassword.length < 6) {
+      toast.error("Le mot de passe doit contenir au moins 6 caractères");
+      return;
+    }
+    
+    setSaving(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/update-teacher-password`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${session?.access_token}`,
+          },
+          body: JSON.stringify({
+            user_id: selectedTeacher.user_id,
+            new_password: newPassword,
+          }),
+        }
+      );
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Erreur lors de la mise à jour");
+      }
+
+      toast.success(`Mot de passe mis à jour! Connexion: ${selectedTeacher.email} / ${newPassword}`);
+      setPasswordDialogOpen(false);
+      setNewPassword("");
+    } catch (error) {
+      console.error("Error updating password:", error);
+      toast.error(error instanceof Error ? error.message : "Erreur lors de la mise à jour du mot de passe");
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const filteredTeachers = teachers.filter((teacher) => {
     const searchLower = searchQuery.toLowerCase();
     return (
@@ -561,6 +613,15 @@ export default function TeachersPage() {
                       <Button
                         variant="ghost"
                         size="icon"
+                        className="h-8 w-8 text-amber-600 hover:text-amber-700"
+                        onClick={() => handleSetPassword(teacher)}
+                        title="Définir mot de passe"
+                      >
+                        <Key className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
                         className="h-8 w-8 text-destructive hover:text-destructive"
                         onClick={() => handleDeleteTeacher(teacher)}
                       >
@@ -662,6 +723,15 @@ export default function TeachersPage() {
                             onClick={() => handleEdit(teacher)}
                           >
                             <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-amber-600 hover:text-amber-700"
+                            onClick={() => handleSetPassword(teacher)}
+                            title="Définir mot de passe"
+                          >
+                            <Key className="h-4 w-4" />
                           </Button>
                           <Button
                             variant="ghost"
@@ -1150,6 +1220,53 @@ export default function TeachersPage() {
                 </Button>
               </div>
             </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Password Dialog */}
+        <Dialog open={passwordDialogOpen} onOpenChange={setPasswordDialogOpen}>
+          <DialogContent className="max-w-[95vw] sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Key className="h-5 w-5" />
+                Définir le mot de passe
+              </DialogTitle>
+            </DialogHeader>
+            {selectedTeacher && (
+              <div className="space-y-4">
+                <div className="p-4 bg-muted rounded-lg">
+                  <p className="text-sm text-muted-foreground">Enseignant</p>
+                  <p className="font-medium">{selectedTeacher.first_name} {selectedTeacher.last_name}</p>
+                  <p className="text-sm text-muted-foreground">{selectedTeacher.email}</p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="new_password">Nouveau mot de passe</Label>
+                  <Input
+                    id="new_password"
+                    type="password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="Minimum 6 caractères"
+                    minLength={6}
+                  />
+                </div>
+
+                <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-4">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setPasswordDialogOpen(false)}
+                  >
+                    Annuler
+                  </Button>
+                  <Button onClick={handleSavePassword} disabled={saving || newPassword.length < 6}>
+                    {saving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                    Enregistrer
+                  </Button>
+                </div>
+              </div>
+            )}
           </DialogContent>
         </Dialog>
       </main>
