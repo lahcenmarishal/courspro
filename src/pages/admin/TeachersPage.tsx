@@ -97,6 +97,7 @@ export default function TeachersPage() {
     first_name: "",
     last_name: "",
     email: "",
+    password: "",
     phone: "",
     bio: "",
     specialization: "",
@@ -270,58 +271,68 @@ export default function TeachersPage() {
       toast.error("Veuillez remplir le prénom et le nom");
       return;
     }
+    if (!addForm.email || !addForm.password) {
+      toast.error("Veuillez remplir l'email et le mot de passe");
+      return;
+    }
+    if (addForm.password.length < 6) {
+      toast.error("Le mot de passe doit contenir au moins 6 caractères");
+      return;
+    }
     setSaving(true);
 
     try {
-      // Create a unique user_id for the manually added teacher
-      const manualUserId = crypto.randomUUID();
-
       // Upload avatar if provided
       let avatarUrl = addForm.avatar_url || null;
       if (addAvatarFile) {
         setUploadingAvatar(true);
-        avatarUrl = await uploadAvatar(addAvatarFile, manualUserId);
+        const tempUserId = crypto.randomUUID();
+        avatarUrl = await uploadAvatar(addAvatarFile, tempUserId);
         setUploadingAvatar(false);
       }
 
-      // Create the profile
-      const { error: profileError } = await supabase
-        .from("profiles")
-        .insert({
-          user_id: manualUserId,
-          first_name: addForm.first_name,
-          last_name: addForm.last_name,
-          email: addForm.email,
-          phone: addForm.phone || null,
-          bio: addForm.bio || null,
-          specialization: addForm.specialization || null,
-          certificates_url: addForm.certificates_url || null,
-          address: addForm.address || null,
-          city: addForm.city || null,
-          diploma: addForm.diploma || null,
-          years_experience: addForm.years_experience || 0,
-          avatar_url: avatarUrl,
-        });
+      // Call the edge function to create the teacher with auth
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-teacher`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${session?.access_token}`,
+          },
+          body: JSON.stringify({
+            email: addForm.email,
+            password: addForm.password,
+            first_name: addForm.first_name,
+            last_name: addForm.last_name,
+            phone: addForm.phone || null,
+            bio: addForm.bio || null,
+            specialization: addForm.specialization || null,
+            certificates_url: addForm.certificates_url || null,
+            address: addForm.address || null,
+            city: addForm.city || null,
+            diploma: addForm.diploma || null,
+            years_experience: addForm.years_experience || 0,
+            avatar_url: avatarUrl,
+          }),
+        }
+      );
 
-      if (profileError) throw profileError;
+      const result = await response.json();
 
-      // Create a user_role entry with approved status
-      const { error: roleError } = await supabase
-        .from("user_roles")
-        .insert({
-          user_id: manualUserId,
-          role: "teacher",
-          status: "approved",
-        });
+      if (!response.ok) {
+        throw new Error(result.error || "Erreur lors de la création");
+      }
 
-      if (roleError) throw roleError;
-
-      toast.success("Enseignant ajouté avec succès");
+      toast.success(`Enseignant créé! Connexion: ${addForm.email} / ${addForm.password}`);
       setAddDialogOpen(false);
       setAddForm({
         first_name: "",
         last_name: "",
         email: "",
+        password: "",
         phone: "",
         bio: "",
         specialization: "",
@@ -337,7 +348,7 @@ export default function TeachersPage() {
       fetchTeachers();
     } catch (error) {
       console.error("Error adding teacher:", error);
-      toast.error("Erreur lors de l'ajout de l'enseignant");
+      toast.error(error instanceof Error ? error.message : "Erreur lors de l'ajout de l'enseignant");
     } finally {
       setSaving(false);
       setUploadingAvatar(false);
@@ -971,7 +982,7 @@ export default function TeachersPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="add_email">Email</Label>
+                  <Label htmlFor="add_email">Email *</Label>
                   <Input
                     id="add_email"
                     type="email"
@@ -979,9 +990,24 @@ export default function TeachersPage() {
                     onChange={(e) =>
                       setAddForm({ ...addForm, email: e.target.value })
                     }
-                    placeholder="email@example.com (optionnel)"
+                    placeholder="email@example.com"
                   />
                 </div>
+                <div className="space-y-2">
+                  <Label htmlFor="add_password">Mot de passe *</Label>
+                  <Input
+                    id="add_password"
+                    type="password"
+                    value={addForm.password}
+                    onChange={(e) =>
+                      setAddForm({ ...addForm, password: e.target.value })
+                    }
+                    placeholder="Minimum 6 caractères"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="add_phone">Téléphone</Label>
                   <Input
@@ -993,9 +1019,6 @@ export default function TeachersPage() {
                     placeholder="+212..."
                   />
                 </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="add_specialization">Spécialité</Label>
                   <Input
@@ -1007,6 +1030,9 @@ export default function TeachersPage() {
                     placeholder="Mathématiques, Physique..."
                   />
                 </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="add_diploma">Diplôme</Label>
                   <Input
@@ -1018,9 +1044,6 @@ export default function TeachersPage() {
                     placeholder="Master, Doctorat..."
                   />
                 </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="add_years_experience">Années d'expérience</Label>
                   <Input
@@ -1033,6 +1056,9 @@ export default function TeachersPage() {
                     min={0}
                   />
                 </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="add_city">Ville</Label>
                   <Input
@@ -1044,18 +1070,17 @@ export default function TeachersPage() {
                     placeholder="Casablanca, Rabat..."
                   />
                 </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="add_address">Adresse</Label>
-                <Input
-                  id="add_address"
-                  value={addForm.address}
-                  onChange={(e) =>
-                    setAddForm({ ...addForm, address: e.target.value })
-                  }
-                  placeholder="Adresse complète"
-                />
+                <div className="space-y-2">
+                  <Label htmlFor="add_address">Adresse</Label>
+                  <Input
+                    id="add_address"
+                    value={addForm.address}
+                    onChange={(e) =>
+                      setAddForm({ ...addForm, address: e.target.value })
+                    }
+                    placeholder="Adresse complète"
+                  />
+                </div>
               </div>
 
               <div className="space-y-2">
