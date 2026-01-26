@@ -86,7 +86,7 @@ const TIME_SLOTS = [
 ];
 
 export default function SchedulePage() {
-  const { role, user } = useAuth();
+  const { role, user, loading: authLoading } = useAuth();
   const [assignments, setAssignments] = useState<Assignment[]>([]);
   const [scheduleSlots, setScheduleSlots] = useState<ScheduleSlot[]>([]);
   const [teachers, setTeachers] = useState<Teacher[]>([]);
@@ -354,7 +354,7 @@ export default function SchedulePage() {
         return assignment?.class_id === selectedClass;
       });
 
-  if (!role) {
+  if (authLoading) {
     return (
       <div className="min-h-screen bg-muted/30 flex items-center justify-center">
         <div className="text-center space-y-4">
@@ -365,9 +365,11 @@ export default function SchedulePage() {
     );
   }
 
+  const effectiveRole = role || "student";
+
   return (
     <div className="min-h-screen bg-muted/30 flex">
-      <DashboardSidebar role={role} />
+      <DashboardSidebar role={effectiveRole} />
       
       <main className="flex-1 p-8">
         <div className="flex items-center justify-between mb-8">

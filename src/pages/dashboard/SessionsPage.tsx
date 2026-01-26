@@ -82,7 +82,7 @@ interface Session {
 const DAYS = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
 
 export default function SessionsPage() {
-  const { role, user } = useAuth();
+  const { role, user, loading: authLoading } = useAuth();
   const [sessions, setSessions] = useState<Session[]>([]);
   const [scheduleSlots, setScheduleSlots] = useState<ScheduleSlot[]>([]);
   const [loading, setLoading] = useState(true);
@@ -330,7 +330,7 @@ export default function SessionsPage() {
   const todayCount = sessions.filter(s => isToday(new Date(s.session_date))).length;
   const upcomingCount = sessions.filter(s => !isPast(new Date(s.session_date))).length;
 
-  if (!role) {
+  if (authLoading) {
     return (
       <div className="min-h-screen bg-muted/30 flex items-center justify-center">
         <div className="text-center space-y-4">
@@ -341,9 +341,11 @@ export default function SessionsPage() {
     );
   }
 
+  const effectiveRole = role || "student";
+
   return (
     <div className="min-h-screen bg-muted/30 flex">
-      <DashboardSidebar role={role} />
+      <DashboardSidebar role={effectiveRole} />
       
       <main className="flex-1 p-8">
         <div className="flex items-center justify-between mb-8">
@@ -357,7 +359,7 @@ export default function SessionsPage() {
             </p>
           </div>
           
-          {(role === "admin" || role === "teacher") && (
+          {(effectiveRole === "admin" || effectiveRole === "teacher") && (
             <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
               <DialogTrigger asChild>
                 <Button>

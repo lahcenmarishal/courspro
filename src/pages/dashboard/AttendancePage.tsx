@@ -47,7 +47,7 @@ interface Attendance {
 }
 
 export default function AttendancePage() {
-  const { role, user } = useAuth();
+  const { role, user, loading: authLoading } = useAuth();
   const [attendances, setAttendances] = useState<Attendance[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -157,7 +157,7 @@ export default function AttendancePage() {
     setCurrentMonth(prev => new Date(prev.getFullYear(), prev.getMonth() + 1));
   };
 
-  if (!role) {
+  if (authLoading) {
     return (
       <div className="min-h-screen bg-muted/30 flex items-center justify-center">
         <div className="text-center space-y-4">
@@ -168,26 +168,28 @@ export default function AttendancePage() {
     );
   }
 
+  const effectiveRole = role || "student";
+
   return (
     <div className="min-h-screen bg-muted/30 flex">
-      <DashboardSidebar role={role} />
+      <DashboardSidebar role={effectiveRole} />
       
       <main className="flex-1 p-8">
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-2xl font-bold flex items-center gap-2">
               <Clock className="h-6 w-6 text-primary" />
-              {role === "teacher" ? "Gestion des présences" : "Présences"}
+              {effectiveRole === "teacher" ? "Gestion des présences" : "Présences"}
             </h1>
             <p className="text-muted-foreground">
-              {role === "teacher" 
+              {effectiveRole === "teacher" 
                 ? "Gérez les présences de vos élèves" 
                 : "Consultez votre historique de présences"}
             </p>
           </div>
         </div>
 
-        {role === "teacher" && classes.length > 0 && (
+        {effectiveRole === "teacher" && classes.length > 0 && (
           <div className="mb-6">
             <Select value={selectedClass} onValueChange={setSelectedClass}>
               <SelectTrigger className="w-64">

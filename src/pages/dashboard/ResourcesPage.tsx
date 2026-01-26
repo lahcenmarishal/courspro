@@ -39,7 +39,7 @@ interface Resource {
 }
 
 export default function ResourcesPage() {
-  const { role, user } = useAuth();
+  const { role, user, loading: authLoading } = useAuth();
   const [resources, setResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -99,7 +99,7 @@ export default function ResourcesPage() {
     return matchesSearch && matchesSubject;
   });
 
-  if (!role) {
+  if (authLoading) {
     return (
       <div className="min-h-screen bg-muted/30 flex items-center justify-center">
         <div className="text-center space-y-4">
@@ -110,23 +110,25 @@ export default function ResourcesPage() {
     );
   }
 
+  const effectiveRole = role || "student";
+
   return (
     <div className="min-h-screen bg-muted/30 flex">
-      <DashboardSidebar role={role} />
+      <DashboardSidebar role={effectiveRole} />
       
       <main className="flex-1 p-8">
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-2xl font-bold flex items-center gap-2">
               <BookMarked className="h-6 w-6 text-primary" />
-              {role === "teacher" ? "Supports de cours" : "Ressources"}
+              {effectiveRole === "teacher" ? "Supports de cours" : "Ressources"}
             </h1>
             <p className="text-muted-foreground">
-              {role === "teacher" ? "Gérez vos supports pédagogiques" : "Accédez aux ressources de vos cours"}
+              {effectiveRole === "teacher" ? "Gérez vos supports pédagogiques" : "Accédez aux ressources de vos cours"}
             </p>
           </div>
           
-          {role === "teacher" && (
+          {effectiveRole === "teacher" && (
             <Button>
               <Plus className="h-4 w-4 mr-2" />
               Ajouter une ressource

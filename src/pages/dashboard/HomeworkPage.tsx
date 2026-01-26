@@ -47,7 +47,7 @@ interface Homework {
 }
 
 export default function HomeworkPage() {
-  const { role, user } = useAuth();
+  const { role, user, loading: authLoading } = useAuth();
   const [homework, setHomework] = useState<Homework[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -140,7 +140,7 @@ export default function HomeworkPage() {
   const pendingCount = homework.filter(hw => !hw.submission && !isPast(new Date(hw.due_date))).length;
   const lateCount = homework.filter(hw => !hw.submission && isPast(new Date(hw.due_date))).length;
 
-  if (!role) {
+  if (authLoading) {
     return (
       <div className="min-h-screen bg-muted/30 flex items-center justify-center">
         <div className="text-center space-y-4">
@@ -151,23 +151,25 @@ export default function HomeworkPage() {
     );
   }
 
+  const effectiveRole = role || "student";
+
   return (
     <div className="min-h-screen bg-muted/30 flex">
-      <DashboardSidebar role={role} />
+      <DashboardSidebar role={effectiveRole} />
       
       <main className="flex-1 p-8">
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-2xl font-bold flex items-center gap-2">
               <FileText className="h-6 w-6 text-primary" />
-              {role === "teacher" ? "Devoirs & Examens" : "Mes Devoirs"}
+              {effectiveRole === "teacher" ? "Devoirs & Examens" : "Mes Devoirs"}
             </h1>
             <p className="text-muted-foreground">
-              {role === "teacher" ? "Gérez les évaluations de vos classes" : "Suivez et rendez vos devoirs"}
+              {effectiveRole === "teacher" ? "Gérez les évaluations de vos classes" : "Suivez et rendez vos devoirs"}
             </p>
           </div>
           
-          {role === "teacher" && (
+          {effectiveRole === "teacher" && (
             <Button>
               <Plus className="h-4 w-4 mr-2" />
               Créer un devoir
@@ -176,7 +178,7 @@ export default function HomeworkPage() {
         </div>
 
         {/* Stats */}
-        {role === "student" && (
+        {effectiveRole === "student" && (
           <div className="grid grid-cols-3 gap-4 mb-6">
             <Card className="p-4">
               <div className="flex items-center gap-3">
@@ -308,7 +310,7 @@ export default function HomeworkPage() {
                             </div>
                             <div className="text-xs text-muted-foreground">Note</div>
                           </div>
-                        ) : role === "student" && !hw.submission && !isPast(new Date(hw.due_date)) ? (
+                        ) : effectiveRole === "student" && !hw.submission && !isPast(new Date(hw.due_date)) ? (
                           <Button size="sm">
                             <Upload className="h-4 w-4 mr-2" />
                             Rendre
