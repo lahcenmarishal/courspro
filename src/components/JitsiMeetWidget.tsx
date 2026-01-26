@@ -84,9 +84,24 @@ export function JitsiMeetWidget({
 
         if (!jitsiContainerRef.current) return;
 
-        const extractedRoomName = roomName.includes("meet.jit.si/") 
-          ? roomName.split("meet.jit.si/")[1] 
-          : roomName;
+        // Validate room name
+        let extractedRoomName = roomName;
+        if (roomName.includes("meet.jit.si/")) {
+          extractedRoomName = roomName.split("meet.jit.si/")[1];
+        } else if (roomName.includes("://")) {
+          // Try to extract room from any URL format
+          const urlParts = roomName.split("/");
+          extractedRoomName = urlParts[urlParts.length - 1] || roomName;
+        }
+
+        // Clean room name - remove query params and special chars
+        extractedRoomName = extractedRoomName.split("?")[0].split("#")[0];
+        
+        if (!extractedRoomName || extractedRoomName.length < 3) {
+          console.error("Invalid room name:", roomName);
+          setIsLoading(false);
+          return;
+        }
 
         const domain = "meet.jit.si";
         const options = {
@@ -126,7 +141,13 @@ export function JitsiMeetWidget({
 
         jitsiApiRef.current = new window.JitsiMeetExternalAPI(domain, options);
 
+        // Set timeout to stop loading after 15 seconds even if not connected
+        const loadingTimeout = setTimeout(() => {
+          setIsLoading(false);
+        }, 15000);
+
         jitsiApiRef.current.addListener("videoConferenceJoined", () => {
+          clearTimeout(loadingTimeout);
           setIsLoading(false);
         });
 
@@ -147,7 +168,14 @@ export function JitsiMeetWidget({
         });
 
         jitsiApiRef.current.addListener("readyToClose", () => {
+          clearTimeout(loadingTimeout);
           onClose();
+        });
+
+        // Handle iframe load to detect when Jitsi UI is ready
+        jitsiApiRef.current.addListener("browserSupport", () => {
+          clearTimeout(loadingTimeout);
+          setIsLoading(false);
         });
 
       } catch (error) {
