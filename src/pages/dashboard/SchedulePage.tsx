@@ -104,7 +104,7 @@ export default function SchedulePage() {
   const [selectedSubject, setSelectedSubject] = useState("");
   const [selectedClassForm, setSelectedClassForm] = useState("");
   const [selectedAssignment, setSelectedAssignment] = useState("");
-  const [selectedDay, setSelectedDay] = useState<number>(0);
+  const [selectedDay, setSelectedDay] = useState<number>(1); // 1 = Lundi (constraint: 1-7)
   const [startTime, setStartTime] = useState("08:00");
   const [endTime, setEndTime] = useState("09:00");
   const [room, setRoom] = useState("");
@@ -114,11 +114,11 @@ export default function SchedulePage() {
   }, []);
 
   useEffect(() => {
-    if (selectedSchoolYear) {
+    if (selectedSchoolYear && teachers.length > 0 && subjects.length > 0 && classes.length > 0) {
       fetchAssignments();
       fetchScheduleSlots();
     }
-  }, [selectedSchoolYear, selectedClass]);
+  }, [selectedSchoolYear, selectedClass, teachers, subjects, classes]);
 
   const fetchData = async () => {
     try {
@@ -495,7 +495,7 @@ export default function SchedulePage() {
                         </SelectTrigger>
                         <SelectContent>
                           {DAYS.map((day, index) => (
-                            <SelectItem key={index} value={index.toString()}>
+                            <SelectItem key={index + 1} value={(index + 1).toString()}>
                               {day}
                             </SelectItem>
                           ))}
@@ -610,7 +610,8 @@ export default function SchedulePage() {
                       </div>
                       {DAYS.map((_, dayIndex) => {
                         const slotsForCell = filteredSlots.filter(slot => {
-                          if (slot.day_of_week !== dayIndex) return false;
+                          // day_of_week is 1-6 in DB (1=Lundi), dayIndex is 0-5
+                          if (slot.day_of_week !== dayIndex + 1) return false;
                           const slotStart = slot.start_time.slice(0, 5);
                           return slotStart === time;
                         });
