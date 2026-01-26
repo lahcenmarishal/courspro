@@ -139,9 +139,20 @@ export default function GradesPage() {
 
   const subjects = [...new Set(grades.map(g => g.subject?.name).filter(Boolean))];
 
+  if (!role) {
+    return (
+      <div className="min-h-screen bg-muted/30 flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto" />
+          <p className="text-muted-foreground">Chargement...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-muted/30 flex">
-      <DashboardSidebar role={role || "student"} />
+      <DashboardSidebar role={role} />
       
       <main className="flex-1 p-8">
         <div className="flex items-center justify-between mb-8">
