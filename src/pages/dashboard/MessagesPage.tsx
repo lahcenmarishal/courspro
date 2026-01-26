@@ -62,7 +62,7 @@ interface User {
 }
 
 export default function MessagesPage() {
-  const { role, user } = useAuth();
+  const { role, user, loading: authLoading } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -205,7 +205,7 @@ export default function MessagesPage() {
     return `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || ''}`.toUpperCase() || 'U';
   };
 
-  if (!role) {
+  if (authLoading) {
     return (
       <div className="min-h-screen bg-muted/30 flex items-center justify-center">
         <div className="text-center space-y-4">
@@ -216,9 +216,11 @@ export default function MessagesPage() {
     );
   }
 
+  const effectiveRole = role || "student";
+
   return (
     <div className="min-h-screen bg-muted/30 flex">
-      <DashboardSidebar role={role} />
+      <DashboardSidebar role={effectiveRole} />
       
       <main className="flex-1 p-8">
         <div className="flex items-center justify-between mb-8">
