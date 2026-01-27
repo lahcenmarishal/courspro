@@ -331,9 +331,20 @@ export default function SessionsPage() {
   };
 
   const filteredSessions = sessions.filter((session) => {
+    // Search in both regular sessions and direct sessions
+    const subjectName = session.is_direct 
+      ? session.subject?.name 
+      : session.schedule_slot?.assignment?.subject?.name;
+    const className = session.is_direct 
+      ? session.class?.name 
+      : session.schedule_slot?.assignment?.class?.name;
+    const sessionTitle = session.title || '';
+    
     const matchesSearch = 
-      session.schedule_slot?.assignment?.subject?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      session.schedule_slot?.assignment?.class?.name?.toLowerCase().includes(searchQuery.toLowerCase());
+      !searchQuery ||
+      subjectName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      className?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      sessionTitle.toLowerCase().includes(searchQuery.toLowerCase());
     
     const matchesStatus = statusFilter === "all" || session.status === statusFilter;
     
