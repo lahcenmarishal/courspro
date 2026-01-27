@@ -26,7 +26,8 @@ import {
   Search,
   Filter,
   MonitorPlay,
-  PlayCircle
+  PlayCircle,
+  Zap
 } from "lucide-react";
 import {
   Dialog,
@@ -54,6 +55,7 @@ import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { JitsiMeetWidget } from "@/components/JitsiMeetWidget";
 import { SessionAttendanceList } from "@/components/SessionAttendanceList";
+import { DirectSessionDialog } from "@/components/dashboard/DirectSessionDialog";
 
 interface ScheduleSlot {
   id: string;
@@ -77,6 +79,14 @@ interface Session {
   recording_url: string | null;
   notes: string | null;
   schedule_slot: ScheduleSlot | null;
+  // Direct session fields
+  title?: string | null;
+  is_direct?: boolean;
+  subject?: { name: string; color: string } | null;
+  class?: { name: string } | null;
+  teacher_id?: string | null;
+  start_time?: string | null;
+  end_time?: string | null;
 }
 
 const DAYS = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
@@ -103,6 +113,9 @@ export default function SessionsPage() {
   // Jitsi widget state
   const [activeJitsiSession, setActiveJitsiSession] = useState<Session | null>(null);
   const [attendanceSessionId, setAttendanceSessionId] = useState<string | null>(null);
+  
+  // Direct session dialog state
+  const [isDirectSessionDialogOpen, setIsDirectSessionDialogOpen] = useState(false);
 
   useEffect(() => {
     fetchSessions();
@@ -120,6 +133,13 @@ export default function SessionsPage() {
           google_meet_link,
           recording_url,
           notes,
+          title,
+          is_direct,
+          start_time,
+          end_time,
+          teacher_id,
+          subject:subjects(name, color),
+          class:classes(name),
           schedule_slot:schedule_slots(
             id,
             day_of_week,
@@ -360,13 +380,22 @@ export default function SessionsPage() {
           </div>
           
           {(effectiveRole === "admin" || effectiveRole === "teacher") && (
-            <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-              <DialogTrigger asChild>
-                <Button>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Nouvelle séance
-                </Button>
-              </DialogTrigger>
+            <div className="flex gap-2">
+              <Button 
+                variant="outline" 
+                onClick={() => setIsDirectSessionDialogOpen(true)}
+                className="border-amber-500/50 text-amber-600 hover:bg-amber-500/10"
+              >
+                <Zap className="h-4 w-4 mr-2" />
+                Séance directe
+              </Button>
+              <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Nouvelle séance
+                  </Button>
+                </DialogTrigger>
               <DialogContent className="sm:max-w-lg">
                 <DialogHeader>
                   <DialogTitle>Créer une séance</DialogTitle>
@@ -381,7 +410,7 @@ export default function SessionsPage() {
                       <SelectContent>
                         {scheduleSlots.map(slot => (
                           <SelectItem key={slot.id} value={slot.id}>
-                            {DAYS[slot.day_of_week]} {slot.start_time.slice(0, 5)}-{slot.end_time.slice(0, 5)} • {slot.assignment?.subject?.name} • {slot.assignment?.class?.name}
+                            {DAYS[slot.day_of_week - 1]} {slot.start_time.slice(0, 5)}-{slot.end_time.slice(0, 5)} • {slot.assignment?.subject?.name} • {slot.assignment?.class?.name}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -453,6 +482,7 @@ export default function SessionsPage() {
                 </div>
               </DialogContent>
             </Dialog>
+            </div>
           )}
         </div>
 
@@ -575,40 +605,69 @@ export default function SessionsPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.05 }}
                   >
-                    <Card className="hover:border-primary/30 transition-all">
+                    <Card className={cn(
+                      "hover:border-primary/30 transition-all",
+                      session.is_direct && "border-l-4 border-l-amber-500"
+                    )}>
                       <CardContent className="p-6">
                         <div className="flex items-center gap-4">
                           <div 
                             className="h-14 w-14 rounded-xl flex items-center justify-center flex-shrink-0"
-                            style={{ backgroundColor: (session.schedule_slot?.assignment?.subject?.color || "#3B82F6") + "20" }}
+                            style={{ 
+                              backgroundColor: (
+                                session.is_direct 
+                                  ? (session.subject?.color || "#F59E0B")
+                                  : (session.schedule_slot?.assignment?.subject?.color || "#3B82F6")
+                              ) + "20" 
+                            }}
                           >
-                            <Video 
-                              className="h-7 w-7" 
-                              style={{ color: session.schedule_slot?.assignment?.subject?.color || "#3B82F6" }}
-                            />
+                            {session.is_direct ? (
+                              <Zap 
+                                className="h-7 w-7" 
+                                style={{ color: session.subject?.color || "#F59E0B" }}
+                              />
+                            ) : (
+                              <Video 
+                                className="h-7 w-7" 
+                                style={{ color: session.schedule_slot?.assignment?.subject?.color || "#3B82F6" }}
+                              />
+                            )}
                           </div>
                           
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-1">
                               <h3 className="font-semibold">
-                                {session.schedule_slot?.assignment?.subject?.name || "Cours"}
+                                {session.is_direct 
+                                  ? (session.title || session.subject?.name || "Séance directe")
+                                  : (session.schedule_slot?.assignment?.subject?.name || "Cours")
+                                }
                               </h3>
+                              {session.is_direct && (
+                                <Badge variant="outline" className="text-amber-600 border-amber-500/30 bg-amber-500/10">
+                                  Direct
+                                </Badge>
+                              )}
                               {getStatusBadge(session.status)}
                             </div>
-                            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                            <div className="flex items-center gap-4 text-sm text-muted-foreground flex-wrap">
                               <span className="flex items-center gap-1">
                                 <Calendar className="h-3 w-3" />
                                 {getDateLabel(session.session_date)}
                               </span>
                               <span className="flex items-center gap-1">
                                 <Clock className="h-3 w-3" />
-                                {session.schedule_slot?.start_time.slice(0, 5)} - {session.schedule_slot?.end_time.slice(0, 5)}
+                                {session.is_direct 
+                                  ? `${session.start_time?.slice(0, 5) || '--:--'} - ${session.end_time?.slice(0, 5) || '--:--'}`
+                                  : `${session.schedule_slot?.start_time.slice(0, 5)} - ${session.schedule_slot?.end_time.slice(0, 5)}`
+                                }
                               </span>
-                              <span className="flex items-center gap-1">
-                                <Users className="h-3 w-3" />
-                                {session.schedule_slot?.assignment?.class?.name}
-                              </span>
-                              {session.schedule_slot?.room && (
+                              {(session.is_direct ? session.class?.name : session.schedule_slot?.assignment?.class?.name) && (
+                                <span className="flex items-center gap-1">
+                                  <Users className="h-3 w-3" />
+                                  {session.is_direct ? session.class?.name : session.schedule_slot?.assignment?.class?.name}
+                                </span>
+                              )}
+                              {!session.is_direct && session.schedule_slot?.room && (
                                 <span>Salle: {session.schedule_slot.room}</span>
                               )}
                             </div>
@@ -783,9 +842,20 @@ export default function SessionsPage() {
         <JitsiMeetWidget
           roomName={activeJitsiSession.google_meet_link}
           displayName={user?.email?.split('@')[0] || 'Utilisateur'}
-          subject={activeJitsiSession.schedule_slot?.assignment?.subject?.name || 'Cours en ligne'}
+          subject={activeJitsiSession.is_direct ? (activeJitsiSession.title || activeJitsiSession.subject?.name || 'Cours direct') : (activeJitsiSession.schedule_slot?.assignment?.subject?.name || 'Cours en ligne')}
           sessionId={activeJitsiSession.id}
           onClose={() => setActiveJitsiSession(null)}
+        />
+      )}
+      
+      {/* Direct Session Dialog */}
+      {user && (effectiveRole === "admin" || effectiveRole === "teacher") && (
+        <DirectSessionDialog
+          open={isDirectSessionDialogOpen}
+          onOpenChange={setIsDirectSessionDialogOpen}
+          userId={user.id}
+          userRole={effectiveRole as "admin" | "teacher"}
+          onSessionCreated={fetchSessions}
         />
       )}
     </div>

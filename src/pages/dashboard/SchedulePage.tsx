@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -80,10 +80,21 @@ interface ScheduleSlot {
 }
 
 const DAYS = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
-const TIME_SLOTS = [
+const DEFAULT_TIME_SLOTS = [
   "08:00", "09:00", "10:00", "11:00", "12:00", 
   "14:00", "15:00", "16:00", "17:00", "18:00"
 ];
+
+// Generate dynamic time slots including all existing slot times
+const generateDynamicTimeSlots = (slots: ScheduleSlot[]) => {
+  const allTimes = new Set(DEFAULT_TIME_SLOTS);
+  slots.forEach(slot => {
+    if (slot.start_time) {
+      allTimes.add(slot.start_time.slice(0, 5));
+    }
+  });
+  return Array.from(allTimes).sort();
+};
 
 export default function SchedulePage() {
   const { role, user, loading: authLoading } = useAuth();
@@ -347,6 +358,11 @@ export default function SchedulePage() {
     });
   };
 
+  // Generate dynamic time slots based on existing schedule
+  const dynamicTimeSlots = useMemo(() => {
+    return generateDynamicTimeSlots(scheduleSlots);
+  }, [scheduleSlots]);
+
   const filteredSlots = selectedClass === "all" 
     ? scheduleSlots 
     : scheduleSlots.filter(slot => {
@@ -603,7 +619,7 @@ export default function SchedulePage() {
                   </div>
 
                   {/* Time slots */}
-                  {TIME_SLOTS.map((time, timeIndex) => (
+                  {dynamicTimeSlots.map((time, timeIndex) => (
                     <div key={time} className="grid grid-cols-7 border-b last:border-b-0">
                       <div className="p-3 border-r bg-muted/30 text-sm font-medium">
                         {time}
