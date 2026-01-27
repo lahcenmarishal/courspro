@@ -57,6 +57,7 @@ import { JitsiMeetWidget } from "@/components/JitsiMeetWidget";
 import { SessionAttendanceList } from "@/components/SessionAttendanceList";
 import { DirectSessionDialog } from "@/components/dashboard/DirectSessionDialog";
 import { RecordingReminder } from "@/components/RecordingReminder";
+import { EndSessionDialog } from "@/components/dashboard/EndSessionDialog";
 
 interface ScheduleSlot {
   id: string;
@@ -117,6 +118,10 @@ export default function SessionsPage() {
   
   // Direct session dialog state
   const [isDirectSessionDialogOpen, setIsDirectSessionDialogOpen] = useState(false);
+  
+  // End session dialog state
+  const [endSessionDialogOpen, setEndSessionDialogOpen] = useState(false);
+  const [sessionToEnd, setSessionToEnd] = useState<Session | null>(null);
 
   useEffect(() => {
     fetchSessions();
@@ -729,7 +734,10 @@ export default function SessionsPage() {
                                   <Button 
                                     variant="outline" 
                                     size="sm"
-                                    onClick={() => handleUpdateStatus(session.id, "completed")}
+                                    onClick={() => {
+                                      setSessionToEnd(session);
+                                      setEndSessionDialogOpen(true);
+                                    }}
                                   >
                                     <CheckCircle2 className="h-4 w-4 mr-2" />
                                     Terminer
@@ -875,6 +883,26 @@ export default function SessionsPage() {
           userId={user.id}
           userRole={effectiveRole as "admin" | "teacher"}
           onSessionCreated={fetchSessions}
+        />
+      )}
+      
+      {/* End Session Dialog */}
+      {sessionToEnd && (
+        <EndSessionDialog
+          open={endSessionDialogOpen}
+          onOpenChange={(open) => {
+            setEndSessionDialogOpen(open);
+            if (!open) setSessionToEnd(null);
+          }}
+          sessionId={sessionToEnd.id}
+          sessionTitle={
+            sessionToEnd.is_direct 
+              ? (sessionToEnd.title || sessionToEnd.subject?.name || "Séance directe")
+              : (sessionToEnd.schedule_slot?.assignment?.subject?.name || "Séance")
+          }
+          currentNotes={sessionToEnd.notes || ""}
+          currentRecordingUrl={sessionToEnd.recording_url || ""}
+          onSessionEnded={fetchSessions}
         />
       )}
     </div>
