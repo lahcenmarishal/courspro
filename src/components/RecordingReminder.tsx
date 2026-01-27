@@ -33,10 +33,10 @@ export function RecordingReminder({
   if (isDismissed) return null;
 
   const steps = [
-    "Pendant la séance, cliquez sur le bouton '...' (Plus d'options) dans la barre d'outils Jitsi",
-    "Sélectionnez 'Start recording' ou 'Démarrer l'enregistrement'",
-    "Connectez-vous à votre compte Dropbox (première fois uniquement)",
-    "L'enregistrement sera automatiquement sauvegardé dans votre Dropbox"
+    "Utilisez un logiciel de capture d'écran (OBS Studio, Loom, ou l'enregistrement intégré de Windows/Mac)",
+    "Windows: Win + G pour ouvrir Xbox Game Bar, puis cliquez sur 'Enregistrer'",
+    "Mac: Cmd + Shift + 5 pour ouvrir l'outil de capture d'écran",
+    "Une fois terminé, uploadez l'enregistrement sur Google Drive, Dropbox ou YouTube et copiez le lien"
   ];
 
   if (variant === "card") {
