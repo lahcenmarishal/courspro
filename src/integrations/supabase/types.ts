@@ -725,44 +725,79 @@ export type Database = {
       }
       sessions: {
         Row: {
+          class_id: string | null
           created_at: string
+          end_time: string | null
           google_meet_link: string | null
           id: string
+          is_direct: boolean | null
           notes: string | null
           recording_url: string | null
-          schedule_slot_id: string
+          schedule_slot_id: string | null
           session_date: string
+          start_time: string | null
           status: string
+          subject_id: string | null
+          teacher_id: string | null
+          title: string | null
           updated_at: string
         }
         Insert: {
+          class_id?: string | null
           created_at?: string
+          end_time?: string | null
           google_meet_link?: string | null
           id?: string
+          is_direct?: boolean | null
           notes?: string | null
           recording_url?: string | null
-          schedule_slot_id: string
+          schedule_slot_id?: string | null
           session_date: string
+          start_time?: string | null
           status?: string
+          subject_id?: string | null
+          teacher_id?: string | null
+          title?: string | null
           updated_at?: string
         }
         Update: {
+          class_id?: string | null
           created_at?: string
+          end_time?: string | null
           google_meet_link?: string | null
           id?: string
+          is_direct?: boolean | null
           notes?: string | null
           recording_url?: string | null
-          schedule_slot_id?: string
+          schedule_slot_id?: string | null
           session_date?: string
+          start_time?: string | null
           status?: string
+          subject_id?: string | null
+          teacher_id?: string | null
+          title?: string | null
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "sessions_class_id_fkey"
+            columns: ["class_id"]
+            isOneToOne: false
+            referencedRelation: "classes"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "sessions_schedule_slot_id_fkey"
             columns: ["schedule_slot_id"]
             isOneToOne: false
             referencedRelation: "schedule_slots"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sessions_subject_id_fkey"
+            columns: ["subject_id"]
+            isOneToOne: false
+            referencedRelation: "subjects"
             referencedColumns: ["id"]
           },
         ]
