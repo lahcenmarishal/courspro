@@ -56,6 +56,7 @@ import { cn } from "@/lib/utils";
 import { JitsiMeetWidget } from "@/components/JitsiMeetWidget";
 import { SessionAttendanceList } from "@/components/SessionAttendanceList";
 import { DirectSessionDialog } from "@/components/dashboard/DirectSessionDialog";
+import { RecordingReminder } from "@/components/RecordingReminder";
 
 interface ScheduleSlot {
   id: string;
@@ -533,6 +534,13 @@ export default function SessionsPage() {
             </div>
           </Card>
         </div>
+
+        {/* Recording Reminder for teachers/admins */}
+        {(role === "admin" || role === "teacher") && (
+          <div className="mb-6">
+            <RecordingReminder variant="card" showDismiss={true} />
+          </div>
+        )}
 
         {/* Filters */}
         <div className="flex gap-4 mb-6">

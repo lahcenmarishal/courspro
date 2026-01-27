@@ -9,7 +9,7 @@ import { useAttendance } from "@/hooks/useAttendance";
 import { useSessionFiles, SessionFile } from "@/hooks/useSessionFiles";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
-
+import { RecordingReminder } from "./RecordingReminder";
 interface JitsiMeetWidgetProps {
   roomName: string;
   displayName: string;
@@ -43,7 +43,7 @@ export function JitsiMeetWidget({
   const [participantCount, setParticipantCount] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [showFiles, setShowFiles] = useState(false);
-
+  const [showRecordingReminder, setShowRecordingReminder] = useState(true);
   const { recordJoin, recordLeave } = useAttendance();
   const { files, loading: filesLoading, uploading, fetchFiles, uploadFile, deleteFile } = useSessionFiles(sessionId || null);
 
@@ -309,6 +309,14 @@ export function JitsiMeetWidget({
                 </Button>
               </div>
             </div>
+
+            {/* Recording Reminder Banner */}
+            {showRecordingReminder && !isLoading && (
+              <RecordingReminder 
+                variant="banner" 
+                onDismiss={() => setShowRecordingReminder(false)} 
+              />
+            )}
 
             {/* Jitsi Container */}
             <div className="flex-1 relative bg-gray-900">
