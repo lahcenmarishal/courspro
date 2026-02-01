@@ -59,7 +59,7 @@ import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { SessionAttendanceList } from "@/components/SessionAttendanceList";
 import { DirectSessionDialog } from "@/components/dashboard/DirectSessionDialog";
-import { RecordingReminder } from "@/components/RecordingReminder";
+
 import { EndSessionDialog } from "@/components/dashboard/EndSessionDialog";
 
 interface ScheduleSlot {
@@ -588,12 +588,6 @@ export default function SessionsPage() {
           </Card>
         </div>
 
-        {/* Recording Reminder for teachers/admins */}
-        {(role === "admin" || role === "teacher") && (
-          <div className="mb-6">
-            <RecordingReminder variant="card" showDismiss={true} />
-          </div>
-        )}
 
         {/* Filters */}
         <div className="flex gap-4 mb-6">
