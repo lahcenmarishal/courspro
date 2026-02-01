@@ -33,10 +33,11 @@ export function RecordingReminder({
   if (isDismissed) return null;
 
   const steps = [
-    "Utilisez un logiciel de capture d'écran (OBS Studio, Loom, ou l'enregistrement intégré de Windows/Mac)",
+    "Google Meet n'enregistre pas automatiquement - utilisez un logiciel de capture d'écran",
     "Windows: Win + G pour ouvrir Xbox Game Bar, puis cliquez sur 'Enregistrer'",
     "Mac: Cmd + Shift + 5 pour ouvrir l'outil de capture d'écran",
-    "Une fois terminé, uploadez l'enregistrement sur Google Drive, Dropbox ou YouTube et copiez le lien"
+    "Ou utilisez OBS Studio (gratuit) ou Loom pour des enregistrements professionnels",
+    "Une fois terminé, uploadez l'enregistrement sur Google Drive ou YouTube et copiez le lien"
   ];
 
   if (variant === "card") {
@@ -48,10 +49,10 @@ export function RecordingReminder({
           </div>
           <div className="flex-1">
             <h4 className="font-semibold text-amber-800 dark:text-amber-400 flex items-center gap-2">
-              📹 N'oubliez pas de démarrer l'enregistrement !
+              📹 Pensez à enregistrer vos séances !
             </h4>
             <p className="text-sm text-amber-700 dark:text-amber-300 mt-1">
-              Jitsi permet d'enregistrer vos séances et de les sauvegarder sur Dropbox.
+              Capturez vos cours Google Meet pour les partager avec vos élèves.
             </p>
             
             <Button
@@ -92,13 +93,13 @@ export function RecordingReminder({
                     ))}
                   </div>
                   <a 
-                    href="https://jitsi.github.io/handbook/docs/user-guide/user-guide-start-a-jitsi-meeting#recording-to-the-cloud"
+                    href="https://support.google.com/meet/answer/9308681"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1 mt-3 text-xs text-amber-600 hover:text-amber-700 underline"
                   >
                     <ExternalLink className="h-3 w-3" />
-                    Guide officiel Jitsi
+                    Aide Google Meet
                   </a>
                 </motion.div>
               )}
@@ -119,7 +120,7 @@ export function RecordingReminder({
     );
   }
 
-  // Banner variant for Jitsi widget
+  // Banner variant for Meet sessions
   return (
     <motion.div
       initial={{ height: 0, opacity: 0 }}
@@ -131,7 +132,7 @@ export function RecordingReminder({
         <div className="flex items-center gap-2">
           <Video className="h-4 w-4 animate-pulse" />
           <span className="text-sm font-medium">
-            📹 N'oubliez pas de démarrer l'enregistrement !
+            📹 Pensez à enregistrer votre séance !
           </span>
           <Button
             variant="ghost"
@@ -173,13 +174,13 @@ export function RecordingReminder({
                 </div>
               ))}
               <a 
-                href="https://jitsi.github.io/handbook/docs/user-guide/user-guide-start-a-jitsi-meeting#recording-to-the-cloud"
+                href="https://support.google.com/meet/answer/9308681"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1 mt-2 text-xs text-white/80 hover:text-white underline"
               >
                 <ExternalLink className="h-3 w-3" />
-                En savoir plus
+                Aide Google Meet
               </a>
             </div>
           </motion.div>

@@ -18,7 +18,8 @@ import {
 } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Video, Zap } from "lucide-react";
+import { Video, Zap, Loader2 } from "lucide-react";
+import { useGoogleMeet } from "@/hooks/useGoogleMeet";
 
 interface Subject {
   id: string;
@@ -49,6 +50,8 @@ export function DirectSessionDialog({
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [classes, setClasses] = useState<Class[]>([]);
   const [loading, setLoading] = useState(false);
+  
+  const { createMeetLink, isLoading: isGeneratingMeet, isAuthenticating } = useGoogleMeet();
 
   // Form state
   const [title, setTitle] = useState("");
@@ -99,20 +102,30 @@ export function DirectSessionDialog({
     }
   };
 
-  const generateJitsiLink = () => {
-    const timestamp = Date.now().toString(36);
-    const randomPart = Math.random().toString(36).substring(2, 8);
+  const handleGenerateGoogleMeet = async () => {
+    if (!title.trim()) {
+      toast.error("Veuillez d'abord entrer un titre pour la séance");
+      return;
+    }
     
+    if (!startTime || !endTime) {
+      toast.error("Veuillez spécifier les horaires");
+      return;
+    }
+
     const subject = subjects.find(s => s.id === selectedSubject);
-    const cls = classes.find(c => c.id === selectedClass);
+    const sessionTitle = title || subject?.name || "Cours direct";
     
-    const subjectName = subject?.name?.replace(/\s+/g, '') || 'Direct';
-    const className = cls?.name?.replace(/\s+/g, '') || '';
-    
-    const roomName = `CoursPro-${subjectName}-${className}-${timestamp}${randomPart}`;
-    const link = `https://meet.jit.si/${roomName}`;
-    setMeetLink(link);
-    toast.success("Lien Jitsi Meet généré!");
+    const result = await createMeetLink({
+      sessionTitle,
+      sessionDate: new Date().toISOString().split('T')[0],
+      startTime,
+      endTime,
+    });
+
+    if (result.success && result.meetLink) {
+      setMeetLink(result.meetLink);
+    }
   };
 
   const handleCreateDirectSession = async () => {
@@ -129,13 +142,11 @@ export function DirectSessionDialog({
     setLoading(true);
 
     try {
-      // Generate meet link if not provided
+      // Use the meet link if provided, or generate a simple fallback
       let finalMeetLink = meetLink;
       if (!finalMeetLink) {
-        const timestamp = Date.now().toString(36);
-        const randomPart = Math.random().toString(36).substring(2, 8);
-        const roomName = `CoursPro-Direct-${timestamp}${randomPart}`;
-        finalMeetLink = `https://meet.jit.si/${roomName}`;
+        toast.error("Veuillez générer ou saisir un lien Google Meet");
+        return;
       }
 
       const { error } = await supabase.from("sessions").insert({
@@ -262,24 +273,33 @@ export function DirectSessionDialog({
           </div>
 
           <div className="space-y-2">
-            <Label>Lien Jitsi Meet</Label>
+            <Label>Lien Google Meet</Label>
             <div className="flex gap-2">
               <Input
-                placeholder="https://meet.jit.si/..."
+                placeholder="https://meet.google.com/..."
                 value={meetLink}
                 onChange={(e) => setMeetLink(e.target.value)}
+                disabled={isGeneratingMeet || isAuthenticating}
               />
               <Button 
                 type="button" 
                 variant="outline" 
-                onClick={generateJitsiLink}
-                title="Générer un lien"
+                onClick={handleGenerateGoogleMeet}
+                disabled={isGeneratingMeet || isAuthenticating}
+                title="Générer un lien Google Meet"
               >
-                <Video className="h-4 w-4" />
+                {isGeneratingMeet || isAuthenticating ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Video className="h-4 w-4" />
+                )}
               </Button>
             </div>
             <p className="text-xs text-muted-foreground">
-              Un lien sera généré automatiquement si laissé vide
+              {isAuthenticating 
+                ? "Autorisation Google en cours..."
+                : "Cliquez sur l'icône pour générer automatiquement un lien Google Meet"
+              }
             </p>
           </div>
 
