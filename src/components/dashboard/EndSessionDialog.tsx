@@ -19,7 +19,7 @@ import {
   ExternalLink,
   ChevronDown,
   ChevronUp,
-  Droplet
+  Cloud
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -72,10 +72,10 @@ export function EndSessionDialog({
     }
   };
 
-  const dropboxInstructions = [
-    "Dans Jitsi, cliquez sur '...' puis 'Recordings'",
-    "Votre enregistrement sera dans votre Dropbox dans 'Apps/JitsiMeet Recordings'",
-    "Faites un clic droit sur le fichier → 'Copier le lien'",
+  const recordingInstructions = [
+    "Utilisez un logiciel de capture d'écran (OBS, Loom, Xbox Game Bar...)",
+    "Une fois l'enregistrement terminé, uploadez-le sur Google Drive ou YouTube",
+    "Faites un clic droit → 'Obtenir le lien' (Google Drive) ou copiez l'URL YouTube",
     "Collez le lien ci-dessous"
   ];
 
@@ -97,10 +97,10 @@ export function EndSessionDialog({
           <div className="space-y-2">
             <Label className="flex items-center gap-2">
               <Video className="h-4 w-4" />
-              Lien d'enregistrement Dropbox
+              Lien d'enregistrement
             </Label>
             <Input
-              placeholder="https://www.dropbox.com/..."
+              placeholder="https://drive.google.com/... ou https://youtube.com/..."
               value={recordingUrl}
               onChange={(e) => setRecordingUrl(e.target.value)}
             />
@@ -121,7 +121,7 @@ export function EndSessionDialog({
               ) : (
                 <>
                   <ChevronDown className="h-3 w-3 mr-1" />
-                  Comment récupérer le lien Dropbox ?
+                  Comment ajouter un enregistrement ?
                 </>
               )}
             </Button>
@@ -136,10 +136,10 @@ export function EndSessionDialog({
                 >
                   <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg space-y-2">
                     <div className="flex items-center gap-2 text-sm font-medium text-blue-700 dark:text-blue-400">
-                      <Droplet className="h-4 w-4" />
-                      Récupérer le lien depuis Dropbox
+                      <Cloud className="h-4 w-4" />
+                      Comment sauvegarder l'enregistrement
                     </div>
-                    {dropboxInstructions.map((instruction, index) => (
+                    {recordingInstructions.map((instruction, index) => (
                       <div key={index} className="flex items-start gap-2 text-sm">
                         <span className="flex-shrink-0 h-5 w-5 rounded-full bg-blue-500/20 text-blue-700 dark:text-blue-300 flex items-center justify-center text-xs font-bold">
                           {index + 1}
@@ -148,13 +148,13 @@ export function EndSessionDialog({
                       </div>
                     ))}
                     <a 
-                      href="https://www.dropbox.com/home/Apps/JitsiMeet%20Recordings"
+                      href="https://drive.google.com/drive/my-drive"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700 underline mt-2"
                     >
                       <ExternalLink className="h-3 w-3" />
-                      Ouvrir Dropbox JitsiMeet Recordings
+                      Ouvrir Google Drive
                     </a>
                   </div>
                 </motion.div>

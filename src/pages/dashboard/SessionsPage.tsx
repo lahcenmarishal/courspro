@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import { useAuth } from "@/hooks/useAuth";
+import { useGoogleMeet } from "@/hooks/useGoogleMeet";
+import { useAttendance } from "@/hooks/useAttendance";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,7 +29,9 @@ import {
   Filter,
   MonitorPlay,
   PlayCircle,
-  Zap
+  Zap,
+  Loader2,
+  Hand
 } from "lucide-react";
 import {
   Dialog,
@@ -53,7 +57,6 @@ import {
 } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
-import { JitsiMeetWidget } from "@/components/JitsiMeetWidget";
 import { SessionAttendanceList } from "@/components/SessionAttendanceList";
 import { DirectSessionDialog } from "@/components/dashboard/DirectSessionDialog";
 import { RecordingReminder } from "@/components/RecordingReminder";
@@ -95,6 +98,9 @@ const DAYS = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
 
 export default function SessionsPage() {
   const { role, user, loading: authLoading } = useAuth();
+  const { createMeetLink, isLoading: isGeneratingMeet, isAuthenticating } = useGoogleMeet();
+  const { recordJoin } = useAttendance();
+  
   const [sessions, setSessions] = useState<Session[]>([]);
   const [scheduleSlots, setScheduleSlots] = useState<ScheduleSlot[]>([]);
   const [loading, setLoading] = useState(true);
@@ -112,9 +118,9 @@ export default function SessionsPage() {
   const [recordingUrl, setRecordingUrl] = useState("");
   const [editingSession, setEditingSession] = useState<Session | null>(null);
   
-  // Jitsi widget state
-  const [activeJitsiSession, setActiveJitsiSession] = useState<Session | null>(null);
-  const [attendanceSessionId, setAttendanceSessionId] = useState<string | null>(null);
+  // Presence confirmation states
+  const [confirmingPresence, setConfirmingPresence] = useState<string | null>(null);
+  const [presenceConfirmed, setPresenceConfirmed] = useState<Set<string>>(new Set());
   
   // Direct session dialog state
   const [isDirectSessionDialogOpen, setIsDirectSessionDialogOpen] = useState(false);
@@ -196,20 +202,48 @@ export default function SessionsPage() {
     setScheduleSlots(data || []);
   };
 
-  const generateJitsiLink = () => {
-    // Generate a unique Jitsi Meet room name
-    const timestamp = Date.now().toString(36);
-    const randomPart = Math.random().toString(36).substring(2, 8);
-    
-    // Get subject and class info for a meaningful room name
+  const handleGenerateGoogleMeet = async () => {
+    if (!selectedSlot || !sessionDate) {
+      toast.error("Veuillez d'abord sélectionner un créneau et une date");
+      return;
+    }
+
     const slot = scheduleSlots.find(s => s.id === selectedSlot);
-    const subjectName = slot?.assignment?.subject?.name?.replace(/\s+/g, '') || 'Cours';
-    const className = slot?.assignment?.class?.name?.replace(/\s+/g, '') || '';
+    const subjectName = slot?.assignment?.subject?.name || 'Cours';
+    const className = slot?.assignment?.class?.name || '';
+    const sessionTitle = `${subjectName} - ${className}`;
     
-    const roomName = `CoursPro-${subjectName}-${className}-${timestamp}${randomPart}`;
-    const link = `https://meet.jit.si/${roomName}`;
-    setMeetLink(link);
-    toast.success("Lien Jitsi Meet généré avec succès!");
+    const result = await createMeetLink({
+      sessionTitle,
+      sessionDate: format(sessionDate, "yyyy-MM-dd"),
+      startTime: slot?.start_time?.slice(0, 5) || "09:00",
+      endTime: slot?.end_time?.slice(0, 5) || "10:00",
+    });
+
+    if (result.success && result.meetLink) {
+      setMeetLink(result.meetLink);
+    }
+  };
+
+  const handleConfirmPresence = async (session: Session) => {
+    if (!user) return;
+    
+    setConfirmingPresence(session.id);
+    
+    try {
+      await recordJoin(session.id);
+      setPresenceConfirmed(prev => new Set(prev).add(session.id));
+      
+      // Open Google Meet in new tab
+      if (session.google_meet_link) {
+        window.open(session.google_meet_link, '_blank');
+      }
+    } catch (error) {
+      console.error("Error confirming presence:", error);
+      toast.error("Erreur lors de l'enregistrement de la présence");
+    } finally {
+      setConfirmingPresence(null);
+    }
   };
 
   const handleCreateSession = async () => {
@@ -462,19 +496,33 @@ export default function SessionsPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label>Lien Jitsi Meet</Label>
+                    <Label>Lien Google Meet</Label>
                     <div className="flex gap-2">
                       <Input 
-                        placeholder="https://meet.jit.si/CoursPro-MaClasse"
+                        placeholder="https://meet.google.com/..."
                         value={meetLink}
                         onChange={(e) => setMeetLink(e.target.value)}
+                        disabled={isGeneratingMeet || isAuthenticating}
                       />
-                      <Button type="button" variant="outline" onClick={generateJitsiLink} title="Générer un lien Jitsi">
-                        <Video className="h-4 w-4" />
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        onClick={handleGenerateGoogleMeet} 
+                        title="Générer un lien Google Meet"
+                        disabled={isGeneratingMeet || isAuthenticating}
+                      >
+                        {isGeneratingMeet || isAuthenticating ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <Video className="h-4 w-4" />
+                        )}
                       </Button>
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      Cliquez sur l'icône pour générer automatiquement un lien Jitsi Meet gratuit
+                      {isAuthenticating 
+                        ? "Autorisation Google en cours..."
+                        : "Cliquez sur l'icône pour générer automatiquement un lien Google Meet"
+                      }
                     </p>
                   </div>
 
@@ -698,16 +746,41 @@ export default function SessionsPage() {
                           </div>
 
                           <div className="flex items-center gap-2">
-                            {session.google_meet_link && (
+                            {session.google_meet_link && session.status === "in_progress" && (
                               <>
-                                <Button 
-                                  size="sm" 
-                                  className="bg-primary hover:bg-primary/90"
-                                  onClick={() => setActiveJitsiSession(session)}
-                                >
-                                  <MonitorPlay className="h-4 w-4 mr-2" />
-                                  Rejoindre ici
-                                </Button>
+                                {role === "student" ? (
+                                  // Student: Show presence confirmation button
+                                  presenceConfirmed.has(session.id) ? (
+                                    <Badge className="bg-green-500/10 text-green-600 border-green-500/30">
+                                      <CheckCircle2 className="h-3 w-3 mr-1" />
+                                      Présence confirmée
+                                    </Badge>
+                                  ) : (
+                                    <Button 
+                                      size="sm" 
+                                      className="bg-green-600 hover:bg-green-700"
+                                      onClick={() => handleConfirmPresence(session)}
+                                      disabled={confirmingPresence === session.id}
+                                    >
+                                      {confirmingPresence === session.id ? (
+                                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                      ) : (
+                                        <Hand className="h-4 w-4 mr-2" />
+                                      )}
+                                      Je suis présent
+                                    </Button>
+                                  )
+                                ) : (
+                                  // Teacher/Admin: Direct access button
+                                  <Button 
+                                    size="sm" 
+                                    className="bg-primary hover:bg-primary/90"
+                                    onClick={() => window.open(session.google_meet_link!, '_blank')}
+                                  >
+                                    <Video className="h-4 w-4 mr-2" />
+                                    Rejoindre
+                                  </Button>
+                                )}
                                 <Button 
                                   size="sm" 
                                   variant="outline"
@@ -813,19 +886,16 @@ export default function SessionsPage() {
             </DialogHeader>
             <div className="space-y-4 pt-4">
               <div className="space-y-2">
-                <Label>Lien Jitsi Meet</Label>
+                <Label>Lien Google Meet</Label>
                 <div className="flex gap-2">
                   <Input 
-                    placeholder="https://meet.jit.si/CoursPro-MaClasse"
+                    placeholder="https://meet.google.com/..."
                     value={meetLink}
                     onChange={(e) => setMeetLink(e.target.value)}
                   />
-                  <Button type="button" variant="outline" onClick={generateJitsiLink} title="Générer un lien Jitsi">
-                    <Video className="h-4 w-4" />
-                  </Button>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Jitsi Meet est gratuit et open-source, aucun compte requis
+                  Collez un lien Google Meet existant
                 </p>
               </div>
 
@@ -863,18 +933,6 @@ export default function SessionsPage() {
           </DialogContent>
         </Dialog>
       </main>
-
-      {/* Jitsi Meet Widget */}
-      {activeJitsiSession && activeJitsiSession.google_meet_link && (
-        <JitsiMeetWidget
-          roomName={activeJitsiSession.google_meet_link}
-          displayName={user?.email?.split('@')[0] || 'Utilisateur'}
-          subject={activeJitsiSession.is_direct ? (activeJitsiSession.title || activeJitsiSession.subject?.name || 'Cours direct') : (activeJitsiSession.schedule_slot?.assignment?.subject?.name || 'Cours en ligne')}
-          sessionId={activeJitsiSession.id}
-          onClose={() => setActiveJitsiSession(null)}
-        />
-      )}
-      
       {/* Direct Session Dialog */}
       {user && (effectiveRole === "admin" || effectiveRole === "teacher") && (
         <DirectSessionDialog
