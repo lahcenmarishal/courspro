@@ -28,7 +28,7 @@ serve(async (req) => {
           window.opener?.postMessage({ type: 'google-oauth-error', error: '${error}' }, '*');
           window.close();
         </script><p>Erreur d'authentification. Cette fenêtre va se fermer.</p></body></html>`,
-        { headers: { "Content-Type": "text/html" } }
+        { headers: { "Content-Type": "text/html; charset=utf-8" } }
       );
     }
 
@@ -112,7 +112,7 @@ serve(async (req) => {
     `;
 
     return new Response(successHtml, {
-      headers: { "Content-Type": "text/html" },
+      headers: { "Content-Type": "text/html; charset=utf-8" },
     });
   } catch (error) {
     console.error("Callback error:", error);
@@ -121,7 +121,7 @@ serve(async (req) => {
         window.opener?.postMessage({ type: 'google-oauth-error', error: '${error instanceof Error ? error.message : 'Unknown error'}' }, '*');
         window.close();
       </script><p>Erreur. Cette fenêtre va se fermer.</p></body></html>`,
-      { headers: { "Content-Type": "text/html" } }
+      { headers: { "Content-Type": "text/html; charset=utf-8" } }
     );
   }
 });
