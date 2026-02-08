@@ -95,6 +95,7 @@ const TeacherDashboard = () => {
       const today = format(new Date(), 'yyyy-MM-dd');
       const dayOfWeek = new Date().getDay();
 
+      // Fetch schedule slots for today
       const { data: scheduleData } = await supabase
         .from('schedule_slots')
         .select(`
@@ -112,6 +113,24 @@ const TeacherDashboard = () => {
         .eq('day_of_week', dayOfWeek)
         .eq('teacher_assignments.teacher_id', user.id)
         .order('start_time', { ascending: true });
+
+      // Fetch direct sessions for today
+      const { data: directSessions } = await supabase
+        .from('sessions')
+        .select(`
+          id,
+          title,
+          start_time,
+          end_time,
+          status,
+          google_meet_link,
+          is_direct,
+          subject:subjects(name, color),
+          class:classes(name)
+        `)
+        .eq('session_date', today)
+        .eq('teacher_id', user.id)
+        .eq('is_direct', true);
 
       const now = new Date();
       const currentTime = format(now, 'HH:mm:ss');
@@ -136,11 +155,41 @@ const TeacherDashboard = () => {
         };
       });
 
-      setSchedule(transformedSchedule);
+      // Transform direct sessions into schedule items
+      const directScheduleItems: ScheduleItem[] = (directSessions || []).map((session: any) => {
+        let status: 'completed' | 'current' | 'upcoming' = 'upcoming';
+        const startTime = session.start_time || '00:00:00';
+        const endTime = session.end_time || '23:59:00';
+        if (session.status === 'completed') {
+          status = 'completed';
+        } else if (endTime < currentTime) {
+          status = 'completed';
+        } else if (startTime <= currentTime && endTime >= currentTime) {
+          status = 'current';
+        }
+
+        return {
+          id: session.id,
+          time: startTime?.slice(0, 5) || '',
+          endTime: endTime?.slice(0, 5) || '',
+          subject: session.subject?.name || session.title || 'Séance directe',
+          subjectColor: session.subject?.color || '#F59E0B',
+          className: session.class?.name || 'Séance directe',
+          room: null,
+          status,
+        };
+      });
+
+      // Merge and sort by start time
+      const allItems = [...transformedSchedule, ...directScheduleItems].sort(
+        (a, b) => a.time.localeCompare(b.time)
+      );
+
+      setSchedule(allItems);
       setStats({
         totalStudents,
         totalClasses: uniqueClasses.size,
-        todaySessions: transformedSchedule.length,
+        todaySessions: allItems.length,
         weekSessions: (assignmentsData?.length || 0) * 5,
       });
 
