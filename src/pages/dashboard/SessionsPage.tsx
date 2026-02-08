@@ -390,17 +390,21 @@ export default function SessionsPage() {
     
     // Parse date as local (not UTC) by appending T00:00:00
     const sessionDate = new Date(session.session_date + "T00:00:00");
+    const sessionIsToday = isToday(sessionDate);
     const matchesTab = 
       selectedTab === "all" ||
-      (selectedTab === "upcoming" && !isPast(sessionDate)) ||
-      (selectedTab === "past" && isPast(sessionDate)) ||
-      (selectedTab === "today" && isToday(sessionDate));
+      (selectedTab === "upcoming" && (sessionIsToday || !isPast(sessionDate))) ||
+      (selectedTab === "past" && isPast(sessionDate) && !sessionIsToday) ||
+      (selectedTab === "today" && sessionIsToday);
 
     return matchesSearch && matchesStatus && matchesTab;
   });
 
   const todayCount = sessions.filter(s => isToday(new Date(s.session_date + "T00:00:00"))).length;
-  const upcomingCount = sessions.filter(s => !isPast(new Date(s.session_date + "T00:00:00"))).length;
+  const upcomingCount = sessions.filter(s => {
+    const d = new Date(s.session_date + "T00:00:00");
+    return isToday(d) || !isPast(d);
+  }).length;
 
   if (authLoading) {
     return (
