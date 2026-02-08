@@ -388,23 +388,24 @@ export default function SessionsPage() {
     
     const matchesStatus = statusFilter === "all" || session.status === statusFilter;
     
-    // Parse date as local (not UTC) by appending T00:00:00
-    const sessionDate = new Date(session.session_date + "T00:00:00");
-    const sessionIsToday = isToday(sessionDate);
+    // Compare dates using plain string comparison (YYYY-MM-DD format)
+    const todayStr = new Date().toLocaleDateString('en-CA'); // Returns YYYY-MM-DD in local timezone
+    const sessionDateStr = session.session_date; // Already YYYY-MM-DD from DB
+    const sessionIsToday = sessionDateStr === todayStr;
+    const sessionIsPast = sessionDateStr < todayStr;
+    
     const matchesTab = 
       selectedTab === "all" ||
-      (selectedTab === "upcoming" && (sessionIsToday || !isPast(sessionDate))) ||
-      (selectedTab === "past" && isPast(sessionDate) && !sessionIsToday) ||
+      (selectedTab === "upcoming" && (sessionIsToday || !sessionIsPast)) ||
+      (selectedTab === "past" && sessionIsPast && !sessionIsToday) ||
       (selectedTab === "today" && sessionIsToday);
 
     return matchesSearch && matchesStatus && matchesTab;
   });
 
-  const todayCount = sessions.filter(s => isToday(new Date(s.session_date + "T00:00:00"))).length;
-  const upcomingCount = sessions.filter(s => {
-    const d = new Date(s.session_date + "T00:00:00");
-    return isToday(d) || !isPast(d);
-  }).length;
+  const todayStr = new Date().toLocaleDateString('en-CA');
+  const todayCount = sessions.filter(s => s.session_date === todayStr).length;
+  const upcomingCount = sessions.filter(s => s.session_date >= todayStr).length;
 
   if (authLoading) {
     return (
