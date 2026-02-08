@@ -388,7 +388,8 @@ export default function SessionsPage() {
     
     const matchesStatus = statusFilter === "all" || session.status === statusFilter;
     
-    const sessionDate = new Date(session.session_date);
+    // Parse date as local (not UTC) by appending T00:00:00
+    const sessionDate = new Date(session.session_date + "T00:00:00");
     const matchesTab = 
       selectedTab === "all" ||
       (selectedTab === "upcoming" && !isPast(sessionDate)) ||
@@ -398,8 +399,8 @@ export default function SessionsPage() {
     return matchesSearch && matchesStatus && matchesTab;
   });
 
-  const todayCount = sessions.filter(s => isToday(new Date(s.session_date))).length;
-  const upcomingCount = sessions.filter(s => !isPast(new Date(s.session_date))).length;
+  const todayCount = sessions.filter(s => isToday(new Date(s.session_date + "T00:00:00"))).length;
+  const upcomingCount = sessions.filter(s => !isPast(new Date(s.session_date + "T00:00:00"))).length;
 
   if (authLoading) {
     return (
