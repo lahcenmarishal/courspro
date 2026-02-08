@@ -169,6 +169,8 @@ export default function SessionsPage() {
         .order("session_date", { ascending: true });
 
       if (error) throw error;
+      console.log("[SessionsPage] Fetched sessions:", data?.length, "today:", new Date().toLocaleDateString('en-CA'));
+      console.log("[SessionsPage] Session dates:", data?.map(s => ({ id: s.id?.slice(0,8), date: s.session_date, is_direct: s.is_direct, title: s.title })));
       setSessions(data || []);
     } catch (error) {
       console.error("Error fetching sessions:", error);
