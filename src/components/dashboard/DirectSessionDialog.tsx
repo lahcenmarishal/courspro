@@ -118,7 +118,7 @@ export function DirectSessionDialog({
     
     const result = await createMeetLink({
       sessionTitle,
-      sessionDate: new Date().toISOString().split('T')[0],
+      sessionDate: new Date().toLocaleDateString('en-CA'),
       startTime,
       endTime,
     });
@@ -155,7 +155,7 @@ export function DirectSessionDialog({
         class_id: selectedClass || null,
         teacher_id: userId,
         is_direct: true,
-        session_date: new Date().toISOString().split('T')[0],
+        session_date: new Date().toLocaleDateString('en-CA'),
         start_time: startTime,
         end_time: endTime,
         google_meet_link: finalMeetLink,
