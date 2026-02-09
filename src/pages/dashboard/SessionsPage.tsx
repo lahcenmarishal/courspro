@@ -255,13 +255,17 @@ export default function SessionsPage() {
     }
 
     try {
-      const { error } = await supabase.from("sessions").insert({
+      const insertData = {
         schedule_slot_id: selectedSlot,
         session_date: format(sessionDate, "yyyy-MM-dd"),
         google_meet_link: meetLink || null,
         notes: notes || null,
-        status: "scheduled"
-      });
+        status: "scheduled",
+        is_direct: false,
+      };
+      console.log("Creating session with data:", insertData);
+      const { error, data } = await supabase.from("sessions").insert(insertData).select();
+      console.log("Session creation result:", { error, data });
 
       if (error) throw error;
 
@@ -269,8 +273,8 @@ export default function SessionsPage() {
       setIsCreateDialogOpen(false);
       resetForm();
       fetchSessions();
-    } catch (error) {
-      console.error("Error creating session:", error);
+    } catch (error: any) {
+      console.error("Error creating session:", error?.message, error?.details, error?.hint, error);
       toast.error("Erreur lors de la création de la séance");
     }
   };
