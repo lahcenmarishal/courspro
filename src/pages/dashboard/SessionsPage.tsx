@@ -181,7 +181,7 @@ export default function SessionsPage() {
   };
 
   const fetchScheduleSlots = async () => {
-    const { data, error } = await supabase
+    let query = supabase
       .from("schedule_slots")
       .select(`
         id,
@@ -197,11 +197,22 @@ export default function SessionsPage() {
         )
       `);
 
+    // Teachers should only see their own slots
+    if (role === "teacher" && user) {
+      query = query.eq("assignment.teacher_id", user.id);
+    }
+
+    const { data, error } = await query;
+
     if (error) {
       console.error("Error fetching schedule slots:", error);
       return;
     }
-    setScheduleSlots(data || []);
+    // Filter out slots where assignment is null (happens with the eq filter on nested relation)
+    const filtered = role === "teacher" 
+      ? (data || []).filter(s => s.assignment !== null)
+      : (data || []);
+    setScheduleSlots(filtered);
   };
 
   const handleGenerateGoogleMeet = async () => {
