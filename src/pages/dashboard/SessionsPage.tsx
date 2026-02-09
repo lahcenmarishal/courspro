@@ -130,9 +130,11 @@ export default function SessionsPage() {
   const [sessionToEnd, setSessionToEnd] = useState<Session | null>(null);
 
   useEffect(() => {
-    fetchSessions();
-    fetchScheduleSlots();
-  }, [user]);
+    if (user && role) {
+      fetchSessions();
+      fetchScheduleSlots();
+    }
+  }, [user, role]);
 
   const fetchSessions = async () => {
     try {
