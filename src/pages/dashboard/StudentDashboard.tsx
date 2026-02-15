@@ -18,7 +18,8 @@ import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { format } from "date-fns";
-import { fr } from "date-fns/locale";
+import { fr as frLocale, arSA } from "date-fns/locale";
+import { useLanguage } from "@/hooks/useLanguage";
 
 interface ScheduleItem {
   id: string;
@@ -38,6 +39,8 @@ interface StudentInfo {
 
 const StudentDashboard = () => {
   const { user, role } = useAuth();
+  const { t, language } = useLanguage();
+  const dateLocale = language === 'ar' ? arSA : frLocale;
   const [studentInfo, setStudentInfo] = useState<StudentInfo>({
     firstName: '',
     lastName: '',
@@ -46,8 +49,6 @@ const StudentDashboard = () => {
   });
   const [schedule, setSchedule] = useState<ScheduleItem[]>([]);
   const [loading, setLoading] = useState(true);
-
-  // Role is always student now
 
   useEffect(() => {
     if (user) {
@@ -67,8 +68,6 @@ const StudentDashboard = () => {
 
       let studentId = user.id;
       let studentProfile = profileData;
-
-      // Fetch enrollment data for the student
 
       const { data: enrollmentData } = await supabase
         .from('student_enrollments')
@@ -125,7 +124,7 @@ const StudentDashboard = () => {
             return {
               id: slot.id,
               time: slot.start_time?.slice(0, 5) || '',
-              subject: slot.teacher_assignments?.subjects?.name || 'Matière',
+              subject: slot.teacher_assignments?.subjects?.name || '',
               subjectColor: slot.teacher_assignments?.subjects?.color || '#3B82F6',
               teacher: `${slot.teacher_assignments?.profiles?.first_name || ''} ${slot.teacher_assignments?.profiles?.last_name || ''}`.trim(),
               status,
@@ -154,7 +153,7 @@ const StudentDashboard = () => {
         <main className="flex-1 flex items-center justify-center p-4">
           <div className="text-center space-y-4">
             <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
-            <p className="text-muted-foreground">Chargement du tableau de bord...</p>
+            <p className="text-muted-foreground">{t("student.loading")}</p>
           </div>
         </main>
       </div>
@@ -170,12 +169,12 @@ const StudentDashboard = () => {
         <div className="flex items-center justify-between mb-6 lg:mb-8">
           <div>
             <h1 className="text-xl lg:text-2xl font-bold text-foreground">
-              Bonjour, {studentInfo.firstName || 'Élève'} 👋
+              {t("student.hello").replace('{name}', studentInfo.firstName || (language === 'ar' ? 'تلميذ' : 'Élève'))}
             </h1>
             <p className="text-sm lg:text-base text-muted-foreground">
               {studentInfo.className && studentInfo.levelName 
                 ? `${studentInfo.levelName} - ${studentInfo.className}`
-                : format(new Date(), "EEEE d MMMM yyyy", { locale: fr })
+                : format(new Date(), "EEEE d MMMM yyyy", { locale: dateLocale })
               }
             </p>
           </div>
@@ -200,12 +199,12 @@ const StudentDashboard = () => {
                 {currentClass ? (
                   <>
                     <div className="h-2 w-2 lg:h-3 lg:w-3 rounded-full bg-accent animate-pulse" />
-                    <span className="text-xs lg:text-sm font-medium text-accent">Cours en cours</span>
+                    <span className="text-xs lg:text-sm font-medium text-accent">{t("student.currentCourse")}</span>
                   </>
                 ) : (
                   <>
                     <div className="h-2 w-2 lg:h-3 lg:w-3 rounded-full bg-primary" />
-                    <span className="text-xs lg:text-sm font-medium text-primary">Prochain cours</span>
+                    <span className="text-xs lg:text-sm font-medium text-primary">{t("student.nextCourse")}</span>
                   </>
                 )}
               </div>
@@ -228,7 +227,7 @@ const StudentDashboard = () => {
               </div>
               <Button variant="default" size="sm" className="w-full sm:w-auto lg:size-lg">
                 <Play className="h-4 w-4 lg:h-5 lg:w-5 mr-2" />
-                Rejoindre le cours
+                {t("student.joinCourse")}
               </Button>
             </div>
           </motion.div>
@@ -241,8 +240,8 @@ const StudentDashboard = () => {
             className="bg-card rounded-xl lg:rounded-2xl p-4 lg:p-6 shadow-card border border-border mb-6 lg:mb-8 text-center"
           >
             <Calendar className="h-10 w-10 lg:h-12 lg:w-12 mx-auto mb-3 lg:mb-4 text-muted-foreground" />
-            <h2 className="text-lg lg:text-xl font-semibold mb-2 text-foreground">Pas de cours prévu aujourd'hui</h2>
-            <p className="text-sm lg:text-base text-muted-foreground">Profitez de votre journée !</p>
+            <h2 className="text-lg lg:text-xl font-semibold mb-2 text-foreground">{t("student.noCourseToday")}</h2>
+            <p className="text-sm lg:text-base text-muted-foreground">{t("student.enjoyDay")}</p>
           </motion.div>
         )}
 
@@ -252,12 +251,12 @@ const StudentDashboard = () => {
             <div className="bg-card rounded-xl shadow-card border border-border">
               <div className="p-4 lg:p-6 border-b border-border">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-base lg:text-lg font-semibold text-foreground">Mes cours aujourd'hui</h2>
+                  <h2 className="text-base lg:text-lg font-semibold text-foreground">{t("student.todayCourses")}</h2>
                   <Button variant="ghost" size="sm" asChild className="text-xs lg:text-sm">
                     <Link to="/dashboard/schedule">
                       <Calendar className="h-3 w-3 lg:h-4 lg:w-4 mr-1 lg:mr-2" />
-                      <span className="hidden sm:inline">Emploi du temps</span>
-                      <span className="sm:hidden">EDT</span>
+                      <span className="hidden sm:inline">{t("student.schedule")}</span>
+                      <span className="sm:hidden">{t("student.edt")}</span>
                     </Link>
                   </Button>
                 </div>
@@ -266,7 +265,7 @@ const StudentDashboard = () => {
                 {schedule.length === 0 ? (
                   <div className="text-center py-6 lg:py-8 text-muted-foreground">
                     <Clock className="h-10 w-10 lg:h-12 lg:w-12 mx-auto mb-3 lg:mb-4 opacity-50" />
-                    <p className="text-sm lg:text-base">Aucun cours prévu aujourd'hui</p>
+                    <p className="text-sm lg:text-base">{t("student.noCourseScheduled")}</p>
                   </div>
                 ) : (
                   <div className="grid grid-cols-2 sm:flex gap-2 lg:gap-3">
@@ -299,7 +298,7 @@ const StudentDashboard = () => {
             {/* Quick links */}
             <div className="bg-card rounded-xl shadow-card border border-border">
               <div className="p-4 lg:p-6 border-b border-border">
-                <h2 className="text-base lg:text-lg font-semibold text-foreground">Accès rapide</h2>
+                <h2 className="text-base lg:text-lg font-semibold text-foreground">{t("student.quickAccess")}</h2>
               </div>
               <div className="p-4 lg:p-6 grid grid-cols-1 sm:grid-cols-2 gap-3 lg:gap-4">
                 <Link
@@ -310,8 +309,8 @@ const StudentDashboard = () => {
                     <FileText className="h-5 w-5 lg:h-6 lg:w-6 text-secondary" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="font-medium text-sm lg:text-base text-foreground">Devoirs</div>
-                    <div className="text-xs lg:text-sm text-muted-foreground">Voir mes devoirs</div>
+                    <div className="font-medium text-sm lg:text-base text-foreground">{t("student.homework")}</div>
+                    <div className="text-xs lg:text-sm text-muted-foreground">{t("student.viewHomework")}</div>
                   </div>
                   <ArrowRight className="h-4 w-4 lg:h-5 lg:w-5 text-muted-foreground hidden sm:block" />
                 </Link>
@@ -323,8 +322,8 @@ const StudentDashboard = () => {
                     <BookMarked className="h-5 w-5 lg:h-6 lg:w-6 text-primary" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="font-medium text-sm lg:text-base text-foreground">Ressources</div>
-                    <div className="text-xs lg:text-sm text-muted-foreground">Documents de cours</div>
+                    <div className="font-medium text-sm lg:text-base text-foreground">{t("student.resources")}</div>
+                    <div className="text-xs lg:text-sm text-muted-foreground">{t("student.courseDocuments")}</div>
                   </div>
                   <ArrowRight className="h-4 w-4 lg:h-5 lg:w-5 text-muted-foreground hidden sm:block" />
                 </Link>
@@ -341,19 +340,19 @@ const StudentDashboard = () => {
                   <Award className="h-6 w-6 lg:h-7 lg:w-7 text-accent" />
                 </div>
                 <div>
-                  <div className="text-xs lg:text-sm text-muted-foreground">Moyenne générale</div>
+                  <div className="text-xs lg:text-sm text-muted-foreground">{t("student.generalAverage")}</div>
                   <div className="text-2xl lg:text-3xl font-bold text-foreground">--<span className="text-base lg:text-lg text-muted-foreground">/20</span></div>
                 </div>
               </div>
               <p className="text-xs lg:text-sm text-muted-foreground">
-                Les notes seront affichées une fois les évaluations créées
+                {t("student.gradesWillShow")}
               </p>
             </div>
 
             {/* Sessions/Videos */}
             <div className="bg-card rounded-xl shadow-card border border-border">
               <div className="p-3 lg:p-4 border-b border-border">
-                <h3 className="font-semibold text-sm lg:text-base text-foreground">Cours en ligne</h3>
+                <h3 className="font-semibold text-sm lg:text-base text-foreground">{t("student.onlineCourses")}</h3>
               </div>
               <div className="p-3 lg:p-4 space-y-2 lg:space-y-3">
                 <Link
@@ -364,8 +363,8 @@ const StudentDashboard = () => {
                     <Video className="h-4 w-4 lg:h-5 lg:w-5 text-accent" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-xs lg:text-sm font-medium text-foreground">Mes cours</div>
-                    <div className="text-xs text-muted-foreground">Accéder aux sessions</div>
+                    <div className="text-xs lg:text-sm font-medium text-foreground">{t("student.myCourses")}</div>
+                    <div className="text-xs text-muted-foreground">{t("student.accessSessions")}</div>
                   </div>
                   <ArrowRight className="h-4 w-4 text-muted-foreground" />
                 </Link>
@@ -379,8 +378,8 @@ const StudentDashboard = () => {
                   <Bell className="h-4 w-4 lg:h-5 lg:w-5 text-primary" />
                 </div>
                 <div className="flex-1">
-                  <div className="font-semibold text-sm lg:text-base text-foreground">Messages</div>
-                  <div className="text-xs lg:text-sm text-muted-foreground">Communications</div>
+                  <div className="font-semibold text-sm lg:text-base text-foreground">{t("student.messages")}</div>
+                  <div className="text-xs lg:text-sm text-muted-foreground">{t("student.communications")}</div>
                 </div>
                 <ArrowRight className="h-4 w-4 lg:h-5 lg:w-5 text-muted-foreground" />
               </Link>

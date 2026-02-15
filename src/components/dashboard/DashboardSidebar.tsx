@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
+import { useLanguage } from "@/hooks/useLanguage";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { 
   GraduationCap, 
   LayoutDashboard, 
@@ -11,16 +13,13 @@ import {
   Video,
   FileText,
   CreditCard,
-  Bell,
   Settings,
-  BarChart3,
   MessageSquare,
   LogOut,
   Award,
   BookMarked,
   Clock,
   Menu,
-  X,
   UserPlus,
   Newspaper
 } from "lucide-react";
@@ -33,61 +32,64 @@ interface DashboardSidebarProps {
   role: Role;
 }
 
-const adminLinks = [
-  { label: "Tableau de bord", href: "/dashboard", icon: LayoutDashboard },
-  { label: "Blog", href: "/dashboard/blog", icon: Newspaper },
-  { label: "Demandes enseignants", href: "/dashboard/teacher-requests", icon: UserPlus },
-  { label: "Enseignants", href: "/dashboard/teachers", icon: GraduationCap },
-  { label: "Utilisateurs", href: "/dashboard/users", icon: Users },
-  { label: "Années scolaires", href: "/dashboard/school-years", icon: Calendar },
-  { label: "Niveaux", href: "/dashboard/levels", icon: GraduationCap },
-  { label: "Matières", href: "/dashboard/subjects", icon: BookOpen },
-  { label: "Classes", href: "/dashboard/classes", icon: Users },
-  { label: "Emplois du temps", href: "/dashboard/schedule", icon: Calendar },
-  { label: "Séances", href: "/dashboard/sessions", icon: Video },
-  { label: "Évaluations", href: "/dashboard/evaluations", icon: FileText },
-  { label: "Abonnements", href: "/dashboard/subscriptions", icon: CreditCard },
-  { label: "Paramètres", href: "/dashboard/settings", icon: Settings },
+const getAdminLinks = (t: (key: string) => string) => [
+  { label: t("sidebar.dashboard"), href: "/dashboard", icon: LayoutDashboard },
+  { label: t("sidebar.blog"), href: "/dashboard/blog", icon: Newspaper },
+  { label: t("sidebar.teacherRequests"), href: "/dashboard/teacher-requests", icon: UserPlus },
+  { label: t("sidebar.teachers"), href: "/dashboard/teachers", icon: GraduationCap },
+  { label: t("sidebar.users"), href: "/dashboard/users", icon: Users },
+  { label: t("sidebar.schoolYears"), href: "/dashboard/school-years", icon: Calendar },
+  { label: t("sidebar.levels"), href: "/dashboard/levels", icon: GraduationCap },
+  { label: t("sidebar.subjects"), href: "/dashboard/subjects", icon: BookOpen },
+  { label: t("sidebar.classes"), href: "/dashboard/classes", icon: Users },
+  { label: t("sidebar.schedule"), href: "/dashboard/schedule", icon: Calendar },
+  { label: t("sidebar.sessions"), href: "/dashboard/sessions", icon: Video },
+  { label: t("sidebar.evaluations"), href: "/dashboard/evaluations", icon: FileText },
+  { label: t("sidebar.subscriptions"), href: "/dashboard/subscriptions", icon: CreditCard },
+  { label: t("sidebar.settings"), href: "/dashboard/settings", icon: Settings },
 ];
 
-const teacherLinks = [
-  { label: "Tableau de bord", href: "/dashboard", icon: LayoutDashboard },
-  { label: "Mon emploi du temps", href: "/dashboard/schedule", icon: Calendar },
-  { label: "Mes classes", href: "/dashboard/classes", icon: GraduationCap },
-  { label: "Mes cours", href: "/dashboard/sessions", icon: Video },
-  { label: "Supports de cours", href: "/dashboard/resources", icon: BookMarked },
-  { label: "Devoirs & Examens", href: "/dashboard/evaluations", icon: FileText },
-  { label: "Présences", href: "/dashboard/attendance", icon: Clock },
-  { label: "Messages", href: "/dashboard/messages", icon: MessageSquare },
+const getTeacherLinks = (t: (key: string) => string) => [
+  { label: t("sidebar.dashboard"), href: "/dashboard", icon: LayoutDashboard },
+  { label: t("sidebar.mySchedule"), href: "/dashboard/schedule", icon: Calendar },
+  { label: t("sidebar.myClasses"), href: "/dashboard/classes", icon: GraduationCap },
+  { label: t("sidebar.myCourses"), href: "/dashboard/sessions", icon: Video },
+  { label: t("sidebar.courseResources"), href: "/dashboard/resources", icon: BookMarked },
+  { label: t("sidebar.homeworkExams"), href: "/dashboard/evaluations", icon: FileText },
+  { label: t("sidebar.attendance"), href: "/dashboard/attendance", icon: Clock },
+  { label: t("sidebar.messages"), href: "/dashboard/messages", icon: MessageSquare },
 ];
 
-const studentLinks = [
-  { label: "Tableau de bord", href: "/dashboard", icon: LayoutDashboard },
-  { label: "Mon emploi du temps", href: "/dashboard/schedule", icon: Calendar },
-  { label: "Mes cours", href: "/dashboard/sessions", icon: Video },
-  { label: "Ressources", href: "/dashboard/resources", icon: BookMarked },
-  { label: "Devoirs", href: "/dashboard/homework", icon: FileText },
-  { label: "Notes & Bulletins", href: "/dashboard/grades", icon: Award },
-  { label: "Messages", href: "/dashboard/messages", icon: MessageSquare },
+const getStudentLinks = (t: (key: string) => string) => [
+  { label: t("sidebar.dashboard"), href: "/dashboard", icon: LayoutDashboard },
+  { label: t("sidebar.mySchedule"), href: "/dashboard/schedule", icon: Calendar },
+  { label: t("sidebar.myCourses"), href: "/dashboard/sessions", icon: Video },
+  { label: t("sidebar.resources"), href: "/dashboard/resources", icon: BookMarked },
+  { label: t("sidebar.homework"), href: "/dashboard/homework", icon: FileText },
+  { label: t("sidebar.grades"), href: "/dashboard/grades", icon: Award },
+  { label: t("sidebar.messages"), href: "/dashboard/messages", icon: MessageSquare },
 ];
 
-const linksByRole: Record<Role, typeof adminLinks> = {
-  admin: adminLinks,
-  teacher: teacherLinks,
-  student: studentLinks,
-};
-
-const roleLabels: Record<Role, string> = {
-  admin: "Administration",
-  teacher: "Enseignant",
-  student: "Élève",
+const getLinksByRole = (role: Role, t: (key: string) => string) => {
+  switch (role) {
+    case 'admin': return getAdminLinks(t);
+    case 'teacher': return getTeacherLinks(t);
+    case 'student': return getStudentLinks(t);
+  }
 };
 
 export const DashboardSidebar = ({ role }: DashboardSidebarProps) => {
   const location = useLocation();
   const { user, signOut } = useAuth();
-  const links = linksByRole[role];
+  const { t } = useLanguage();
+  const links = getLinksByRole(role, t);
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const roleLabels: Record<Role, string> = {
+    admin: t("sidebar.administration"),
+    teacher: t("sidebar.teacher"),
+    student: t("sidebar.student"),
+  };
 
   const handleSignOut = async () => {
     await signOut();
@@ -101,10 +103,10 @@ export const DashboardSidebar = ({ role }: DashboardSidebarProps) => {
   };
 
   const getDisplayName = () => {
-    if (!user?.user_metadata) return 'Utilisateur';
+    if (!user?.user_metadata) return t("sidebar.user");
     const firstName = user.user_metadata.first_name || '';
     const lastName = user.user_metadata.last_name || '';
-    return `${firstName} ${lastName}`.trim() || 'Utilisateur';
+    return `${firstName} ${lastName}`.trim() || t("sidebar.user");
   };
 
   const SidebarContent = ({ onLinkClick }: { onLinkClick?: () => void }) => (
@@ -147,6 +149,9 @@ export const DashboardSidebar = ({ role }: DashboardSidebarProps) => {
 
       {/* User section */}
       <div className="p-3 lg:p-4 border-t border-border">
+        <div className="mb-3">
+          <LanguageSwitcher />
+        </div>
         <div className="flex items-center gap-3 mb-3 lg:mb-4">
           <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
             <span className="text-sm font-semibold text-primary">{getInitials()}</span>
@@ -164,7 +169,7 @@ export const DashboardSidebar = ({ role }: DashboardSidebarProps) => {
           className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
         >
           <LogOut className="h-4 w-4" />
-          <span>Déconnexion</span>
+          <span>{t("sidebar.logout")}</span>
         </button>
       </div>
     </>

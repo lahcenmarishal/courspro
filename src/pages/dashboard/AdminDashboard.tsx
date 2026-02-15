@@ -25,7 +25,8 @@ import { Input } from "@/components/ui/input";
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
-import { fr } from "date-fns/locale";
+import { fr as frLocale, arSA } from "date-fns/locale";
+import { useLanguage } from "@/hooks/useLanguage";
 
 interface DashboardStats {
   totalStudents: number;
@@ -60,6 +61,8 @@ interface TodaySession {
 }
 
 const AdminDashboard = () => {
+  const { t, language } = useLanguage();
+  const dateLocale = language === 'ar' ? arSA : frLocale;
   const [stats, setStats] = useState<DashboardStats>({
     totalStudents: 0,
     totalTeachers: 0,
@@ -158,38 +161,37 @@ const AdminDashboard = () => {
 
   const getRoleLabel = (role?: string) => {
     switch (role) {
-      case 'admin': return 'Administrateur';
-      case 'teacher': return 'Enseignant';
-      case 'student': return 'Élève';
-      case 'parent': return 'Parent';
-      default: return 'Utilisateur';
+      case 'admin': return t('admin.roleAdmin');
+      case 'teacher': return t('admin.roleTeacher');
+      case 'student': return t('admin.roleStudent');
+      default: return t('admin.roleUser');
     }
   };
 
   const statCards = [
     { 
-      label: "Total élèves", 
+      label: t("admin.totalStudents"), 
       value: stats.totalStudents.toString(),
       icon: Users,
       color: "primary",
       href: "/dashboard/users"
     },
     { 
-      label: "Enseignants", 
+      label: t("admin.teachers"), 
       value: stats.totalTeachers.toString(),
       icon: BookOpen,
       color: "accent",
       href: "/dashboard/users"
     },
     { 
-      label: "Classes actives", 
+      label: t("admin.activeClasses"), 
       value: stats.totalClasses.toString(),
       icon: GraduationCap,
       color: "secondary",
       href: "/dashboard/classes"
     },
     { 
-      label: "Séances totales", 
+      label: t("admin.totalSessions"), 
       value: stats.totalSessions.toString(),
       icon: Video,
       color: "primary",
@@ -204,7 +206,7 @@ const AdminDashboard = () => {
         <main className="flex-1 flex items-center justify-center p-4">
           <div className="text-center space-y-4">
             <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
-            <p className="text-muted-foreground">Chargement du tableau de bord...</p>
+            <p className="text-muted-foreground">{t("admin.loading")}</p>
           </div>
         </main>
       </div>
@@ -219,9 +221,9 @@ const AdminDashboard = () => {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 lg:mb-8">
           <div>
-            <h1 className="text-xl lg:text-2xl font-bold text-foreground">Tableau de bord</h1>
+            <h1 className="text-xl lg:text-2xl font-bold text-foreground">{t("admin.dashboard")}</h1>
             <p className="text-sm lg:text-base text-muted-foreground">
-              {format(new Date(), "EEEE d MMMM yyyy", { locale: fr })}
+              {format(new Date(), "EEEE d MMMM yyyy", { locale: dateLocale })}
             </p>
           </div>
           
@@ -229,7 +231,7 @@ const AdminDashboard = () => {
             <div className="relative flex-1 sm:flex-initial">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input 
-                placeholder="Rechercher..." 
+                placeholder={t("admin.search")} 
                 className="pl-9 w-full sm:w-48 lg:w-64 bg-card"
               />
             </div>
@@ -279,12 +281,12 @@ const AdminDashboard = () => {
           <div className="lg:col-span-2 bg-card rounded-xl shadow-card border border-border">
             <div className="p-4 lg:p-6 border-b border-border">
               <div className="flex items-center justify-between">
-                <h2 className="text-base lg:text-lg font-semibold text-foreground">Cours du jour</h2>
+                <h2 className="text-base lg:text-lg font-semibold text-foreground">{t("admin.todayCourses")}</h2>
                 <Button variant="outline" size="sm" asChild className="text-xs lg:text-sm">
                   <Link to="/dashboard/sessions">
                     <Calendar className="h-3 w-3 lg:h-4 lg:w-4 mr-1 lg:mr-2" />
-                    <span className="hidden sm:inline">Voir tout</span>
-                    <span className="sm:hidden">Tout</span>
+                    <span className="hidden sm:inline">{t("admin.viewAll")}</span>
+                    <span className="sm:hidden">{t("admin.all")}</span>
                   </Link>
                 </Button>
               </div>
@@ -293,7 +295,7 @@ const AdminDashboard = () => {
               {todaySessions.length === 0 ? (
                 <div className="text-center py-6 lg:py-8 text-muted-foreground">
                   <Video className="h-10 w-10 lg:h-12 lg:w-12 mx-auto mb-3 lg:mb-4 opacity-50" />
-                  <p className="text-sm lg:text-base">Aucun cours prévu aujourd'hui</p>
+                  <p className="text-sm lg:text-base">{t("admin.noCourseToday")}</p>
                 </div>
               ) : (
                 todaySessions.map((session, index) => (
@@ -331,7 +333,7 @@ const AdminDashboard = () => {
                       {session.status === 'live' && (
                         <span className="inline-flex items-center gap-1 text-xs text-accent font-medium">
                           <span className="h-1.5 w-1.5 lg:h-2 lg:w-2 rounded-full bg-accent animate-pulse" />
-                          En direct
+                          {t("admin.live")}
                         </span>
                       )}
                     </div>
@@ -347,13 +349,13 @@ const AdminDashboard = () => {
           {/* Recent users */}
           <div className="bg-card rounded-xl shadow-card border border-border">
             <div className="p-4 lg:p-6 border-b border-border">
-              <h2 className="text-base lg:text-lg font-semibold text-foreground">Utilisateurs récents</h2>
+              <h2 className="text-base lg:text-lg font-semibold text-foreground">{t("admin.recentUsers")}</h2>
             </div>
             <div className="p-4 lg:p-6 space-y-3 lg:space-y-4">
               {recentUsers.length === 0 ? (
                 <div className="text-center py-6 lg:py-8 text-muted-foreground">
                   <Users className="h-10 w-10 lg:h-12 lg:w-12 mx-auto mb-3 lg:mb-4 opacity-50" />
-                  <p className="text-sm lg:text-base">Aucun utilisateur récent</p>
+                  <p className="text-sm lg:text-base">{t("admin.noRecentUsers")}</p>
                 </div>
               ) : (
                 recentUsers.map((user, index) => (
@@ -384,10 +386,10 @@ const AdminDashboard = () => {
         {/* Quick actions */}
         <div className="mt-6 lg:mt-8 grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
           {[
-            { label: "Ajouter un élève", icon: Users, color: "primary", href: "/dashboard/users" },
-            { label: "Créer une classe", icon: GraduationCap, color: "accent", href: "/dashboard/classes" },
-            { label: "Planifier un cours", icon: Calendar, color: "secondary", href: "/dashboard/schedule" },
-            { label: "Gérer les matières", icon: BookOpen, color: "primary", href: "/dashboard/subjects" },
+            { label: t("admin.addStudent"), icon: Users, color: "primary", href: "/dashboard/users" },
+            { label: t("admin.createClass"), icon: GraduationCap, color: "accent", href: "/dashboard/classes" },
+            { label: t("admin.planCourse"), icon: Calendar, color: "secondary", href: "/dashboard/schedule" },
+            { label: t("admin.manageSubjects"), icon: BookOpen, color: "primary", href: "/dashboard/subjects" },
           ].map((action, index) => (
             <motion.div
               key={action.label}
@@ -416,7 +418,7 @@ const AdminDashboard = () => {
 
         {/* Educational Programs Overview */}
         <div className="mt-6 lg:mt-8">
-          <h2 className="text-lg lg:text-xl font-bold text-foreground mb-4 lg:mb-6">Programmes éducatifs</h2>
+          <h2 className="text-lg lg:text-xl font-bold text-foreground mb-4 lg:mb-6">{t("admin.educationPrograms")}</h2>
           <div className="grid lg:grid-cols-3 gap-4 lg:gap-6">
             
             {/* Primaire */}
@@ -432,27 +434,27 @@ const AdminDashboard = () => {
                     <span className="text-xl">📚</span>
                   </div>
                   <div>
-                    <h3 className="font-bold text-lg">Primaire</h3>
-                    <p className="text-sm opacity-90">6ème année primaire</p>
+                    <h3 className="font-bold text-lg">{t("admin.primary")}</h3>
+                    <p className="text-sm opacity-90">{t("admin.6primary")}</p>
                   </div>
                 </div>
                 <div className="mt-3 flex items-baseline gap-1">
                   <span className="text-2xl font-bold">100</span>
-                  <span className="text-sm">MAD/mois</span>
-                  <span className="text-xs opacity-70 ml-2">• 500 DH/an</span>
+                  <span className="text-sm">MAD/{language === 'ar' ? 'شهر' : 'mois'}</span>
+                  <span className="text-xs opacity-70 ml-2">• 500 DH/{language === 'ar' ? 'سنة' : 'an'}</span>
                 </div>
               </div>
               <div className="p-4">
                 <p className="text-sm text-muted-foreground mb-3">
-                  Construire des bases solides avec un accompagnement bienveillant
+                  {t("admin.solidBases")}
                 </p>
                 <div className="mb-4">
-                  <p className="text-xs font-semibold text-primary mb-2">Matières enseignées</p>
+                  <p className="text-xs font-semibold text-primary mb-2">{t("admin.taughtSubjects")}</p>
                   <div className="flex flex-wrap gap-2">
                     {[
-                      { name: "Arabe", icon: "📖", desc: "Grammaire, lecture, expression écrite et orale" },
-                      { name: "Français", icon: "🇫🇷", desc: "Maîtrise de la langue française" },
-                      { name: "Mathématiques", icon: "🔢", desc: "Calcul, géométrie et résolution de problèmes" }
+                      { name: language === 'ar' ? "العربية" : "Arabe", icon: "📖" },
+                      { name: language === 'ar' ? "الفرنسية" : "Français", icon: "🇫🇷" },
+                      { name: language === 'ar' ? "الرياضيات" : "Mathématiques", icon: "🔢" }
                     ].map((subject) => (
                       <div key={subject.name} className="flex items-center gap-1 px-2 py-1 bg-primary/10 rounded-md text-xs">
                         <span>{subject.icon}</span>
@@ -464,11 +466,11 @@ const AdminDashboard = () => {
                 <div className="space-y-2 text-xs text-muted-foreground">
                   <div className="flex items-center gap-2">
                     <Clock className="h-3 w-3" />
-                    <span>3 séances / semaine • 3h / séance</span>
+                    <span>3 {t("admin.sessionsPerWeek")} • 3{t("admin.hoursPerSession")}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Users className="h-3 w-3" />
-                    <span>Mini-groupes (max 8 élèves)</span>
+                    <span>{t("admin.miniGroups")} ({language === 'ar' ? 'حد أقصى 8 تلاميذ' : 'max 8 élèves'})</span>
                   </div>
                 </div>
               </div>
@@ -487,29 +489,29 @@ const AdminDashboard = () => {
                     <span className="text-xl">🎓</span>
                   </div>
                   <div>
-                    <h3 className="font-bold text-lg">Collège</h3>
-                    <p className="text-sm opacity-90">3ème année collège</p>
+                    <h3 className="font-bold text-lg">{t("admin.college")}</h3>
+                    <p className="text-sm opacity-90">{t("admin.3college")}</p>
                   </div>
                 </div>
                 <div className="mt-3 flex items-baseline gap-1">
                   <span className="text-2xl font-bold">150</span>
-                  <span className="text-sm">MAD/mois</span>
-                  <span className="text-xs opacity-70 ml-2">• 700 DH/an</span>
+                  <span className="text-sm">MAD/{language === 'ar' ? 'شهر' : 'mois'}</span>
+                  <span className="text-xs opacity-70 ml-2">• 700 DH/{language === 'ar' ? 'سنة' : 'an'}</span>
                 </div>
               </div>
               <div className="p-4">
                 <p className="text-sm text-muted-foreground mb-3">
-                  Préparer l'excellence avec autonomie pour le brevet
+                  {t("admin.prepareExcellence")}
                 </p>
                 <div className="mb-4">
-                  <p className="text-xs font-semibold text-emerald-600 mb-2">Matières enseignées</p>
+                  <p className="text-xs font-semibold text-emerald-600 mb-2">{t("admin.taughtSubjects")}</p>
                   <div className="flex flex-wrap gap-2">
                     {[
-                      { name: "Mathématiques", icon: "📐", desc: "Algèbre, géométrie et analyse" },
-                      { name: "Français", icon: "📚", desc: "Langue et littérature" },
-                      { name: "Physique-Chimie", icon: "🔬", desc: "Sciences expérimentales" },
-                      { name: "SVT", icon: "🌿", desc: "Sciences de la vie et de la terre" },
-                      { name: "Anglais", icon: "🇬🇧", desc: "Langue internationale" }
+                      { name: language === 'ar' ? "الرياضيات" : "Mathématiques", icon: "📐" },
+                      { name: language === 'ar' ? "الفرنسية" : "Français", icon: "📚" },
+                      { name: language === 'ar' ? "الفيزياء والكيمياء" : "Physique-Chimie", icon: "🔬" },
+                      { name: language === 'ar' ? "علوم الحياة" : "SVT", icon: "🌿" },
+                      { name: language === 'ar' ? "الإنجليزية" : "Anglais", icon: "🇬🇧" }
                     ].map((subject) => (
                       <div key={subject.name} className="flex items-center gap-1 px-2 py-1 bg-emerald-500/10 rounded-md text-xs">
                         <span>{subject.icon}</span>
@@ -521,15 +523,15 @@ const AdminDashboard = () => {
                 <div className="space-y-2 text-xs text-muted-foreground">
                   <div className="flex items-center gap-2">
                     <Clock className="h-3 w-3" />
-                    <span>5 séances / semaine</span>
+                    <span>5 {t("admin.sessionsPerWeek")}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Users className="h-3 w-3" />
-                    <span>Mini-groupes (max 10 élèves)</span>
+                    <span>{t("admin.miniGroups")} ({language === 'ar' ? 'حد أقصى 10 تلاميذ' : 'max 10 élèves'})</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Target className="h-3 w-3" />
-                    <span>95% taux de réussite au Brevet</span>
+                    <span>95% {t("admin.successRate")} {language === 'ar' ? 'في الامتحان الجهوي' : 'au Brevet'}</span>
                   </div>
                 </div>
               </div>
@@ -548,49 +550,49 @@ const AdminDashboard = () => {
                     <span className="text-xl">🏆</span>
                   </div>
                   <div>
-                    <h3 className="font-bold text-lg">Lycée</h3>
-                    <p className="text-sm opacity-90">1ère & 2ème année BAC</p>
+                    <h3 className="font-bold text-lg">{t("admin.lycee")}</h3>
+                    <p className="text-sm opacity-90">{t("admin.1and2bac")}</p>
                   </div>
                 </div>
                 <div className="mt-3 flex items-baseline gap-1">
                   <span className="text-2xl font-bold">200-350</span>
-                  <span className="text-sm">MAD/mois</span>
+                  <span className="text-sm">MAD/{language === 'ar' ? 'شهر' : 'mois'}</span>
                 </div>
               </div>
               <div className="p-4">
                 <p className="text-sm text-muted-foreground mb-3">
-                  Objectif Baccalauréat avec préparation intensive
+                  {t("admin.objectiveBac")}
                 </p>
                 
                 {/* Packs Lycée */}
                 <div className="space-y-3 mb-4">
                   <div className="p-2 bg-blue-500/10 rounded-lg">
-                    <p className="text-xs font-semibold text-blue-600">Pack Jihawi (1ère BAC)</p>
-                    <p className="text-xs text-muted-foreground">Français | Arabe | Éducation islamique | GEO</p>
-                    <p className="text-xs text-blue-600 font-medium mt-1">200 MAD/mois • 900 DH/an</p>
+                    <p className="text-xs font-semibold text-blue-600">{language === 'ar' ? 'باقة الجهوي (الأولى باك)' : 'Pack Jihawi (1ère BAC)'}</p>
+                    <p className="text-xs text-muted-foreground">{language === 'ar' ? 'الفرنسية | العربية | التربية الإسلامية | الجغرافيا' : 'Français | Arabe | Éducation islamique | GEO'}</p>
+                    <p className="text-xs text-blue-600 font-medium mt-1">200 MAD/{language === 'ar' ? 'شهر' : 'mois'} • 900 DH/{language === 'ar' ? 'سنة' : 'an'}</p>
                   </div>
                   <div className="p-2 bg-purple-500/10 rounded-lg">
-                    <p className="text-xs font-semibold text-purple-600">Pack Essentiel (2ème BAC)</p>
-                    <p className="text-xs text-muted-foreground">Math | Physique chimie | SVT</p>
-                    <p className="text-xs text-purple-600 font-medium mt-1">250 MAD/mois • 1200 DH/an</p>
+                    <p className="text-xs font-semibold text-purple-600">{language === 'ar' ? 'الباقة الأساسية (الثانية باك)' : 'Pack Essentiel (2ème BAC)'}</p>
+                    <p className="text-xs text-muted-foreground">{language === 'ar' ? 'الرياضيات | الفيزياء والكيمياء | علوم الحياة' : 'Math | Physique chimie | SVT'}</p>
+                    <p className="text-xs text-purple-600 font-medium mt-1">250 MAD/{language === 'ar' ? 'شهر' : 'mois'} • 1200 DH/{language === 'ar' ? 'سنة' : 'an'}</p>
                   </div>
                   <div className="p-2 bg-amber-500/10 rounded-lg border border-amber-200">
-                    <p className="text-xs font-semibold text-amber-600">Pack Total Watani (2ème BAC) ⭐</p>
-                    <p className="text-xs text-muted-foreground">Math | PC | SVT | Anglais | Philosophie</p>
-                    <p className="text-xs text-amber-600 font-medium mt-1">350 MAD/mois • 1500 DH/an</p>
+                    <p className="text-xs font-semibold text-amber-600">{language === 'ar' ? 'باقة الوطني الكاملة (الثانية باك) ⭐' : 'Pack Total Watani (2ème BAC) ⭐'}</p>
+                    <p className="text-xs text-muted-foreground">{language === 'ar' ? 'الرياضيات | الفيزياء | علوم الحياة | الإنجليزية | الفلسفة' : 'Math | PC | SVT | Anglais | Philosophie'}</p>
+                    <p className="text-xs text-amber-600 font-medium mt-1">350 MAD/{language === 'ar' ? 'شهر' : 'mois'} • 1500 DH/{language === 'ar' ? 'سنة' : 'an'}</p>
                   </div>
                 </div>
 
                 <div className="mb-4">
-                  <p className="text-xs font-semibold text-amber-600 mb-2">Toutes les matières</p>
+                  <p className="text-xs font-semibold text-amber-600 mb-2">{t("admin.allSubjects")}</p>
                   <div className="flex flex-wrap gap-1">
                     {[
-                      { name: "Math", icon: "📐" },
-                      { name: "PC", icon: "⚛️" },
-                      { name: "SVT", icon: "🧬" },
-                      { name: "Philo", icon: "🎓" },
-                      { name: "Anglais", icon: "🌍" },
-                      { name: "Français", icon: "📖" }
+                      { name: language === 'ar' ? "الرياضيات" : "Math", icon: "📐" },
+                      { name: language === 'ar' ? "الفيزياء" : "PC", icon: "⚛️" },
+                      { name: language === 'ar' ? "علوم الحياة" : "SVT", icon: "🧬" },
+                      { name: language === 'ar' ? "الفلسفة" : "Philo", icon: "🎓" },
+                      { name: language === 'ar' ? "الإنجليزية" : "Anglais", icon: "🌍" },
+                      { name: language === 'ar' ? "الفرنسية" : "Français", icon: "📖" }
                     ].map((subject) => (
                       <div key={subject.name} className="flex items-center gap-1 px-2 py-1 bg-amber-500/10 rounded-md text-xs">
                         <span>{subject.icon}</span>
@@ -602,11 +604,11 @@ const AdminDashboard = () => {
                 <div className="space-y-2 text-xs text-muted-foreground">
                   <div className="flex items-center gap-2">
                     <Clock className="h-3 w-3" />
-                    <span>Jusqu'à 8h / semaine</span>
+                    <span>{t("admin.upToHours")}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Target className="h-3 w-3" />
-                    <span>98% taux de réussite au BAC</span>
+                    <span>98% {t("admin.successRate")} {language === 'ar' ? 'في الباكالوريا' : 'au BAC'}</span>
                   </div>
                 </div>
               </div>
