@@ -18,7 +18,8 @@ import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { format } from "date-fns";
-import { fr } from "date-fns/locale";
+import { fr as frLocale, arSA } from "date-fns/locale";
+import { useLanguage } from "@/hooks/useLanguage";
 
 interface ScheduleItem {
   id: string;
@@ -40,6 +41,8 @@ interface TeacherStats {
 
 const TeacherDashboard = () => {
   const { user } = useAuth();
+  const { t, language } = useLanguage();
+  const dateLocale = language === 'ar' ? arSA : frLocale;
   const [profile, setProfile] = useState<{ first_name: string; last_name: string } | null>(null);
   const [schedule, setSchedule] = useState<ScheduleItem[]>([]);
   const [stats, setStats] = useState<TeacherStats>({
@@ -95,7 +98,6 @@ const TeacherDashboard = () => {
       const today = format(new Date(), 'yyyy-MM-dd');
       const dayOfWeek = new Date().getDay();
 
-      // Fetch schedule slots for today
       const { data: scheduleData } = await supabase
         .from('schedule_slots')
         .select(`
@@ -114,7 +116,6 @@ const TeacherDashboard = () => {
         .eq('teacher_assignments.teacher_id', user.id)
         .order('start_time', { ascending: true });
 
-      // Fetch direct sessions for today
       const { data: directSessions } = await supabase
         .from('sessions')
         .select(`
@@ -147,15 +148,14 @@ const TeacherDashboard = () => {
           id: slot.id,
           time: slot.start_time?.slice(0, 5) || '',
           endTime: slot.end_time?.slice(0, 5) || '',
-          subject: slot.teacher_assignments?.subjects?.name || 'Matière',
+          subject: slot.teacher_assignments?.subjects?.name || '',
           subjectColor: slot.teacher_assignments?.subjects?.color || '#3B82F6',
-          className: slot.teacher_assignments?.classes?.name || 'Classe',
+          className: slot.teacher_assignments?.classes?.name || '',
           room: slot.room,
           status,
         };
       });
 
-      // Transform direct sessions into schedule items
       const directScheduleItems: ScheduleItem[] = (directSessions || []).map((session: any) => {
         let status: 'completed' | 'current' | 'upcoming' = 'upcoming';
         const startTime = session.start_time || '00:00:00';
@@ -172,15 +172,14 @@ const TeacherDashboard = () => {
           id: session.id,
           time: startTime?.slice(0, 5) || '',
           endTime: endTime?.slice(0, 5) || '',
-          subject: session.subject?.name || session.title || 'Séance directe',
+          subject: session.subject?.name || session.title || '',
           subjectColor: session.subject?.color || '#F59E0B',
-          className: session.class?.name || 'Séance directe',
+          className: session.class?.name || '',
           room: null,
           status,
         };
       });
 
-      // Merge and sort by start time
       const allItems = [...transformedSchedule, ...directScheduleItems].sort(
         (a, b) => a.time.localeCompare(b.time)
       );
@@ -211,7 +210,7 @@ const TeacherDashboard = () => {
         <main className="flex-1 flex items-center justify-center p-4">
           <div className="text-center space-y-4">
             <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
-            <p className="text-muted-foreground">Chargement du tableau de bord...</p>
+            <p className="text-muted-foreground">{t("teacher.loading")}</p>
           </div>
         </main>
       </div>
@@ -226,10 +225,10 @@ const TeacherDashboard = () => {
         {/* Header */}
         <div className="mb-6 lg:mb-8">
           <h1 className="text-xl lg:text-2xl font-bold text-foreground">
-            Bonjour, {profile?.first_name || 'Enseignant'} 👋
+            {t("teacher.hello").replace('{name}', profile?.first_name || (language === 'ar' ? 'أستاذ' : 'Enseignant'))}
           </h1>
           <p className="text-sm lg:text-base text-muted-foreground">
-            {format(new Date(), "EEEE d MMMM yyyy", { locale: fr })}
+            {format(new Date(), "EEEE d MMMM yyyy", { locale: dateLocale })}
           </p>
         </div>
 
@@ -247,12 +246,12 @@ const TeacherDashboard = () => {
                 {currentClass ? (
                   <>
                     <div className="h-2 w-2 lg:h-3 lg:w-3 rounded-full bg-accent animate-pulse" />
-                    <span className="text-xs lg:text-sm font-medium text-accent">Cours en cours</span>
+                    <span className="text-xs lg:text-sm font-medium text-accent">{t("teacher.currentCourse")}</span>
                   </>
                 ) : (
                   <>
                     <div className="h-2 w-2 lg:h-3 lg:w-3 rounded-full bg-primary" />
-                    <span className="text-xs lg:text-sm font-medium text-primary">Prochain cours</span>
+                    <span className="text-xs lg:text-sm font-medium text-primary">{t("teacher.nextCourse")}</span>
                   </>
                 )}
               </div>
@@ -281,13 +280,12 @@ const TeacherDashboard = () => {
                 <Button variant="outline" size="sm" asChild className="flex-1 sm:flex-initial lg:size-lg">
                   <Link to="/dashboard/attendance">
                     <Users className="h-4 w-4 lg:h-5 lg:w-5 mr-1 lg:mr-2" />
-                    <span className="hidden sm:inline">Présences</span>
+                    <span className="hidden sm:inline">{t("teacher.attendances")}</span>
                   </Link>
                 </Button>
                 <Button variant="default" size="sm" className="flex-1 sm:flex-initial lg:size-lg">
                   <Play className="h-4 w-4 lg:h-5 lg:w-5 mr-1 lg:mr-2" />
-                  <span className="hidden sm:inline">Rejoindre</span>
-                  <span className="sm:hidden">Rejoindre</span>
+                  <span>{t("teacher.join")}</span>
                 </Button>
               </div>
             </div>
@@ -301,8 +299,8 @@ const TeacherDashboard = () => {
             className="bg-card rounded-xl lg:rounded-2xl p-4 lg:p-6 shadow-card border border-border mb-6 lg:mb-8 text-center"
           >
             <Calendar className="h-10 w-10 lg:h-12 lg:w-12 mx-auto mb-3 lg:mb-4 text-muted-foreground" />
-            <h2 className="text-lg lg:text-xl font-semibold mb-2 text-foreground">Pas de cours prévu aujourd'hui</h2>
-            <p className="text-sm lg:text-base text-muted-foreground">Profitez de votre journée !</p>
+            <h2 className="text-lg lg:text-xl font-semibold mb-2 text-foreground">{t("teacher.noCourseToday")}</h2>
+            <p className="text-sm lg:text-base text-muted-foreground">{t("teacher.enjoyDay")}</p>
           </motion.div>
         )}
 
@@ -311,12 +309,12 @@ const TeacherDashboard = () => {
           <div className="lg:col-span-2 bg-card rounded-xl shadow-card border border-border">
             <div className="p-4 lg:p-6 border-b border-border">
               <div className="flex items-center justify-between">
-                <h2 className="text-base lg:text-lg font-semibold text-foreground">Emploi du temps - Aujourd'hui</h2>
+                <h2 className="text-base lg:text-lg font-semibold text-foreground">{t("teacher.todaySchedule")}</h2>
                 <Button variant="ghost" size="sm" asChild className="text-xs lg:text-sm">
                   <Link to="/dashboard/schedule">
                     <Calendar className="h-3 w-3 lg:h-4 lg:w-4 mr-1 lg:mr-2" />
-                    <span className="hidden sm:inline">Voir la semaine</span>
-                    <span className="sm:hidden">Semaine</span>
+                    <span className="hidden sm:inline">{t("teacher.viewWeek")}</span>
+                    <span className="sm:hidden">{t("teacher.week")}</span>
                   </Link>
                 </Button>
               </div>
@@ -325,7 +323,7 @@ const TeacherDashboard = () => {
               {schedule.length === 0 ? (
                 <div className="text-center py-6 lg:py-8 text-muted-foreground">
                   <Clock className="h-10 w-10 lg:h-12 lg:w-12 mx-auto mb-3 lg:mb-4 opacity-50" />
-                  <p className="text-sm lg:text-base">Aucun cours prévu aujourd'hui</p>
+                  <p className="text-sm lg:text-base">{t("teacher.noCourseScheduled")}</p>
                 </div>
               ) : (
                 schedule.map((item, index) => (
@@ -362,17 +360,17 @@ const TeacherDashboard = () => {
                     {item.status === 'current' ? (
                       <Button size="sm" variant="default" className="hidden sm:flex">
                         <Video className="h-4 w-4 mr-1" />
-                        En cours
+                        {t("teacher.ongoing")}
                       </Button>
                     ) : item.status === 'completed' ? (
                       <div className="hidden sm:flex items-center gap-1 text-xs lg:text-sm text-muted-foreground">
                         <CheckCircle2 className="h-4 w-4" />
-                        <span className="hidden lg:inline">Terminé</span>
+                        <span className="hidden lg:inline">{t("teacher.completed")}</span>
                       </div>
                     ) : (
                       <Button size="sm" variant="outline" className="hidden sm:flex">
-                        <span className="hidden lg:inline">Préparer</span>
-                        <span className="lg:hidden">Prép.</span>
+                        <span className="hidden lg:inline">{t("teacher.prepare")}</span>
+                        <span className="lg:hidden">{t("teacher.prep")}</span>
                       </Button>
                     )}
                   </motion.div>
@@ -390,21 +388,21 @@ const TeacherDashboard = () => {
                   <Users className="h-4 w-4 lg:h-5 lg:w-5 text-primary" />
                 </div>
                 <div className="text-xl lg:text-2xl font-bold text-foreground">{stats.totalStudents}</div>
-                <div className="text-xs lg:text-sm text-muted-foreground">Élèves total</div>
+                <div className="text-xs lg:text-sm text-muted-foreground">{t("teacher.totalStudents")}</div>
               </div>
               <div className="bg-card rounded-xl p-3 lg:p-4 shadow-card border border-border">
                 <div className="h-8 w-8 lg:h-10 lg:w-10 rounded-lg bg-accent/10 flex items-center justify-center mb-2 lg:mb-3">
                   <BookMarked className="h-4 w-4 lg:h-5 lg:w-5 text-accent" />
                 </div>
                 <div className="text-xl lg:text-2xl font-bold text-foreground">{stats.totalClasses}</div>
-                <div className="text-xs lg:text-sm text-muted-foreground">Classes</div>
+                <div className="text-xs lg:text-sm text-muted-foreground">{t("teacher.classes")}</div>
               </div>
             </div>
 
             {/* Quick actions */}
             <div className="bg-card rounded-xl shadow-card border border-border">
               <div className="p-3 lg:p-4 border-b border-border">
-                <h3 className="font-semibold text-sm lg:text-base text-foreground">Actions rapides</h3>
+                <h3 className="font-semibold text-sm lg:text-base text-foreground">{t("teacher.quickActions")}</h3>
               </div>
               <div className="p-3 lg:p-4 space-y-2 lg:space-y-3">
                 <Link
@@ -415,8 +413,8 @@ const TeacherDashboard = () => {
                     <FileText className="h-4 w-4 lg:h-5 lg:w-5 text-primary" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-xs lg:text-sm font-medium text-foreground">Supports de cours</div>
-                    <div className="text-xs text-muted-foreground hidden lg:block">Gérer les documents</div>
+                    <div className="text-xs lg:text-sm font-medium text-foreground">{t("teacher.courseResources")}</div>
+                    <div className="text-xs text-muted-foreground hidden lg:block">{t("teacher.manageDocuments")}</div>
                   </div>
                   <ArrowRight className="h-4 w-4 text-muted-foreground" />
                 </Link>
@@ -428,8 +426,8 @@ const TeacherDashboard = () => {
                     <FileText className="h-4 w-4 lg:h-5 lg:w-5 text-secondary" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-xs lg:text-sm font-medium text-foreground">Devoirs & Examens</div>
-                    <div className="text-xs text-muted-foreground hidden lg:block">Créer une évaluation</div>
+                    <div className="text-xs lg:text-sm font-medium text-foreground">{t("teacher.homeworkExams")}</div>
+                    <div className="text-xs text-muted-foreground hidden lg:block">{t("teacher.createEvaluation")}</div>
                   </div>
                   <ArrowRight className="h-4 w-4 text-muted-foreground" />
                 </Link>
@@ -441,8 +439,8 @@ const TeacherDashboard = () => {
                     <Users className="h-4 w-4 lg:h-5 lg:w-5 text-accent" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-xs lg:text-sm font-medium text-foreground">Présences</div>
-                    <div className="text-xs text-muted-foreground hidden lg:block">Gérer les présences</div>
+                    <div className="text-xs lg:text-sm font-medium text-foreground">{t("teacher.attendances")}</div>
+                    <div className="text-xs text-muted-foreground hidden lg:block">{t("teacher.manageAttendances")}</div>
                   </div>
                   <ArrowRight className="h-4 w-4 text-muted-foreground" />
                 </Link>
@@ -456,15 +454,15 @@ const TeacherDashboard = () => {
                   <Clock className="h-4 w-4 lg:h-5 lg:w-5 text-primary" />
                 </div>
                 <div>
-                  <div className="font-semibold text-sm lg:text-base text-foreground">Cette semaine</div>
+                  <div className="font-semibold text-sm lg:text-base text-foreground">{t("teacher.thisWeek")}</div>
                   <div className="text-xs lg:text-sm text-muted-foreground">
-                    {stats.todaySessions} cours aujourd'hui
+                    {stats.todaySessions} {t("teacher.coursesToday")}
                   </div>
                 </div>
               </div>
               <Button variant="outline" className="w-full text-xs lg:text-sm" asChild>
                 <Link to="/dashboard/schedule">
-                  Voir l'emploi du temps complet
+                  {t("teacher.viewFullSchedule")}
                 </Link>
               </Button>
             </div>
