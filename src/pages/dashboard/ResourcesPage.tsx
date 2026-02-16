@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import { useAuth } from "@/hooks/useAuth";
+import { useLanguage } from "@/hooks/useLanguage";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -40,6 +41,7 @@ interface Resource {
 
 export default function ResourcesPage() {
   const { role, user, loading: authLoading } = useAuth();
+  const { t, language } = useLanguage();
   const [resources, setResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -58,12 +60,7 @@ export default function ResourcesPage() {
       const { data, error } = await supabase
         .from("resources")
         .select(`
-          id,
-          title,
-          description,
-          file_url,
-          file_type,
-          created_at,
+          id, title, description, file_url, file_type, created_at,
           subject:subjects(name, color),
           class:classes(name)
         `)
@@ -73,7 +70,7 @@ export default function ResourcesPage() {
       setResources(data || []);
     } catch (error) {
       console.error("Error fetching resources:", error);
-      toast.error("Erreur lors du chargement des ressources");
+      toast.error(t("resources.errorLoad"));
     } finally {
       setLoading(false);
     }
@@ -104,7 +101,7 @@ export default function ResourcesPage() {
       <div className="min-h-screen bg-muted/30 flex items-center justify-center">
         <div className="text-center space-y-4">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto" />
-          <p className="text-muted-foreground">Chargement...</p>
+          <p className="text-muted-foreground">{t("resources.loading")}</p>
         </div>
       </div>
     );
@@ -121,10 +118,10 @@ export default function ResourcesPage() {
           <div>
             <h1 className="text-2xl font-bold flex items-center gap-2">
               <BookMarked className="h-6 w-6 text-primary" />
-              {effectiveRole === "teacher" ? "Supports de cours" : "Ressources"}
+              {effectiveRole === "teacher" ? t("resources.title") : t("resources.titleStudent")}
             </h1>
             <p className="text-muted-foreground">
-              {effectiveRole === "teacher" ? "Gérez vos supports pédagogiques" : "Accédez aux ressources de vos cours"}
+              {effectiveRole === "teacher" ? t("resources.subtitle") : t("resources.subtitleStudent")}
             </p>
           </div>
           
@@ -138,7 +135,7 @@ export default function ResourcesPage() {
           <div className="relative flex-1 max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Rechercher une ressource..."
+              placeholder={t("resources.search")}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-9"
@@ -147,10 +144,10 @@ export default function ResourcesPage() {
           <Select value={subjectFilter} onValueChange={setSubjectFilter}>
             <SelectTrigger className="w-48">
               <Filter className="h-4 w-4 mr-2" />
-              <SelectValue placeholder="Matière" />
+              <SelectValue placeholder={t("resources.subject")} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Toutes les matières</SelectItem>
+              <SelectItem value="all">{t("resources.allSubjects")}</SelectItem>
               {subjects.map((subject) => (
                 <SelectItem key={subject.id} value={subject.name}>
                   {subject.name}
@@ -176,9 +173,9 @@ export default function ResourcesPage() {
         ) : filteredResources.length === 0 ? (
           <Card className="p-12 text-center">
             <BookMarked className="h-16 w-16 mx-auto mb-4 text-muted-foreground/50" />
-            <h3 className="text-lg font-semibold mb-2">Aucune ressource</h3>
+            <h3 className="text-lg font-semibold mb-2">{t("resources.noResources")}</h3>
             <p className="text-muted-foreground">
-              {searchQuery ? "Aucune ressource ne correspond à votre recherche" : "Aucune ressource disponible pour le moment"}
+              {searchQuery ? t("resources.noSearchResults") : t("resources.noResourcesYet")}
             </p>
           </Card>
         ) : (
@@ -220,12 +217,12 @@ export default function ResourcesPage() {
                     )}
                     <div className="flex items-center justify-between text-xs text-muted-foreground">
                       <span>{resource.class?.name}</span>
-                      <span>{new Date(resource.created_at).toLocaleDateString("fr-FR")}</span>
+                      <span>{new Date(resource.created_at).toLocaleDateString(language === 'ar' ? 'ar-MA' : 'fr-FR')}</span>
                     </div>
                     {resource.file_url && (
                       <Button variant="outline" size="sm" className="w-full mt-4">
                         <Download className="h-4 w-4 mr-2" />
-                        Télécharger
+                        {t("resources.download")}
                       </Button>
                     )}
                   </CardContent>
