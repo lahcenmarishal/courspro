@@ -17,10 +17,10 @@ import {
   Clock,
   CheckCircle2,
   AlertCircle,
-  Plus,
   Filter,
   Upload
 } from "lucide-react";
+import { AddHomeworkDialog } from "@/components/dashboard/AddHomeworkDialog";
 import {
   Select,
   SelectContent,
@@ -170,10 +170,7 @@ export default function HomeworkPage() {
           </div>
           
           {effectiveRole === "teacher" && (
-            <Button>
-              <Plus className="h-4 w-4 mr-2" />
-              Créer un devoir
-            </Button>
+            <AddHomeworkDialog onHomeworkAdded={fetchHomework} />
           )}
         </div>
 
