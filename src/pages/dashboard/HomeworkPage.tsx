@@ -1,34 +1,23 @@
 import { useState, useEffect } from "react";
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import { useAuth } from "@/hooks/useAuth";
+import { useLanguage } from "@/hooks/useLanguage";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
 import { format, isPast, isToday, isTomorrow, differenceInDays } from "date-fns";
-import { fr } from "date-fns/locale";
+import { fr as frLocale } from "date-fns/locale";
 import { 
-  FileText, 
-  Search, 
-  Calendar,
-  Clock,
-  CheckCircle2,
-  AlertCircle,
-  Filter,
-  Upload
+  FileText, Search, Calendar, Clock, CheckCircle2, AlertCircle, Filter, Upload
 } from "lucide-react";
 import { AddHomeworkDialog } from "@/components/dashboard/AddHomeworkDialog";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface Homework {
   id: string;
@@ -48,6 +37,7 @@ interface Homework {
 
 export default function HomeworkPage() {
   const { role, user, loading: authLoading } = useAuth();
+  const { t, language } = useLanguage();
   const [homework, setHomework] = useState<Homework[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -64,12 +54,7 @@ export default function HomeworkPage() {
       const { data, error } = await supabase
         .from("homework")
         .select(`
-          id,
-          title,
-          description,
-          due_date,
-          max_score,
-          created_at,
+          id, title, description, due_date, max_score, created_at,
           subject:subjects(name, color),
           class:classes(name)
         `)
@@ -77,7 +62,6 @@ export default function HomeworkPage() {
 
       if (error) throw error;
 
-      // Fetch submissions for student
       if (role === "student" && data) {
         const homeworkWithSubmissions = await Promise.all(
           data.map(async (hw) => {
@@ -96,7 +80,7 @@ export default function HomeworkPage() {
       }
     } catch (error) {
       console.error("Error fetching homework:", error);
-      toast.error("Erreur lors du chargement des devoirs");
+      toast.error(t("homework.errorLoad"));
     } finally {
       setLoading(false);
     }
@@ -104,28 +88,28 @@ export default function HomeworkPage() {
 
   const getStatusBadge = (hw: Homework) => {
     if (hw.submission?.score !== null && hw.submission?.score !== undefined) {
-      return <Badge className="bg-green-500/10 text-green-600 border-green-500/30">Noté</Badge>;
+      return <Badge className="bg-green-500/10 text-green-600 border-green-500/30">{t("homework.graded")}</Badge>;
     }
     if (hw.submission) {
-      return <Badge className="bg-blue-500/10 text-blue-600 border-blue-500/30">Rendu</Badge>;
+      return <Badge className="bg-blue-500/10 text-blue-600 border-blue-500/30">{t("homework.submitted")}</Badge>;
     }
     if (isPast(new Date(hw.due_date))) {
-      return <Badge variant="destructive">En retard</Badge>;
+      return <Badge variant="destructive">{t("homework.late")}</Badge>;
     }
     if (isToday(new Date(hw.due_date))) {
-      return <Badge className="bg-orange-500/10 text-orange-600 border-orange-500/30">Aujourd'hui</Badge>;
+      return <Badge className="bg-orange-500/10 text-orange-600 border-orange-500/30">{t("homework.today")}</Badge>;
     }
-    return <Badge variant="secondary">À faire</Badge>;
+    return <Badge variant="secondary">{t("homework.todo")}</Badge>;
   };
 
   const getDueDateLabel = (dueDate: string) => {
     const date = new Date(dueDate);
-    if (isToday(date)) return "Aujourd'hui";
-    if (isTomorrow(date)) return "Demain";
+    if (isToday(date)) return t("homework.today");
+    if (isTomorrow(date)) return t("homework.tomorrow");
     const days = differenceInDays(date, new Date());
-    if (days < 0) return `Il y a ${Math.abs(days)} jours`;
-    if (days < 7) return `Dans ${days} jours`;
-    return format(date, "d MMMM", { locale: fr });
+    if (days < 0) return t("homework.daysAgo").replace("{n}", String(Math.abs(days)));
+    if (days < 7) return t("homework.inDays").replace("{n}", String(days));
+    return format(date, "d MMMM", { locale: language === 'ar' ? undefined : frLocale });
   };
 
   const filteredHomework = homework.filter((hw) => {
@@ -145,7 +129,7 @@ export default function HomeworkPage() {
       <div className="min-h-screen bg-muted/30 flex items-center justify-center">
         <div className="text-center space-y-4">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto" />
-          <p className="text-muted-foreground">Chargement...</p>
+          <p className="text-muted-foreground">{t("homework.loading")}</p>
         </div>
       </div>
     );
@@ -162,10 +146,10 @@ export default function HomeworkPage() {
           <div>
             <h1 className="text-2xl font-bold flex items-center gap-2">
               <FileText className="h-6 w-6 text-primary" />
-              {effectiveRole === "teacher" ? "Devoirs & Examens" : "Mes Devoirs"}
+              {effectiveRole === "teacher" ? t("homework.title") : t("homework.titleStudent")}
             </h1>
             <p className="text-muted-foreground">
-              {effectiveRole === "teacher" ? "Gérez les évaluations de vos classes" : "Suivez et rendez vos devoirs"}
+              {effectiveRole === "teacher" ? t("homework.subtitle") : t("homework.subtitleStudent")}
             </p>
           </div>
           
@@ -184,7 +168,7 @@ export default function HomeworkPage() {
                 </div>
                 <div>
                   <div className="text-2xl font-bold">{pendingCount}</div>
-                  <div className="text-sm text-muted-foreground">À rendre</div>
+                  <div className="text-sm text-muted-foreground">{t("homework.pending")}</div>
                 </div>
               </div>
             </Card>
@@ -195,7 +179,7 @@ export default function HomeworkPage() {
                 </div>
                 <div>
                   <div className="text-2xl font-bold">{homework.filter(hw => hw.submission).length}</div>
-                  <div className="text-sm text-muted-foreground">Rendus</div>
+                  <div className="text-sm text-muted-foreground">{t("homework.submitted")}</div>
                 </div>
               </div>
             </Card>
@@ -206,7 +190,7 @@ export default function HomeworkPage() {
                 </div>
                 <div>
                   <div className="text-2xl font-bold">{lateCount}</div>
-                  <div className="text-sm text-muted-foreground">En retard</div>
+                  <div className="text-sm text-muted-foreground">{t("homework.late")}</div>
                 </div>
               </div>
             </Card>
@@ -218,7 +202,7 @@ export default function HomeworkPage() {
           <div className="relative flex-1 max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Rechercher un devoir..."
+              placeholder={t("homework.search")}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-9"
@@ -227,13 +211,13 @@ export default function HomeworkPage() {
           <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger className="w-48">
               <Filter className="h-4 w-4 mr-2" />
-              <SelectValue placeholder="Statut" />
+              <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Tous les devoirs</SelectItem>
-              <SelectItem value="pending">À rendre</SelectItem>
-              <SelectItem value="submitted">Rendus</SelectItem>
-              <SelectItem value="late">En retard</SelectItem>
+              <SelectItem value="all">{t("homework.all")}</SelectItem>
+              <SelectItem value="pending">{t("homework.pending")}</SelectItem>
+              <SelectItem value="submitted">{t("homework.submitted")}</SelectItem>
+              <SelectItem value="late">{t("homework.late")}</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -258,9 +242,9 @@ export default function HomeworkPage() {
         ) : filteredHomework.length === 0 ? (
           <Card className="p-12 text-center">
             <FileText className="h-16 w-16 mx-auto mb-4 text-muted-foreground/50" />
-            <h3 className="text-lg font-semibold mb-2">Aucun devoir</h3>
+            <h3 className="text-lg font-semibold mb-2">{t("homework.noHomework")}</h3>
             <p className="text-muted-foreground">
-              {searchQuery ? "Aucun devoir ne correspond à votre recherche" : "Aucun devoir pour le moment"}
+              {searchQuery ? t("homework.noSearchResults") : t("homework.noHomeworkYet")}
             </p>
           </Card>
         ) : (
@@ -305,12 +289,12 @@ export default function HomeworkPage() {
                             <div className="text-lg font-bold text-green-600">
                               {hw.submission.score}/{hw.max_score}
                             </div>
-                            <div className="text-xs text-muted-foreground">Note</div>
+                            <div className="text-xs text-muted-foreground">{t("homework.grade")}</div>
                           </div>
                         ) : effectiveRole === "student" && !hw.submission && !isPast(new Date(hw.due_date)) ? (
                           <Button size="sm">
                             <Upload className="h-4 w-4 mr-2" />
-                            Rendre
+                            {t("homework.submit")}
                           </Button>
                         ) : null}
                       </div>

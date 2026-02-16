@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useLanguage } from "@/hooks/useLanguage";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -66,6 +67,7 @@ function formatFileSize(bytes: number): string {
 
 export function AddResourceDialog({ onResourceAdded }: AddResourceDialogProps) {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -77,15 +79,13 @@ export function AddResourceDialog({ onResourceAdded }: AddResourceDialogProps) {
   const [classId, setClassId] = useState("");
   const [fileType, setFileType] = useState("");
   const [fileUrl, setFileUrl] = useState("");
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedFile, setSelectedFile] = useState<globalThis.File | null>(null);
 
   const [subjects, setSubjects] = useState<{ id: string; name: string }[]>([]);
   const [classes, setClasses] = useState<{ id: string; name: string }[]>([]);
 
   useEffect(() => {
-    if (open && user) {
-      fetchTeacherOptions();
-    }
+    if (open && user) fetchTeacherOptions();
   }, [open, user]);
 
   const fetchTeacherOptions = async () => {
@@ -110,19 +110,13 @@ export function AddResourceDialog({ onResourceAdded }: AddResourceDialogProps) {
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
     if (file.size > 50 * 1024 * 1024) {
-      toast.error("Le fichier ne doit pas dépasser 50 Mo");
+      toast.error(t("resources.fileTooLarge"));
       return;
     }
-
     setSelectedFile(file);
-    const detectedType = getFileTypeFromMime(file.type);
-    setFileType(detectedType);
-
-    if (!title.trim()) {
-      setTitle(file.name.replace(/\.[^/.]+$/, ""));
-    }
+    setFileType(getFileTypeFromMime(file.type));
+    if (!title.trim()) setTitle(file.name.replace(/\.[^/.]+$/, ""));
   };
 
   const removeSelectedFile = () => {
@@ -133,33 +127,21 @@ export function AddResourceDialog({ onResourceAdded }: AddResourceDialogProps) {
 
   const uploadFile = async (): Promise<string | null> => {
     if (!selectedFile || !user) return null;
-
     setUploading(true);
     setUploadProgress(10);
-
     try {
       const ext = selectedFile.name.split(".").pop();
       const path = `${user.id}/${Date.now()}.${ext}`;
-
       setUploadProgress(30);
-
-      const { error: uploadError } = await supabase.storage
-        .from("resources")
-        .upload(path, selectedFile);
-
+      const { error: uploadError } = await supabase.storage.from("resources").upload(path, selectedFile);
       if (uploadError) throw uploadError;
-
       setUploadProgress(80);
-
-      const { data: urlData } = supabase.storage
-        .from("resources")
-        .getPublicUrl(path);
-
+      const { data: urlData } = supabase.storage.from("resources").getPublicUrl(path);
       setUploadProgress(100);
       return urlData.publicUrl;
     } catch (error: any) {
       console.error("Upload error:", error);
-      toast.error("Erreur lors de l'upload du fichier");
+      toast.error(t("resources.errorUpload"));
       return null;
     } finally {
       setUploading(false);
@@ -168,23 +150,17 @@ export function AddResourceDialog({ onResourceAdded }: AddResourceDialogProps) {
 
   const handleSubmit = async () => {
     if (!user || !title.trim()) {
-      toast.error("Le titre est obligatoire");
+      toast.error(t("resources.titleRequired"));
       return;
     }
-
     setLoading(true);
     try {
       let finalUrl = fileUrl.trim() || null;
-
       if (selectedFile) {
         const uploadedUrl = await uploadFile();
-        if (!uploadedUrl) {
-          setLoading(false);
-          return;
-        }
+        if (!uploadedUrl) { setLoading(false); return; }
         finalUrl = uploadedUrl;
       }
-
       const { error } = await supabase.from("resources").insert({
         title: title.trim(),
         description: description.trim() || null,
@@ -194,30 +170,22 @@ export function AddResourceDialog({ onResourceAdded }: AddResourceDialogProps) {
         file_type: fileType || null,
         file_url: finalUrl,
       });
-
       if (error) throw error;
-
-      toast.success("Ressource ajoutée avec succès");
+      toast.success(t("resources.success"));
       resetForm();
       setOpen(false);
       onResourceAdded();
     } catch (error: any) {
       console.error("Error adding resource:", error);
-      toast.error("Erreur lors de l'ajout de la ressource");
+      toast.error(t("resources.errorAdd"));
     } finally {
       setLoading(false);
     }
   };
 
   const resetForm = () => {
-    setTitle("");
-    setDescription("");
-    setSubjectId("");
-    setClassId("");
-    setFileType("");
-    setFileUrl("");
-    setSelectedFile(null);
-    setUploadProgress(0);
+    setTitle(""); setDescription(""); setSubjectId(""); setClassId("");
+    setFileType(""); setFileUrl(""); setSelectedFile(null); setUploadProgress(0);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
@@ -228,59 +196,38 @@ export function AddResourceDialog({ onResourceAdded }: AddResourceDialogProps) {
       <DialogTrigger asChild>
         <Button>
           <Plus className="h-4 w-4 mr-2" />
-          Ajouter une ressource
+          {t("resources.addResource")}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Nouvelle ressource</DialogTitle>
+          <DialogTitle>{t("resources.newResource")}</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
           <div>
-            <Label htmlFor="res-title">Titre *</Label>
-            <Input
-              id="res-title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Titre de la ressource"
-            />
+            <Label htmlFor="res-title">{t("resources.titleLabel")}</Label>
+            <Input id="res-title" value={title} onChange={(e) => setTitle(e.target.value)} placeholder={t("resources.titlePlaceholder")} />
           </div>
-
           <div>
-            <Label htmlFor="res-desc">Description</Label>
-            <Textarea
-              id="res-desc"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Description de la ressource"
-              rows={3}
-            />
+            <Label htmlFor="res-desc">{t("resources.descLabel")}</Label>
+            <Textarea id="res-desc" value={description} onChange={(e) => setDescription(e.target.value)} placeholder={t("resources.descPlaceholder")} rows={3} />
           </div>
-
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label>Matière</Label>
+              <Label>{t("resources.subject")}</Label>
               <Select value={subjectId} onValueChange={setSubjectId}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Choisir" />
-                </SelectTrigger>
+                <SelectTrigger><SelectValue placeholder={t("resources.choose")} /></SelectTrigger>
                 <SelectContent>
-                  {subjects.map((s) => (
-                    <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
-                  ))}
+                  {subjects.map((s) => (<SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>))}
                 </SelectContent>
               </Select>
             </div>
             <div>
-              <Label>Classe</Label>
+              <Label>{t("resources.class")}</Label>
               <Select value={classId} onValueChange={setClassId}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Choisir" />
-                </SelectTrigger>
+                <SelectTrigger><SelectValue placeholder={t("resources.choose")} /></SelectTrigger>
                 <SelectContent>
-                  {classes.map((c) => (
-                    <SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>
-                  ))}
+                  {classes.map((c) => (<SelectItem key={c.id} value={c.id}>{c.name}</SelectItem>))}
                 </SelectContent>
               </Select>
             </div>
@@ -288,15 +235,10 @@ export function AddResourceDialog({ onResourceAdded }: AddResourceDialogProps) {
 
           {/* File Upload */}
           <div>
-            <Label>Fichier</Label>
-            <input
-              ref={fileInputRef}
-              type="file"
-              className="hidden"
+            <Label>{t("resources.file")}</Label>
+            <input ref={fileInputRef} type="file" className="hidden"
               accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.jpg,.jpeg,.png,.gif,.webp,.mp4,.webm,.mp3,.wav,.zip,.rar"
-              onChange={handleFileSelect}
-            />
-
+              onChange={handleFileSelect} />
             {selectedFile ? (
               <div className="flex items-center gap-3 p-3 rounded-md border bg-muted/50">
                 {getFileIcon(fileType)}
@@ -309,42 +251,26 @@ export function AddResourceDialog({ onResourceAdded }: AddResourceDialogProps) {
                 </Button>
               </div>
             ) : (
-              <Button
-                type="button"
-                variant="outline"
-                className="w-full mt-1"
-                onClick={() => fileInputRef.current?.click()}
-              >
+              <Button type="button" variant="outline" className="w-full mt-1" onClick={() => fileInputRef.current?.click()}>
                 <Upload className="h-4 w-4 mr-2" />
-                Choisir un fichier (max 50 Mo)
+                {t("resources.chooseFile")}
               </Button>
             )}
-
-            {uploading && (
-              <Progress value={uploadProgress} className="mt-2 h-2" />
-            )}
+            {uploading && <Progress value={uploadProgress} className="mt-2 h-2" />}
           </div>
 
-          {/* Manual URL fallback */}
           {!selectedFile && (
             <div>
-              <Label htmlFor="res-url">Ou coller un lien</Label>
-              <Input
-                id="res-url"
-                value={fileUrl}
-                onChange={(e) => setFileUrl(e.target.value)}
-                placeholder="https://..."
-              />
+              <Label htmlFor="res-url">{t("resources.orPasteLink")}</Label>
+              <Input id="res-url" value={fileUrl} onChange={(e) => setFileUrl(e.target.value)} placeholder="https://..." />
             </div>
           )}
 
           {!selectedFile && (
             <div>
-              <Label>Type de fichier</Label>
+              <Label>{t("resources.fileType")}</Label>
               <Select value={fileType} onValueChange={setFileType}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Type" />
-                </SelectTrigger>
+                <SelectTrigger><SelectValue placeholder={t("resources.fileTypePlaceholder")} /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="pdf">PDF</SelectItem>
                   <SelectItem value="doc">Document</SelectItem>
@@ -358,7 +284,7 @@ export function AddResourceDialog({ onResourceAdded }: AddResourceDialogProps) {
 
           <Button onClick={handleSubmit} disabled={isSubmitting} className="w-full">
             {isSubmitting && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-            {uploading ? "Upload en cours..." : "Ajouter"}
+            {uploading ? t("resources.uploading") : t("resources.add")}
           </Button>
         </div>
       </DialogContent>
