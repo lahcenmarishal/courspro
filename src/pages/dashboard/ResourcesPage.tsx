@@ -16,9 +16,9 @@ import {
   Video, 
   Image, 
   File,
-  Plus,
   Filter
 } from "lucide-react";
+import { AddResourceDialog } from "@/components/dashboard/AddResourceDialog";
 import {
   Select,
   SelectContent,
@@ -129,10 +129,7 @@ export default function ResourcesPage() {
           </div>
           
           {effectiveRole === "teacher" && (
-            <Button>
-              <Plus className="h-4 w-4 mr-2" />
-              Ajouter une ressource
-            </Button>
+            <AddResourceDialog onResourceAdded={fetchResources} />
           )}
         </div>
 
