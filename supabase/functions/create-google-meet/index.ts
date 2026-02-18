@@ -118,7 +118,38 @@ serve(async (req) => {
       if (!tokenResponse.ok) {
         const error = await tokenResponse.text();
         console.error("Token refresh failed:", error);
-        throw new Error("Failed to refresh Google token. Please re-authorize.");
+        
+        // Delete invalid tokens so user can re-authorize
+        await supabase
+          .from("user_google_tokens")
+          .delete()
+          .eq("user_id", user.id);
+
+        // Return auth URL to re-authorize
+        const redirectUri = `${SUPABASE_URL}/functions/v1/google-calendar-callback`;
+        const scope = encodeURIComponent("https://www.googleapis.com/auth/calendar.events");
+        const state = encodeURIComponent(JSON.stringify({ userId: user.id, returnUrl: req.headers.get("origin") || "" }));
+        
+        const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
+          `client_id=${GOOGLE_CLIENT_ID}` +
+          `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+          `&response_type=code` +
+          `&scope=${scope}` +
+          `&access_type=offline` +
+          `&prompt=consent` +
+          `&state=${state}`;
+
+        return new Response(
+          JSON.stringify({ 
+            needsAuth: true, 
+            authUrl,
+            message: "Token expiré. Veuillez réautoriser l'accès à Google Calendar." 
+          }),
+          { 
+            status: 200, 
+            headers: { ...corsHeaders, "Content-Type": "application/json" } 
+          }
+        );
       }
 
       const newTokens = await tokenResponse.json();
