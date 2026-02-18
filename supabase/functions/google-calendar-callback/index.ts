@@ -84,44 +84,43 @@ serve(async (req) => {
     }
 
     // Return success page that communicates with opener
-    const successHtml = `
-      <!DOCTYPE html>
-      <html lang="fr">
-        <head>
-          <meta charset="utf-8">
-          <title>Autorisation réussie</title>
-          <style>
-            body { font-family: system-ui, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #f0f0f0; }
-            .card { background: white; padding: 2rem; border-radius: 1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; }
-            .success { color: #10b981; font-size: 3rem; }
-            h1 { margin: 1rem 0 0.5rem; }
-            p { color: #666; }
-          </style>
-        </head>
-        <body>
-          <div class="card">
-            <div class="success">✓</div>
-            <h1>Autorisation réussie</h1>
-            <p>Vous pouvez fermer cette fenêtre.</p>
-          </div>
-          <script>
-            window.opener?.postMessage({ type: 'google-oauth-success' }, '*');
-            setTimeout(() => window.close(), 2000);
-          </script>
-        </body>
-      </html>
-    `;
+    const successHtml = `<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Autorisation r&eacute;ussie</title>
+<style>
+body { font-family: system-ui, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #f0f0f0; }
+.card { background: white; padding: 2rem; border-radius: 1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; }
+.success { color: #10b981; font-size: 3rem; }
+h1 { margin: 1rem 0 0.5rem; }
+p { color: #666; }
+</style>
+</head>
+<body>
+<div class="card">
+<div class="success">&#10003;</div>
+<h1>Autorisation r&eacute;ussie</h1>
+<p>Vous pouvez fermer cette fen&ecirc;tre.</p>
+</div>
+<script>
+window.opener?.postMessage({ type: 'google-oauth-success' }, '*');
+setTimeout(function() { window.close(); }, 2000);
+</script>
+</body>
+</html>`;
 
     return new Response(successHtml, {
       headers: { "Content-Type": "text/html; charset=utf-8" },
     });
   } catch (error) {
     console.error("Callback error:", error);
+    const errMsg = error instanceof Error ? error.message : 'Unknown error';
     return new Response(
-      `<html><body><script>
-        window.opener?.postMessage({ type: 'google-oauth-error', error: '${error instanceof Error ? error.message : 'Unknown error'}' }, '*');
+      `<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"></head><body><script>
+        window.opener?.postMessage({ type: 'google-oauth-error', error: '${errMsg.replace(/'/g, "\\'")}' }, '*');
         window.close();
-      </script><p>Erreur. Cette fenêtre va se fermer.</p></body></html>`,
+      </script><p>Erreur. Cette fen&ecirc;tre va se fermer.</p></body></html>`,
       { headers: { "Content-Type": "text/html; charset=utf-8" } }
     );
   }
