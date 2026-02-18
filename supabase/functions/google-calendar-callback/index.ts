@@ -86,8 +86,9 @@ serve(async (req) => {
     // Return success page that communicates with opener
     const successHtml = `
       <!DOCTYPE html>
-      <html>
+      <html lang="fr">
         <head>
+          <meta charset="utf-8">
           <title>Autorisation réussie</title>
           <style>
             body { font-family: system-ui, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #f0f0f0; }
