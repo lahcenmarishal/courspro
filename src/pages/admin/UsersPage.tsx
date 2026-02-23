@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Loader2, Users, Search, UserPlus } from "lucide-react";
+import { Plus, Loader2, Users, Search, UserPlus, CheckCircle, XCircle } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -51,6 +51,7 @@ type Profile = {
   phone: string | null;
   created_at: string;
   role?: string;
+  status?: string;
 };
 
 const roleLabels: Record<string, string> = {
@@ -95,7 +96,7 @@ export default function UsersPage() {
       // Fetch roles separately
       const { data: rolesData, error: rolesError } = await supabase
         .from('user_roles')
-        .select('user_id, role');
+        .select('user_id, role, status');
 
       if (rolesError) throw rolesError;
 
@@ -103,6 +104,7 @@ export default function UsersPage() {
       const profilesWithRoles = (profilesData || []).map(profile => ({
         ...profile,
         role: rolesData?.find(r => r.user_id === profile.user_id)?.role,
+        status: rolesData?.find(r => r.user_id === profile.user_id)?.status,
       }));
 
       setProfiles(profilesWithRoles);
@@ -117,6 +119,23 @@ export default function UsersPage() {
   useEffect(() => {
     fetchProfiles();
   }, []);
+
+  const handleStatusChange = async (userId: string, newStatus: 'approved' | 'rejected') => {
+    try {
+      const { error } = await supabase
+        .from('user_roles')
+        .update({ status: newStatus })
+        .eq('user_id', userId);
+
+      if (error) throw error;
+
+      toast.success(newStatus === 'approved' ? 'Compte activé avec succès' : 'Compte rejeté');
+      fetchProfiles();
+    } catch (error: any) {
+      console.error('Error updating status:', error);
+      toast.error("Erreur lors de la mise à jour du statut");
+    }
+  };
 
   const resetForm = () => {
     setEmail("");
@@ -381,6 +400,7 @@ export default function UsersPage() {
             <div className="lg:hidden divide-y divide-border">
               {filteredProfiles.map((profile) => {
                 const userRole = profile.role || 'unknown';
+                const isPending = profile.status === 'pending';
                 return (
                   <div key={profile.id} className="p-4">
                     <div className="flex items-center gap-3">
@@ -395,10 +415,27 @@ export default function UsersPage() {
                         </div>
                         <div className="text-xs text-muted-foreground truncate">{profile.email}</div>
                       </div>
-                      <Badge className={roleBadgeVariants[userRole] || ''}>
-                        {roleLabels[userRole] || userRole}
-                      </Badge>
+                      <div className="flex items-center gap-2">
+                        {isPending && (
+                          <Badge variant="outline" className="bg-amber-500/10 text-amber-600 border-amber-300">
+                            En attente
+                          </Badge>
+                        )}
+                        <Badge className={roleBadgeVariants[userRole] || ''}>
+                          {roleLabels[userRole] || userRole}
+                        </Badge>
+                      </div>
                     </div>
+                    {isPending && (
+                      <div className="flex gap-2 mt-3 ml-13">
+                        <Button size="sm" variant="outline" className="text-emerald-600 border-emerald-300 hover:bg-emerald-50" onClick={() => handleStatusChange(profile.user_id, 'approved')}>
+                          <CheckCircle className="h-3 w-3 mr-1" /> Activer
+                        </Button>
+                        <Button size="sm" variant="outline" className="text-red-600 border-red-300 hover:bg-red-50" onClick={() => handleStatusChange(profile.user_id, 'rejected')}>
+                          <XCircle className="h-3 w-3 mr-1" /> Rejeter
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 );
               })}
@@ -409,15 +446,18 @@ export default function UsersPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Utilisateur</TableHead>
+                     <TableHead>Utilisateur</TableHead>
                     <TableHead>Email</TableHead>
                     <TableHead>Rôle</TableHead>
+                    <TableHead>Statut</TableHead>
                     <TableHead>Date d'inscription</TableHead>
+                    <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {filteredProfiles.map((profile) => {
                     const userRole = profile.role || 'unknown';
+                    const isPending = profile.status === 'pending';
                     return (
                       <TableRow key={profile.id}>
                         <TableCell>
@@ -442,8 +482,27 @@ export default function UsersPage() {
                             {roleLabels[userRole] || userRole}
                           </Badge>
                         </TableCell>
+                        <TableCell>
+                          {isPending ? (
+                            <Badge variant="outline" className="bg-amber-500/10 text-amber-600 border-amber-300">En attente</Badge>
+                          ) : (
+                            <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600 border-emerald-300">Actif</Badge>
+                          )}
+                        </TableCell>
                         <TableCell className="text-muted-foreground">
                           {new Date(profile.created_at).toLocaleDateString('fr-FR')}
+                        </TableCell>
+                        <TableCell>
+                          {isPending && (
+                            <div className="flex gap-2">
+                              <Button size="sm" variant="outline" className="text-emerald-600 border-emerald-300 hover:bg-emerald-50" onClick={() => handleStatusChange(profile.user_id, 'approved')}>
+                                <CheckCircle className="h-3 w-3 mr-1" /> Activer
+                              </Button>
+                              <Button size="sm" variant="outline" className="text-red-600 border-red-300 hover:bg-red-50" onClick={() => handleStatusChange(profile.user_id, 'rejected')}>
+                                <XCircle className="h-3 w-3 mr-1" /> Rejeter
+                              </Button>
+                            </div>
+                          )}
                         </TableCell>
                       </TableRow>
                     );

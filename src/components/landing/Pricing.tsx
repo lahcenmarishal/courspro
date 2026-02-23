@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Check, ArrowRight, Star, BookOpen, Users, GraduationCap } from "lucide-react";
+import { Check, ArrowRight, Star, BookOpen, Users, GraduationCap, UserRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -219,6 +219,50 @@ export const Pricing = () => {
     }
   ];
 
+  const individualOptions = [
+    {
+      name: language === 'ar' ? "حصة واحدة" : "Séance unique",
+      subtitle: language === 'ar' ? "جميع المستويات" : "Tous niveaux",
+      price: language === 'ar' ? "50-75" : "50-75",
+      priceLabel: language === 'ar' ? "درهم/حصة" : "DH/séance",
+      features: language === 'ar' ? [
+        "اختيار المادة والمستوى",
+        "بدون التزام",
+        "حصة تجريبية متاحة"
+      ] : [
+        "Choix de la matière et du niveau",
+        "Sans engagement",
+        "Séance d'essai disponible"
+      ],
+      color: "from-rose-600 to-rose-500",
+      borderColor: "border-rose-500",
+      textColor: "text-rose-600",
+      icon: UserRound,
+    },
+    {
+      name: language === 'ar' ? "متابعة فردية" : "Suivi individuel",
+      subtitle: language === 'ar' ? "حصص خاصة" : "Cours particuliers",
+      price: language === 'ar' ? "150" : "150",
+      priceLabel: language === 'ar' ? "درهم/حصة" : "DH/séance",
+      features: language === 'ar' ? [
+        "حصة فردية مع الأستاذ",
+        "برنامج مخصص",
+        "متابعة شخصية كاملة",
+        "مرونة في المواعيد"
+      ] : [
+        "Séance individuelle avec le prof",
+        "Programme personnalisé",
+        "Suivi personnel complet",
+        "Flexibilité des horaires"
+      ],
+      color: "from-indigo-600 to-indigo-500",
+      borderColor: "border-indigo-500",
+      textColor: "text-indigo-600",
+      icon: UserRound,
+      popular: true,
+    },
+  ];
+
   return (
     <section id="pricing" className="py-24 bg-muted/30">
       <div className="container mx-auto px-4">
@@ -259,6 +303,72 @@ export const Pricing = () => {
             />
           ))}
         </div>
+
+        {/* Individual / Particulier options */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="mt-16 max-w-3xl mx-auto"
+        >
+          <h3 className="text-2xl font-bold text-center mb-8">
+            <UserRound className="inline-block h-6 w-6 mr-2" />
+            {language === 'ar' ? 'حصص خاصة - بدون باقة' : 'Cours particuliers — Sans pack'}
+          </h3>
+          <div className="grid md:grid-cols-2 gap-6">
+            {individualOptions.map((opt, index) => (
+              <motion.div
+                key={opt.name}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className={cn("relative", opt.popular && "scale-105 z-10")}
+              >
+                {opt.popular && (
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
+                    <span className="inline-flex items-center gap-1 px-3 py-1 bg-indigo-500 text-white text-xs font-semibold rounded-full">
+                      <Star className="h-3 w-3" /> {language === 'ar' ? 'الأكثر طلباً' : 'Recommandé'}
+                    </span>
+                  </div>
+                )}
+                <Card className={cn(
+                  "h-full shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2",
+                  opt.popular ? "border-2" : "",
+                  opt.borderColor
+                )}>
+                  <CardHeader className={cn("text-white rounded-t-lg bg-gradient-to-r", opt.color)}>
+                    <div className="flex items-center justify-center mb-2">
+                      <opt.icon className="h-10 w-10 opacity-90" />
+                    </div>
+                    <CardTitle className="text-center">
+                      <span className="text-2xl font-bold">{opt.name}</span>
+                      <p className="text-sm opacity-90 mt-1">{opt.subtitle}</p>
+                    </CardTitle>
+                    <div className="text-center mt-4">
+                      <span className="text-5xl font-bold">{opt.price}</span>
+                      <span className="text-xl"> {opt.priceLabel}</span>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-6">
+                    <ul className="space-y-3 mb-4">
+                      {opt.features.map((feature) => (
+                        <li key={feature} className="flex items-start gap-2 text-sm">
+                          <Check className={cn("h-4 w-4 flex-shrink-0 mt-0.5", opt.textColor)} />
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
+                    <Button className="w-full" size="lg" asChild>
+                      <Link to="/auth">{t("pricing.choose")}</Link>
+                    </Button>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
 
         <motion.p
           initial={{ opacity: 0 }}
