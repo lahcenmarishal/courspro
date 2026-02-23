@@ -5,7 +5,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { BookOpen, Mail, Lock, ArrowLeft, Loader2, User, Clock, AlertCircle } from 'lucide-react';
+import { BookOpen, Mail, Lock, ArrowLeft, Loader2, User, Clock, AlertCircle, MapPin } from 'lucide-react';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import { supabase } from '@/integrations/supabase/client';
@@ -31,6 +31,7 @@ export default function TeacherAuth() {
   const [password, setPassword] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [city, setCity] = useState('');
   const [activeTab, setActiveTab] = useState('login');
   const [accountStatus, setAccountStatus] = useState<AccountStatus>('none');
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
@@ -370,6 +371,21 @@ export default function TeacherAuth() {
                         onChange={(e) => setLastName(e.target.value)}
                         placeholder="Dupont"
                         required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="city">Ville</Label>
+                    <div className="relative">
+                      <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="city"
+                        type="text"
+                        value={city}
+                        onChange={(e) => setCity(e.target.value)}
+                        placeholder="Casablanca"
+                        className="pl-10"
                       />
                     </div>
                   </div>

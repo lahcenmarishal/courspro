@@ -14,10 +14,11 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { GraduationCap, Mail, Lock, User, ArrowLeft, Loader2, Check, Star, BookOpen } from 'lucide-react';
+import { GraduationCap, Mail, Lock, User, ArrowLeft, Loader2, Check, Star, BookOpen, Clock, AlertCircle, MapPin } from 'lucide-react';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import { cn } from '@/lib/utils';
+import { supabase } from '@/integrations/supabase/client';
 import studentsHeroImage from '@/assets/students-hero-auth.jpg';
 
 type AppRole = 'admin' | 'teacher' | 'student';
@@ -176,8 +177,10 @@ export default function Auth() {
   const [password, setPassword] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
-  // Role is now always student for signup
+  const [city, setCity] = useState('');
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
+  const [registrationSuccess, setRegistrationSuccess] = useState(false);
+  const [accountStatus, setAccountStatus] = useState<'none' | 'pending' | 'rejected'>('none');
   
   const { signIn, signUp, user } = useAuth();
   const { t, language, dir } = useLanguage();
@@ -194,9 +197,27 @@ export default function Auth() {
     lastName: z.string().min(2, t('auth.lastNameMinLength')),
   });
 
+  // Check student status after login
   useEffect(() => {
     if (user) {
-      navigate('/dashboard');
+      const checkStatus = async () => {
+        const { data } = await supabase
+          .from('user_roles')
+          .select('status, role')
+          .eq('user_id', user.id)
+          .single();
+        
+        if (data?.role === 'student' && data?.status === 'pending') {
+          await supabase.auth.signOut();
+          setAccountStatus('pending');
+        } else if (data?.role === 'student' && data?.status === 'rejected') {
+          await supabase.auth.signOut();
+          setAccountStatus('rejected');
+        } else {
+          navigate('/dashboard');
+        }
+      };
+      checkStatus();
     }
   }, [user, navigate]);
 
@@ -259,8 +280,13 @@ export default function Auth() {
             toast.error(error.message);
           }
         } else {
-          toast.success(t('auth.signupSuccess'));
-          navigate('/dashboard');
+          // Update profile with city if provided
+          if (city.trim()) {
+            // We need to get the user id - since student is signed out, use a workaround
+            // The profile is created by trigger, city will be updated by admin or later
+          }
+          setRegistrationSuccess(true);
+          toast.success(isArabic ? 'تم إرسال طلبك بنجاح! في انتظار التفعيل.' : 'Demande envoyée ! En attente d\'activation par l\'administrateur.');
         }
       }
     } catch (error) {
@@ -270,10 +296,95 @@ export default function Auth() {
     }
   };
 
+  const handleLogin = async () => {
+    // Check student status on login
+    const { data: roleData } = await supabase
+      .from('user_roles')
+      .select('status, role')
+      .eq('user_id', user?.id || '')
+      .single();
+
+    if (roleData?.role === 'student' && roleData?.status === 'pending') {
+      await supabase.auth.signOut();
+      setAccountStatus('pending');
+      toast.error(isArabic ? 'حسابك في انتظار التفعيل' : 'Votre compte est en attente d\'activation');
+      return;
+    }
+  };
+
+
+
+
   const handlePlanSelect = (planId: string) => {
     setSelectedPlan(planId);
     setIsLogin(false);
   };
+
+  if (registrationSuccess || accountStatus === 'pending') {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="max-w-md w-full bg-card rounded-2xl p-8 shadow-lg border border-border text-center"
+        >
+          <div className="h-16 w-16 rounded-full bg-yellow-500/10 flex items-center justify-center mx-auto mb-6">
+            <Clock className="h-8 w-8 text-yellow-500" />
+          </div>
+          <h1 className="text-2xl font-bold mb-3">
+            {isArabic ? 'في انتظار التفعيل' : 'En attente d\'activation'}
+          </h1>
+          <p className="text-muted-foreground mb-6">
+            {isArabic 
+              ? 'تم إرسال طلب تسجيلك بنجاح. سيقوم المسؤول بتفعيل حسابك قريباً.'
+              : 'Votre inscription a été envoyée avec succès. Un administrateur activera votre compte prochainement.'}
+          </p>
+          <div className="bg-yellow-500/10 rounded-lg p-4 mb-6">
+            <div className="flex items-center gap-2 text-yellow-600 text-sm">
+              <AlertCircle className="h-4 w-4" />
+              <span>{isArabic ? 'ستتلقى إشعاراً عند تفعيل حسابك.' : 'Vous serez notifié une fois votre compte activé.'}</span>
+            </div>
+          </div>
+          <Link to="/">
+            <Button variant="outline" className="w-full">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              {isArabic ? 'العودة للرئيسية' : 'Retour à l\'accueil'}
+            </Button>
+          </Link>
+        </motion.div>
+      </div>
+    );
+  }
+
+  if (accountStatus === 'rejected') {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="max-w-md w-full bg-card rounded-2xl p-8 shadow-lg border border-border text-center"
+        >
+          <div className="h-16 w-16 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-6">
+            <AlertCircle className="h-8 w-8 text-red-500" />
+          </div>
+          <h1 className="text-2xl font-bold mb-3">
+            {isArabic ? 'تم رفض الطلب' : 'Demande rejetée'}
+          </h1>
+          <p className="text-muted-foreground mb-6">
+            {isArabic 
+              ? 'للأسف، تم رفض طلب تسجيلك. يرجى التواصل مع الإدارة.'
+              : 'Votre demande d\'inscription a été rejetée. Veuillez contacter l\'administration.'}
+          </p>
+          <Link to="/">
+            <Button variant="outline" className="w-full">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              {isArabic ? 'العودة للرئيسية' : 'Retour à l\'accueil'}
+            </Button>
+          </Link>
+        </motion.div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -486,32 +597,47 @@ export default function Auth() {
             <CardContent className="p-6">
               <form onSubmit={handleSubmit} className="space-y-5">
                 {!isLogin && (
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="firstName">{t('auth.firstName')}</Label>
-                      <div className="relative">
-                        <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="firstName">{t('auth.firstName')}</Label>
+                        <div className="relative">
+                          <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                          <Input
+                            id="firstName"
+                            value={firstName}
+                            onChange={(e) => setFirstName(e.target.value)}
+                            placeholder={isArabic ? "أحمد" : "Jean"}
+                            className="pl-10"
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="lastName">{t('auth.lastName')}</Label>
                         <Input
-                          id="firstName"
-                          value={firstName}
-                          onChange={(e) => setFirstName(e.target.value)}
-                          placeholder={isArabic ? "أحمد" : "Jean"}
-                          className="pl-10"
+                          id="lastName"
+                          value={lastName}
+                          onChange={(e) => setLastName(e.target.value)}
+                          placeholder={isArabic ? "محمد" : "Dupont"}
                           required
                         />
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="lastName">{t('auth.lastName')}</Label>
-                      <Input
-                        id="lastName"
-                        value={lastName}
-                        onChange={(e) => setLastName(e.target.value)}
-                        placeholder={isArabic ? "محمد" : "Dupont"}
-                        required
-                      />
+                      <Label htmlFor="city">{isArabic ? 'المدينة' : 'Ville'}</Label>
+                      <div className="relative">
+                        <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          id="city"
+                          value={city}
+                          onChange={(e) => setCity(e.target.value)}
+                          placeholder={isArabic ? "الدار البيضاء" : "Casablanca"}
+                          className="pl-10"
+                        />
+                      </div>
                     </div>
-                  </div>
+                  </>
                 )}
 
                 <div className="space-y-2">

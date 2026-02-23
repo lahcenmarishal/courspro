@@ -103,14 +103,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       if (error) return { error };
 
-      // Add user role after signup
+      // Add user role after signup - students get pending status
       if (data.user) {
+        const status = userRole === 'student' ? 'pending' : 'pending';
         const { error: roleError } = await supabase
           .from('user_roles')
-          .insert({ user_id: data.user.id, role: userRole });
+          .insert({ user_id: data.user.id, role: userRole, status });
 
         if (roleError) {
           console.error('Error setting role:', roleError);
+        }
+
+        // Sign out student immediately - they need admin activation
+        if (userRole === 'student') {
+          await supabase.auth.signOut();
         }
       }
 
