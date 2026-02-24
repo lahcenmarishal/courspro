@@ -105,18 +105,18 @@ export const Pricing = () => {
     {
       name: language === 'ar' ? "الابتدائي" : "Primaire",
       subtitle: language === 'ar' ? "السنة السادسة ابتدائي" : "6ème année primaire",
-      price: { monthly: 100, annual: 500 },
+      price: { monthly: 150, annual: 500 },
       subjects: language === 'ar' ? "العربية | الفرنسية | الرياضيات" : "Arabe | Français | Math",
       features: language === 'ar' ? [
         "3 حصص / أسبوع",
         "3 ساعات / حصة",
-        "متابعة أساسية: نقطة أسبوعية برسالة"
+        "متابعة أساسية طول فترة الاشتراك"
       ] : [
         "3 séances / semaine",
         "3 heures / séance",
-        "Suivi basique : point hebdo par message"
+        "Suivi basique tout au long de l'abonnement"
       ],
-      option: language === 'ar' ? "50 درهم / حصة (اختيار حصة واحدة)" : "50 dh / séance (au choix d'une seule séance)",
+      option: language === 'ar' ? "70 درهم / شهر للمادة الواحدة" : "70 DH / mois pour une seule matière",
       color: "from-primary to-primary/80",
       borderColor: "border-primary",
       textColor: "text-primary",
@@ -125,26 +125,48 @@ export const Pricing = () => {
       plan: "primaire"
     },
     {
-      name: language === 'ar' ? "الإعدادي" : "Collège",
-      subtitle: language === 'ar' ? "السنة الثالثة إعدادي" : "3ème année collège",
-      price: { monthly: 150, annual: 700 },
-      subjects: language === 'ar' ? "الرياضيات | الفرنسية | ف.ك | ع.ح.أ | الإنجليزية" : "Math | FR | PC | SVT | Anglais",
+      name: language === 'ar' ? "إعدادي - الأساسي" : "Collège 3AC Essentiel",
+      subtitle: language === 'ar' ? "الثالثة إعدادي - المواد الأساسية" : "3ème année collège - Pack essentiel",
+      price: { monthly: 200, annual: 700 },
+      subjects: language === 'ar' ? "الرياضيات | ف.ك | ع.ح.أ | الفرنسية" : "Math | PC | SVT | Français",
       features: language === 'ar' ? [
-        "5 حصص / أسبوع، مجموعة صغيرة",
+        "4 حصص / أسبوع",
         "تمارين موجهة + واجبات محددة",
-        "متابعة أساسية: نقطة أسبوعية برسالة"
+        "متابعة أساسية طول فترة الاشتراك"
       ] : [
-        "5 séances / semaine, mini-groupe",
+        "4 séances / semaine",
         "Exercices guidés + devoirs ciblés",
-        "Suivi basique : point hebdo par message"
+        "Suivi basique tout au long de l'abonnement"
       ],
-      option: language === 'ar' ? "50 درهم / حصة (اختيار حصة واحدة)" : "50 dh / séance (au choix d'une seule séance)",
+      option: language === 'ar' ? "100 درهم / شهر للمادة الواحدة" : "100 DH / mois pour une seule matière",
       color: "from-emerald-600 to-emerald-500",
       borderColor: "border-emerald-500",
       textColor: "text-emerald-600",
       icon: Users,
       link: "/programmes/college",
-      plan: "college"
+      plan: "college-essentiel"
+    },
+    {
+      name: language === 'ar' ? "إعدادي - الجهوي" : "Collège Pack Régional",
+      subtitle: language === 'ar' ? "الثالثة إعدادي - جميع المواد" : "3ème année collège - Toutes matières",
+      price: { monthly: 300, annual: 1000 },
+      subjects: language === 'ar' ? "الرياضيات | ف.ك | ع.ح.أ | الفرنسية | الإنجليزية | العربية" : "Math | PC | SVT | FR | Anglais | Arabe",
+      features: language === 'ar' ? [
+        "6 حصص / أسبوع",
+        "تمارين موجهة + واجبات محددة",
+        "متابعة أساسية طول فترة الاشتراك"
+      ] : [
+        "6 séances / semaine",
+        "Exercices guidés + devoirs ciblés",
+        "Suivi basique tout au long de l'abonnement"
+      ],
+      option: language === 'ar' ? "100 درهم / شهر للمادة الواحدة" : "100 DH / mois pour une seule matière",
+      color: "from-teal-600 to-teal-500",
+      borderColor: "border-teal-500",
+      textColor: "text-teal-600",
+      icon: Users,
+      link: "/programmes/college",
+      plan: "college-regional"
     },
     {
       name: language === 'ar' ? "1 باك" : "1 Bac",
@@ -154,13 +176,13 @@ export const Pricing = () => {
       features: language === 'ar' ? [
         "4 حصص / أسبوع",
         "تمارين موجهة + فروض",
-        "متابعة أساسية: نقطة أسبوعية"
+        "متابعة أساسية طول فترة الاشتراك"
       ] : [
         "4 séances / semaine",
         "Exercices guidés + devoirs",
-        "Suivi basique : point hebdo"
+        "Suivi basique tout au long de l'abonnement"
       ],
-      option: language === 'ar' ? "50 درهم / حصة (اختيار حصة واحدة)" : "50 dh / séance (au choix d'une seule séance)",
+      option: language === 'ar' ? "100 درهم / شهر للمادة الواحدة" : "100 DH / mois pour une seule matière",
       color: "from-blue-600 to-blue-500",
       borderColor: "border-blue-500",
       textColor: "text-blue-600",
@@ -169,22 +191,44 @@ export const Pricing = () => {
       plan: "lycee-1bac"
     },
     {
+      name: language === 'ar' ? "1 باك الجهوي" : "1 Bac Pack Aljihawi",
+      subtitle: language === 'ar' ? "الأولى باك - مواد الامتحان الجهوي" : "1ère Bac - Matières régional",
+      price: { monthly: 250, annual: 1000 },
+      subjects: language === 'ar' ? "الفرنسية | الجغرافيا | العربية | التربية الإسلامية" : "Français | Géo | Arabe | Éducation islamique",
+      features: language === 'ar' ? [
+        "4 حصص / أسبوع",
+        "تمارين موجهة + فروض",
+        "متابعة أساسية طول فترة الاشتراك"
+      ] : [
+        "4 séances / semaine",
+        "Exercices guidés + devoirs",
+        "Suivi basique tout au long de l'abonnement"
+      ],
+      option: language === 'ar' ? "100 درهم / شهر للمادة الواحدة" : "100 DH / mois pour une seule matière",
+      color: "from-cyan-600 to-cyan-500",
+      borderColor: "border-cyan-500",
+      textColor: "text-cyan-600",
+      icon: GraduationCap,
+      link: "/programmes/lycee",
+      plan: "lycee-1bac-jihawi"
+    },
+    {
       name: language === 'ar' ? "2 باك أساسي" : "2 Bac Essentiel",
       subtitle: language === 'ar' ? "الثانية باك - المواد الأساسية" : "2ème Bac - Matières principales",
-      price: { monthly: 250, annual: 1200 },
+      price: { monthly: 250, annual: 1000 },
       subjects: language === 'ar' ? "الرياضيات | ف.ك | ع.ح.أ" : "Math | PC | SVT",
       features: language === 'ar' ? [
-        "6 حصص / أسبوع",
+        "3 حصص / أسبوع",
         "فروض مراقبة + محاكاة",
-        "متابعة متوسطة: حصيلة أسبوعية",
+        "متابعة أساسية طول فترة الاشتراك",
         "تحضير مكثف للامتحان الوطني"
       ] : [
-        "6 séances / semaine",
+        "3 séances / semaine",
         "Devoirs surveillés + simulations",
-        "Suivi intermédiaire : bilan hebdo",
+        "Suivi basique tout au long de l'abonnement",
         "Préparation intensive au national"
       ],
-      option: language === 'ar' ? "75 درهم / حصة (اختيار حصة واحدة)" : "75 dh / séance (au choix d'une seule séance)",
+      option: language === 'ar' ? "100 درهم / شهر للمادة الواحدة" : "100 DH / mois pour une seule matière",
       color: "from-purple-600 to-purple-500",
       borderColor: "border-purple-500",
       textColor: "text-purple-600",
@@ -193,22 +237,22 @@ export const Pricing = () => {
       plan: "lycee-2bac-essentiel"
     },
     {
-      name: language === 'ar' ? "2 باك كامل" : "2 Bac Total",
+      name: language === 'ar' ? "2 باك الوطني الكامل" : "2 Bac National Complet",
       subtitle: language === 'ar' ? "الثانية باك - جميع المواد" : "2ème Bac - Toutes matières",
-      price: { monthly: 350, annual: 1500 },
+      price: { monthly: 350, annual: 1300 },
       subjects: language === 'ar' ? "الرياضيات | ف.ك | ع.ح.أ | الإنجليزية | الفلسفة | الفرنسية" : "Math | PC | SVT | Anglais | Philo | Français",
       features: language === 'ar' ? [
-        "8 حصص / أسبوع",
+        "6 حصص / أسبوع",
         "فروض مراقبة + محاكاة كاملة",
-        "متابعة متميزة: حصيلة + اتصال شهري",
+        "متابعة أساسية طول فترة الاشتراك",
         "تحضير شامل للامتحان الوطني"
       ] : [
-        "8 séances / semaine",
+        "6 séances / semaine",
         "DS + simulations complètes",
-        "Suivi premium : bilan + call parent",
+        "Suivi basique tout au long de l'abonnement",
         "Préparation complète au national"
       ],
-      option: language === 'ar' ? "الصيغة الأكثر شمولاً" : "La formule la plus complète",
+      option: language === 'ar' ? "100 درهم / شهر للمادة الواحدة" : "100 DH / mois pour une seule matière",
       color: "from-amber-600 to-amber-500",
       borderColor: "border-amber-500",
       textColor: "text-amber-600",
@@ -289,13 +333,13 @@ export const Pricing = () => {
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 max-w-7xl mx-auto">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-7xl mx-auto">
           {levels.map((level, index) => (
             <LevelCard
               key={level.name + level.plan}
               level={level}
               index={index}
-              chooseText={t("pricing.choose")}
+              chooseText={language === 'ar' ? "للاستفادة من هذه الباقة" : "Bénéficier de ce pack"}
               perMonthText={language === 'ar' ? " درهم/شهر" : " DH/mois"}
               perYearText={t("pricing.perYear")}
               seeDetailsText={language === 'ar' ? "عرض التفاصيل" : "Voir les détails"}
@@ -361,7 +405,7 @@ export const Pricing = () => {
                       ))}
                     </ul>
                     <Button className="w-full" size="lg" asChild>
-                      <Link to="/auth">{t("pricing.choose")}</Link>
+                      <Link to="/auth">{language === 'ar' ? "للاستفادة من هذه الباقة" : "Bénéficier de ce pack"}</Link>
                     </Button>
                   </CardContent>
                 </Card>
