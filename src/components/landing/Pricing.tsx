@@ -187,7 +187,7 @@ export const Pricing = () => {
       borderColor: "border-blue-500",
       textColor: "text-blue-600",
       icon: GraduationCap,
-      link: "/programmes/lycee",
+      link: "/programmes/lycee/1bac",
       plan: "lycee-1bac"
     },
     {
@@ -209,7 +209,7 @@ export const Pricing = () => {
       borderColor: "border-cyan-500",
       textColor: "text-cyan-600",
       icon: GraduationCap,
-      link: "/programmes/lycee",
+      link: "/programmes/lycee/1bac-jihawi",
       plan: "lycee-1bac-jihawi"
     },
     {
@@ -233,7 +233,7 @@ export const Pricing = () => {
       borderColor: "border-purple-500",
       textColor: "text-purple-600",
       icon: GraduationCap,
-      link: "/programmes/lycee",
+      link: "/programmes/lycee/2bac-essentiel",
       plan: "lycee-2bac-essentiel"
     },
     {
@@ -257,7 +257,7 @@ export const Pricing = () => {
       borderColor: "border-amber-500",
       textColor: "text-amber-600",
       icon: GraduationCap,
-      link: "/programmes/lycee",
+      link: "/programmes/lycee/2bac-total",
       plan: "lycee-2bac-total",
       popular: true
     }
@@ -267,8 +267,6 @@ export const Pricing = () => {
     {
       name: language === 'ar' ? "حصة واحدة" : "Séance unique",
       subtitle: language === 'ar' ? "جميع المستويات" : "Tous niveaux",
-      price: language === 'ar' ? "50-75" : "50-75",
-      priceLabel: language === 'ar' ? "درهم/حصة" : "DH/séance",
       features: language === 'ar' ? [
         "اختيار المادة والمستوى",
         "بدون التزام",
@@ -282,12 +280,11 @@ export const Pricing = () => {
       borderColor: "border-rose-500",
       textColor: "text-rose-600",
       icon: UserRound,
+      plan: "particulier-seance",
     },
     {
       name: language === 'ar' ? "متابعة فردية" : "Suivi individuel",
       subtitle: language === 'ar' ? "حصص خاصة" : "Cours particuliers",
-      price: language === 'ar' ? "150" : "150",
-      priceLabel: language === 'ar' ? "درهم/حصة" : "DH/séance",
       features: language === 'ar' ? [
         "حصة فردية مع الأستاذ",
         "برنامج مخصص",
@@ -304,6 +301,7 @@ export const Pricing = () => {
       textColor: "text-indigo-600",
       icon: UserRound,
       popular: true,
+      plan: "particulier-suivi",
     },
   ];
 
@@ -390,10 +388,6 @@ export const Pricing = () => {
                       <span className="text-2xl font-bold">{opt.name}</span>
                       <p className="text-sm opacity-90 mt-1">{opt.subtitle}</p>
                     </CardTitle>
-                    <div className="text-center mt-4">
-                      <span className="text-5xl font-bold">{opt.price}</span>
-                      <span className="text-xl"> {opt.priceLabel}</span>
-                    </div>
                   </CardHeader>
                   <CardContent className="p-6">
                     <ul className="space-y-3 mb-4">
@@ -405,7 +399,7 @@ export const Pricing = () => {
                       ))}
                     </ul>
                     <Button className="w-full" size="lg" asChild>
-                      <Link to="/auth">{language === 'ar' ? "للاستفادة من هذه الباقة" : "Bénéficier de ce pack"}</Link>
+                      <Link to={`/auth?plan=${opt.plan}`}>{language === 'ar' ? "طلب الدعم" : "Demander un support"}</Link>
                     </Button>
                   </CardContent>
                 </Card>

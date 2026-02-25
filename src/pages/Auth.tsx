@@ -31,18 +31,18 @@ const primaireCollegePlans = [
     nameAr: "السنة السادسة ابتدائي",
     level: "Primaire",
     levelAr: "الابتدائي",
-    price: { monthly: 100, annual: 500 },
+    price: { monthly: 150, annual: 500 },
     subjects: "Arabe | Français | Math",
     subjectsAr: "العربية | الفرنسية | الرياضيات",
     features: [
       "3 séances / semaine",
-      "3h / séance",
-      "Suivi basique"
+      "3 heures / séance",
+      "Suivi basique tout au long de l'abonnement"
     ],
     featuresAr: [
       "3 حصص / أسبوع",
       "3 ساعات / حصة",
-      "متابعة أساسية"
+      "متابعة أساسية طول فترة الاشتراك"
     ],
     color: "from-primary to-primary/80",
     textColor: "text-primary",
@@ -50,115 +50,163 @@ const primaireCollegePlans = [
     bgColor: "bg-primary"
   },
   {
-    id: 'college',
-    name: "3ème année collège",
-    nameAr: "السنة الثالثة إعدادي",
+    id: 'college-essentiel',
+    name: "Collège 3AC Essentiel",
+    nameAr: "إعدادي - الأساسي",
     level: "Collège",
     levelAr: "الإعدادي",
-    price: { monthly: 150, annual: 700 },
-    subjects: "Math | FR | PC | SVT | Anglais",
-    subjectsAr: "رياضيات | فرنسية | فيزياء | علوم | إنجليزية",
+    price: { monthly: 200, annual: 700 },
+    subjects: "Math | PC | SVT | Français",
+    subjectsAr: "الرياضيات | ف.ك | ع.ح.أ | الفرنسية",
     features: [
-      "5 séances / semaine",
-      "Mini-groupe",
-      "Exercices guidés"
+      "4 séances / semaine",
+      "Exercices guidés + devoirs ciblés",
+      "Suivi basique tout au long de l'abonnement"
     ],
     featuresAr: [
-      "5 حصص / أسبوع",
-      "مجموعة صغيرة",
-      "تمارين موجهة"
+      "4 حصص / أسبوع",
+      "تمارين موجهة + واجبات محددة",
+      "متابعة أساسية طول فترة الاشتراك"
     ],
     color: "from-emerald-600 to-emerald-500",
     textColor: "text-emerald-600",
     borderColor: "border-emerald-500",
     bgColor: "bg-emerald-600"
+  },
+  {
+    id: 'college-regional',
+    name: "Collège Pack Régional",
+    nameAr: "إعدادي - الجهوي",
+    level: "Collège",
+    levelAr: "الإعدادي",
+    price: { monthly: 300, annual: 1000 },
+    subjects: "Math | PC | SVT | FR | Anglais | Arabe",
+    subjectsAr: "الرياضيات | ف.ك | ع.ح.أ | الفرنسية | الإنجليزية | العربية",
+    features: [
+      "6 séances / semaine",
+      "Exercices guidés + devoirs ciblés",
+      "Suivi basique tout au long de l'abonnement"
+    ],
+    featuresAr: [
+      "6 حصص / أسبوع",
+      "تمارين موجهة + واجبات محددة",
+      "متابعة أساسية طول فترة الاشتراك"
+    ],
+    color: "from-teal-600 to-teal-500",
+    textColor: "text-teal-600",
+    borderColor: "border-teal-500",
+    bgColor: "bg-teal-600"
   }
 ];
 
 const lyceePlans = [
   {
-    id: 'lycee-jihawi',
-    name: "1er année BAC",
-    nameAr: "السنة الأولى باك",
+    id: 'lycee-1bac',
+    name: "1 Bac",
+    nameAr: "1 باك",
     level: "Lycée",
     levelAr: "الثانوي",
-    subtitle: "Pack Jihawi",
-    subtitleAr: "باقة الجهوي",
+    subtitle: "1ère année Bac",
+    subtitleAr: "السنة الأولى باكالوريا",
     price: { monthly: 200, annual: 900 },
-    subjects: "Français | Arabe | Éducation islamique | GEO",
-    subjectsAr: "الفرنسية | العربية | التربية الإسلامية | الجغرافيا",
+    subjects: "Math | PC | SVT | Français",
+    subjectsAr: "الرياضيات | ف.ك | ع.ح.أ | الفرنسية",
     features: [
-      "3h / séance, mini-groupe",
-      "Fiches méthodes + corrections détaillées",
-      "Suivi structuré : bilan hebdo + rapport parent"
+      "4 séances / semaine",
+      "Exercices guidés + devoirs",
+      "Suivi basique tout au long de l'abonnement"
     ],
     featuresAr: [
-      "3 ساعات / حصة، مجموعة صغيرة",
-      "أوراق منهجية + تصحيحات مفصلة",
-      "متابعة منظمة: تقرير أسبوعي + تقرير للأولياء"
+      "4 حصص / أسبوع",
+      "تمارين موجهة + فروض",
+      "متابعة أساسية طول فترة الاشتراك"
     ],
-    option: "100DH / matière (Au choix d'une seule matière)",
-    optionAr: "100 درهم / مادة (باختيار مادة واحدة)",
+    option: "100 DH / mois pour une seule matière",
+    optionAr: "100 درهم / شهر للمادة الواحدة",
     color: "from-blue-600 to-blue-500",
     textColor: "text-blue-600",
     borderColor: "border-blue-500",
     bgColor: "bg-blue-600"
   },
   {
-    id: 'lycee-essentiel',
-    name: "2ème année BAC",
-    nameAr: "السنة الثانية باك",
+    id: 'lycee-1bac-jihawi',
+    name: "1 Bac Pack Aljihawi",
+    nameAr: "1 باك الجهوي",
     level: "Lycée",
     levelAr: "الثانوي",
-    subtitle: "Pack Essentiel",
-    subtitleAr: "الباقة الأساسية",
-    price: { monthly: 250, annual: 1200 },
-    subjects: "Math | Physique chimie | SVT",
-    subjectsAr: "رياضيات | فيزياء كيمياء | علوم الحياة والأرض",
+    subtitle: "1ère Bac - Matières régional",
+    subtitleAr: "الأولى باك - مواد الامتحان الجهوي",
+    price: { monthly: 250, annual: 1000 },
+    subjects: "Français | Géo | Arabe | Éducation islamique",
+    subjectsAr: "الفرنسية | الجغرافيا | العربية | التربية الإسلامية",
     features: [
-      "6h / semaine",
-      "Devoirs surveillés + simulations de contrôles",
-      "Suivi premium : bilan hebdo, call parent mensuel",
-      "Accès prioritaire aux ateliers & banques d'exercices"
+      "4 séances / semaine",
+      "Exercices guidés + devoirs",
+      "Suivi basique tout au long de l'abonnement"
     ],
     featuresAr: [
-      "6 ساعات / أسبوع",
-      "فروض محروسة + محاكاة للامتحانات",
-      "متابعة متميزة: تقرير أسبوعي، اتصال شهري بالأولياء",
-      "أولوية الوصول للورشات وبنوك التمارين"
+      "4 حصص / أسبوع",
+      "تمارين موجهة + فروض",
+      "متابعة أساسية طول فترة الاشتراك"
     ],
-    option: "100 dh / matière (au choix d'une seule séance)",
-    optionAr: "100 درهم / مادة (باختيار حصة واحدة)",
+    option: "100 DH / mois pour une seule matière",
+    optionAr: "100 درهم / شهر للمادة الواحدة",
+    color: "from-cyan-600 to-cyan-500",
+    textColor: "text-cyan-600",
+    borderColor: "border-cyan-500",
+    bgColor: "bg-cyan-600"
+  },
+  {
+    id: 'lycee-2bac-essentiel',
+    name: "2 Bac Essentiel",
+    nameAr: "2 باك أساسي",
+    level: "Lycée",
+    levelAr: "الثانوي",
+    subtitle: "2ème Bac - Matières principales",
+    subtitleAr: "الثانية باك - المواد الأساسية",
+    price: { monthly: 250, annual: 1000 },
+    subjects: "Math | PC | SVT",
+    subjectsAr: "الرياضيات | ف.ك | ع.ح.أ",
+    features: [
+      "3 séances / semaine",
+      "Devoirs surveillés + simulations",
+      "Préparation intensive au national"
+    ],
+    featuresAr: [
+      "3 حصص / أسبوع",
+      "فروض مراقبة + محاكاة",
+      "تحضير مكثف للامتحان الوطني"
+    ],
+    option: "100 DH / mois pour une seule matière",
+    optionAr: "100 درهم / شهر للمادة الواحدة",
     color: "from-purple-600 to-purple-500",
     textColor: "text-purple-600",
     borderColor: "border-purple-500",
     bgColor: "bg-purple-600"
   },
   {
-    id: 'lycee-total',
-    name: "2ème année BAC",
-    nameAr: "السنة الثانية باك",
+    id: 'lycee-2bac-total',
+    name: "2 Bac National Complet",
+    nameAr: "2 باك الوطني الكامل",
     level: "Lycée",
     levelAr: "الثانوي",
-    subtitle: "Pack Total Watani",
-    subtitleAr: "باقة الوطني الكاملة",
-    price: { monthly: 350, annual: 1500 },
-    subjects: "Math | PC | SVT | Anglais | Philosophie",
-    subjectsAr: "رياضيات | فيزياء | علوم | إنجليزية | فلسفة",
+    subtitle: "2ème Bac - Toutes matières",
+    subtitleAr: "الثانية باك - جميع المواد",
+    price: { monthly: 350, annual: 1300 },
+    subjects: "Math | PC | SVT | Anglais | Philo | Français",
+    subjectsAr: "الرياضيات | ف.ك | ع.ح.أ | الإنجليزية | الفلسفة | الفرنسية",
     features: [
-      "8h / semaine",
-      "Devoirs surveillés + simulations de contrôles",
-      "Suivi premium : bilan hebdo, call parent mensuel",
-      "Accès prioritaire aux ateliers & banques d'exercices"
+      "6 séances / semaine",
+      "DS + simulations complètes",
+      "Préparation complète au national"
     ],
     featuresAr: [
-      "8 ساعات / أسبوع",
-      "فروض محروسة + محاكاة للامتحانات",
-      "متابعة متميزة: تقرير أسبوعي، اتصال شهري بالأولياء",
-      "أولوية الوصول للورشات وبنوك التمارين"
+      "6 حصص / أسبوع",
+      "فروض مراقبة + محاكاة كاملة",
+      "تحضير شامل للامتحان الوطني"
     ],
-    option: "100dh / matière (au choix d'une seule séance)",
-    optionAr: "100 درهم / مادة (باختيار حصة واحدة)",
+    option: "100 DH / mois pour une seule matière",
+    optionAr: "100 درهم / شهر للمادة الواحدة",
     color: "from-amber-600 to-amber-500",
     textColor: "text-amber-600",
     borderColor: "border-amber-500",
@@ -167,7 +215,59 @@ const lyceePlans = [
   }
 ];
 
-const allPlans = [...primaireCollegePlans, ...lyceePlans];
+const individualPlans = [
+  {
+    id: 'particulier-seance',
+    name: "Séance unique",
+    nameAr: "حصة واحدة",
+    level: "Particulier",
+    levelAr: "حصص خاصة",
+    subtitle: "Tous niveaux",
+    subtitleAr: "جميع المستويات",
+    features: [
+      "Choix de la matière et du niveau",
+      "Sans engagement",
+      "Séance d'essai disponible"
+    ],
+    featuresAr: [
+      "اختيار المادة والمستوى",
+      "بدون التزام",
+      "حصة تجريبية متاحة"
+    ],
+    color: "from-rose-600 to-rose-500",
+    textColor: "text-rose-600",
+    borderColor: "border-rose-500",
+    bgColor: "bg-rose-600"
+  },
+  {
+    id: 'particulier-suivi',
+    name: "Suivi individuel",
+    nameAr: "متابعة فردية",
+    level: "Particulier",
+    levelAr: "حصص خاصة",
+    subtitle: "Cours particuliers",
+    subtitleAr: "حصص خاصة",
+    features: [
+      "Séance individuelle avec le prof",
+      "Programme personnalisé",
+      "Suivi personnel complet",
+      "Flexibilité des horaires"
+    ],
+    featuresAr: [
+      "حصة فردية مع الأستاذ",
+      "برنامج مخصص",
+      "متابعة شخصية كاملة",
+      "مرونة في المواعيد"
+    ],
+    color: "from-indigo-600 to-indigo-500",
+    textColor: "text-indigo-600",
+    borderColor: "border-indigo-500",
+    bgColor: "bg-indigo-600",
+    popular: true
+  }
+];
+
+const allPlans = [...primaireCollegePlans, ...lyceePlans, ...individualPlans];
 
 export default function Auth() {
   const [searchParams] = useSearchParams();
@@ -199,33 +299,59 @@ export default function Auth() {
 
   // Check student status after login
   useEffect(() => {
-    if (user) {
-      const checkStatus = async () => {
-        const { data } = await supabase
-          .from('user_roles')
-          .select('status, role')
-          .eq('user_id', user.id)
-          .single();
-        
-        if (data?.role === 'student' && data?.status === 'pending') {
-          await supabase.auth.signOut();
-          setAccountStatus('pending');
-        } else if (data?.role === 'student' && data?.status === 'rejected') {
-          await supabase.auth.signOut();
-          setAccountStatus('rejected');
-        } else {
-          navigate('/dashboard');
+    if (!user) return;
+
+    const checkStatus = async () => {
+      let { data } = await supabase
+        .from('user_roles')
+        .select('status, role')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (!data) {
+        const { error: completionError } = await supabase.functions.invoke('complete-student-registration', {
+          body: {
+            first_name: (user.user_metadata?.first_name as string) || '',
+            last_name: (user.user_metadata?.last_name as string) || '',
+            email: user.email || '',
+          },
+        });
+
+        if (!completionError) {
+          const retry = await supabase
+            .from('user_roles')
+            .select('status, role')
+            .eq('user_id', user.id)
+            .maybeSingle();
+          data = retry.data;
         }
-      };
-      checkStatus();
-    }
-  }, [user, navigate]);
+      }
+
+      if (!data) {
+        await supabase.auth.signOut();
+        toast.error(isArabic ? 'Impossible de finaliser votre inscription. Contactez le support.' : 'Impossible de finaliser votre inscription. Contactez le support.');
+        return;
+      }
+
+      if (data.role === 'student' && data.status === 'pending') {
+        await supabase.auth.signOut();
+        setAccountStatus('pending');
+      } else if (data.role === 'student' && data.status === 'rejected') {
+        await supabase.auth.signOut();
+        setAccountStatus('rejected');
+      } else {
+        navigate('/dashboard');
+      }
+    };
+
+    checkStatus();
+  }, [user, navigate, isArabic]);
 
   useEffect(() => {
     const plan = searchParams.get('plan');
     if (plan) {
       if (plan === 'lycee') {
-        setSelectedPlan('lycee-total');
+        setSelectedPlan('lycee-2bac-total');
         setIsLogin(false);
       } else if (allPlans.find(p => p.id === plan)) {
         setSelectedPlan(plan);
@@ -256,7 +382,6 @@ export default function Auth() {
           }
         } else {
           toast.success(t('auth.loginSuccess'));
-          navigate('/dashboard');
         }
       } else {
         const validation = signupSchema.safeParse({ 
@@ -573,6 +698,65 @@ export default function Auth() {
                             {isArabic ? plan.optionAr : plan.option}
                           </p>
                         )}
+                        {selectedPlan === plan.id && (
+                          <div className={cn("mt-4 text-center text-sm font-medium", plan.textColor)}>
+                            {t('auth.selected')}
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <h2 className="text-xl font-semibold text-center mb-6">
+                <User className="inline-block h-5 w-5 mr-2" />
+                {isArabic ? 'Cours particuliers' : 'Cours particuliers'}
+              </h2>
+              <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                {individualPlans.map((plan, index) => (
+                  <motion.div
+                    key={plan.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 + 0.2 }}
+                    className={cn("relative", plan.popular && "md:scale-105 z-10")}
+                  >
+                    {plan.popular && (
+                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
+                        <span className="inline-flex items-center gap-1 px-3 py-1 bg-indigo-500 text-white text-xs font-semibold rounded-full">
+                          <Star className="h-3 w-3" /> {t('auth.popular')}
+                        </span>
+                      </div>
+                    )}
+                    <Card
+                      className={cn(
+                        "h-full cursor-pointer transition-all duration-300 hover:shadow-lg",
+                        selectedPlan === plan.id
+                          ? `${plan.borderColor} border-2 shadow-lg scale-[1.02]`
+                          : "border-border hover:border-muted-foreground/50",
+                        plan.popular && "shadow-xl"
+                      )}
+                      onClick={() => handlePlanSelect(plan.id)}
+                    >
+                      <CardHeader className={cn("text-white rounded-t-lg bg-gradient-to-r", plan.color)}>
+                        <CardTitle className="text-center">
+                          <span className="text-xs font-medium opacity-80">{isArabic ? plan.levelAr : plan.level}</span>
+                          <p className="text-lg font-bold mt-1">{isArabic ? plan.nameAr : plan.name}</p>
+                          <p className="text-sm opacity-90 mt-1">{isArabic ? plan.subtitleAr : plan.subtitle}</p>
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="p-4">
+                        <ul className="space-y-2">
+                          {(isArabic ? plan.featuresAr : plan.features).map((feature) => (
+                            <li key={feature} className="flex items-start gap-2 text-sm">
+                              <Check className={cn("h-4 w-4 flex-shrink-0 mt-0.5", plan.textColor)} />
+                              {feature}
+                            </li>
+                          ))}
+                        </ul>
                         {selectedPlan === plan.id && (
                           <div className={cn("mt-4 text-center text-sm font-medium", plan.textColor)}>
                             {t('auth.selected')}
