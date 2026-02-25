@@ -1,8 +1,6 @@
 import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'sonner';
 
 type AppRole = 'admin' | 'teacher' | 'student';
 
@@ -11,7 +9,7 @@ interface AuthContextType {
   session: Session | null;
   role: AppRole | null;
   loading: boolean;
-  signUp: (email: string, password: string, firstName: string, lastName: string, role: AppRole) => Promise<{ error: Error | null }>;
+  signUp: (email: string, password: string, firstName: string, lastName: string, role: AppRole, city?: string) => Promise<{ error: Error | null }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
 }
@@ -28,7 +26,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       const { data, error } = await supabase
         .from('user_roles')
-        .select('role')
+        .select('role, status')
         .eq('user_id', userId)
         .maybeSingle();
 
@@ -37,7 +35,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return null;
       }
 
-      return data?.role as AppRole | null;
+      if (!data) return null;
+      if (data.role === 'student' && data.status !== 'approved') return null;
+
+      return data.role as AppRole;
     } catch (error) {
       console.error('Error fetching role:', error);
       return null;
@@ -45,50 +46,48 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    // Set up auth state listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        
-        // Defer role fetching with setTimeout
-        if (session?.user) {
-          setTimeout(() => {
-            fetchUserRole(session.user.id).then(setRole);
-          }, 0);
-        } else {
-          setRole(null);
-        }
-        
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, nextSession) => {
+      setSession(nextSession);
+      setUser(nextSession?.user ?? null);
+
+      if (nextSession?.user) {
+        fetchUserRole(nextSession.user.id)
+          .then(setRole)
+          .finally(() => setLoading(false));
+      } else {
+        setRole(null);
         setLoading(false);
       }
-    );
+    });
 
-    // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      
-      if (session?.user) {
-        fetchUserRole(session.user.id).then(setRole);
+    supabase.auth.getSession().then(({ data: { session: existingSession } }) => {
+      setSession(existingSession);
+      setUser(existingSession?.user ?? null);
+
+      if (existingSession?.user) {
+        fetchUserRole(existingSession.user.id)
+          .then(setRole)
+          .finally(() => setLoading(false));
+      } else {
+        setRole(null);
+        setLoading(false);
       }
-      
-      setLoading(false);
     });
 
     return () => subscription.unsubscribe();
   }, []);
 
   const signUp = async (
-    email: string, 
-    password: string, 
-    firstName: string, 
+    email: string,
+    password: string,
+    firstName: string,
     lastName: string,
-    userRole: AppRole
+    userRole: AppRole,
+    city?: string,
   ) => {
     try {
       const redirectUrl = `${window.location.origin}/`;
-      
+
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -97,26 +96,48 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           data: {
             first_name: firstName,
             last_name: lastName,
-          }
-        }
+            city,
+          },
+        },
       });
 
       if (error) return { error };
 
-      // Add user role after signup - students get pending status
       if (data.user) {
-        const status = userRole === 'student' ? 'pending' : 'pending';
+        let roleCreated = false;
+
         const { error: roleError } = await supabase
           .from('user_roles')
-          .insert({ user_id: data.user.id, role: userRole, status });
+          .insert({ user_id: data.user.id, role: userRole, status: 'pending' });
 
-        if (roleError) {
-          console.error('Error setting role:', roleError);
+        if (!roleError) {
+          roleCreated = true;
+        } else {
+          console.error('Error setting role from client flow:', roleError);
         }
 
-        // Sign out student immediately - they need admin activation
         if (userRole === 'student') {
+          const { error: registrationError } = await supabase.functions.invoke('complete-student-registration', {
+            body: {
+              user_id: data.user.id,
+              first_name: firstName,
+              last_name: lastName,
+              email,
+              city,
+            },
+          });
+
+          if (!registrationError) {
+            roleCreated = true;
+          } else {
+            console.error('Error completing student registration:', registrationError);
+          }
+
           await supabase.auth.signOut();
+        }
+
+        if (!roleCreated) {
+          console.error('No role could be created during signup.');
         }
       }
 
@@ -147,14 +168,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ 
-      user, 
-      session, 
-      role, 
-      loading, 
-      signUp, 
-      signIn, 
-      signOut 
+    <AuthContext.Provider value={{
+      user,
+      session,
+      role,
+      loading,
+      signUp,
+      signIn,
+      signOut,
     }}>
       {children}
     </AuthContext.Provider>
