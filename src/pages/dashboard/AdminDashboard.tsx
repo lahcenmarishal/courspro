@@ -470,7 +470,7 @@ const AdminDashboard = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     <Users className="h-3 w-3" />
-                    <span>{t("admin.miniGroups")} ({language === 'ar' ? 'حد أقصى 8 تلاميذ' : 'max 8 élèves'})</span>
+                    <span>{t("admin.miniGroups")}</span>
                   </div>
                 </div>
               </div>
@@ -527,7 +527,7 @@ const AdminDashboard = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     <Users className="h-3 w-3" />
-                    <span>{t("admin.miniGroups")} ({language === 'ar' ? 'حد أقصى 10 تلاميذ' : 'max 10 élèves'})</span>
+                    <span>{t("admin.miniGroups")}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Target className="h-3 w-3" />
