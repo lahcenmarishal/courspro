@@ -64,7 +64,7 @@ const pricingPlans: { primaire: PricingPlan[]; college: PricingPlan[]; lycee: Pr
       level: 'lycee',
       price: { monthly: 200, annual: 900 },
       subjects: 'Français | Arabe | Éducation islamique | GEO',
-      features: ['3h / séance, mini-groupe', 'Fiches méthodes + corrections', 'Suivi structuré'],
+      features: ['3h / séance', 'Fiches méthodes + corrections', 'Suivi structuré'],
       singleSession: 100,
     },
     {

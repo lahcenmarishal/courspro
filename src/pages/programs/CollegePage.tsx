@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import { useLanguage } from "@/hooks/useLanguage";
 
 const CollegePage = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   const subjects = [
     {
@@ -65,6 +65,14 @@ const CollegePage = () => {
         t("college.subjects.english.topic3"),
         t("college.subjects.english.topic4")
       ]
+    },
+    {
+      name: language === 'ar' ? "العربية" : "Arabe",
+      description: language === 'ar' ? "اللغة العربية وآدابها" : "Langue arabe et littérature",
+      icon: "📝",
+      topics: language === 'ar'
+        ? ["القراءة والفهم", "قواعد اللغة", "التعبير الكتابي", "المؤلفات"]
+        : ["Lecture et compréhension", "Grammaire", "Expression écrite", "Œuvres littéraires"]
     }
   ];
 
