@@ -20,6 +20,7 @@ import ClassesPage from "./pages/admin/ClassesPage";
 import UsersPage from "./pages/admin/UsersPage";
 import SchoolYearsPage from "./pages/admin/SchoolYearsPage";
 import TeacherRequestsPage from "./pages/admin/TeacherRequestsPage";
+import StudentRequestsPage from "./pages/admin/StudentRequestsPage";
 import TeachersPage from "./pages/admin/TeachersPage";
 import ResourcesPage from "./pages/dashboard/ResourcesPage";
 import HomeworkPage from "./pages/dashboard/HomeworkPage";
@@ -94,6 +95,7 @@ const App = () => (
             <Route path="/dashboard/users" element={<UsersPage />} />
             <Route path="/dashboard/school-years" element={<SchoolYearsPage />} />
             <Route path="/dashboard/teacher-requests" element={<TeacherRequestsPage />} />
+            <Route path="/dashboard/student-requests" element={<StudentRequestsPage />} />
             <Route path="/dashboard/teachers" element={<TeachersPage />} />
             <Route path="/dashboard/resources" element={<ResourcesPage />} />
             <Route path="/dashboard/homework" element={<HomeworkPage />} />

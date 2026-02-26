@@ -35,6 +35,7 @@ interface DashboardSidebarProps {
 const getAdminLinks = (t: (key: string) => string) => [
   { label: t("sidebar.dashboard"), href: "/dashboard", icon: LayoutDashboard },
   { label: t("sidebar.blog"), href: "/dashboard/blog", icon: Newspaper },
+  { label: t("sidebar.studentRequests"), href: "/dashboard/student-requests", icon: UserPlus },
   { label: t("sidebar.teacherRequests"), href: "/dashboard/teacher-requests", icon: UserPlus },
   { label: t("sidebar.teachers"), href: "/dashboard/teachers", icon: GraduationCap },
   { label: t("sidebar.users"), href: "/dashboard/users", icon: Users },
