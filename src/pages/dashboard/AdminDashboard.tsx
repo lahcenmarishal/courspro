@@ -72,9 +72,12 @@ const AdminDashboard = () => {
   const [recentUsers, setRecentUsers] = useState<RecentUser[]>([]);
   const [todaySessions, setTodaySessions] = useState<TodaySession[]>([]);
   const [loading, setLoading] = useState(true);
+  const [pendingStudents, setPendingStudents] = useState(0);
+  const [pendingTeachers, setPendingTeachers] = useState(0);
 
   useEffect(() => {
     fetchDashboardData();
+    fetchPendingCounts();
   }, []);
 
   const fetchDashboardData = async () => {
@@ -156,6 +159,19 @@ const AdminDashboard = () => {
       console.error('Error fetching dashboard data:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchPendingCounts = async () => {
+    try {
+      const [{ count: studentsPending }, { count: teachersPending }] = await Promise.all([
+        supabase.from('user_roles').select('*', { count: 'exact', head: true }).eq('role', 'student').eq('status', 'pending'),
+        supabase.from('user_roles').select('*', { count: 'exact', head: true }).eq('role', 'teacher').eq('status', 'pending'),
+      ]);
+      setPendingStudents(studentsPending || 0);
+      setPendingTeachers(teachersPending || 0);
+    } catch (error) {
+      console.error('Error fetching pending counts:', error);
     }
   };
 
@@ -243,6 +259,53 @@ const AdminDashboard = () => {
             </Button>
           </div>
         </div>
+
+        {/* Pending Registration Alerts */}
+        {(pendingStudents > 0 || pendingTeachers > 0) && (
+          <div className="mb-6 lg:mb-8 space-y-3">
+            {pendingStudents > 0 && (
+              <Link to="/dashboard/student-requests">
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="flex items-center gap-3 p-4 rounded-xl bg-yellow-500/10 border border-yellow-500/30 hover:bg-yellow-500/15 transition-colors cursor-pointer"
+                >
+                  <div className="h-10 w-10 rounded-full bg-yellow-500/20 flex items-center justify-center flex-shrink-0">
+                    <Bell className="h-5 w-5 text-yellow-600" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-medium text-foreground">
+                      {pendingStudents} nouvelle(s) demande(s) d'inscription élève
+                    </p>
+                    <p className="text-sm text-muted-foreground">Cliquez pour examiner et valider</p>
+                  </div>
+                  <ArrowUpRight className="h-5 w-5 text-yellow-600" />
+                </motion.div>
+              </Link>
+            )}
+            {pendingTeachers > 0 && (
+              <Link to="/dashboard/teacher-requests">
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 }}
+                  className="flex items-center gap-3 p-4 rounded-xl bg-yellow-500/10 border border-yellow-500/30 hover:bg-yellow-500/15 transition-colors cursor-pointer"
+                >
+                  <div className="h-10 w-10 rounded-full bg-yellow-500/20 flex items-center justify-center flex-shrink-0">
+                    <Bell className="h-5 w-5 text-yellow-600" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-medium text-foreground">
+                      {pendingTeachers} nouvelle(s) demande(s) d'inscription enseignant
+                    </p>
+                    <p className="text-sm text-muted-foreground">Cliquez pour examiner et valider</p>
+                  </div>
+                  <ArrowUpRight className="h-5 w-5 text-yellow-600" />
+                </motion.div>
+              </Link>
+            )}
+          </div>
+        )}
 
         {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-6 mb-6 lg:mb-8">
