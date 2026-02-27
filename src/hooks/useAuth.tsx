@@ -9,7 +9,7 @@ interface AuthContextType {
   session: Session | null;
   role: AppRole | null;
   loading: boolean;
-  signUp: (email: string, password: string, firstName: string, lastName: string, role: AppRole, city?: string) => Promise<{ error: Error | null }>;
+  signUp: (email: string, password: string, firstName: string, lastName: string, role: AppRole, city?: string, phone?: string, selectedPlan?: string) => Promise<{ error: Error | null }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
 }
@@ -84,6 +84,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     lastName: string,
     userRole: AppRole,
     city?: string,
+    phone?: string,
+    selectedPlan?: string,
   ) => {
     try {
       const redirectUrl = `${window.location.origin}/`;
@@ -97,6 +99,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             first_name: firstName,
             last_name: lastName,
             city,
+            phone,
+            selected_plan: selectedPlan,
           },
         },
       });
@@ -124,6 +128,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
               last_name: lastName,
               email,
               city,
+              phone,
+              selected_plan: selectedPlan,
             },
           });
 

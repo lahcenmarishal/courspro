@@ -5,7 +5,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { BookOpen, Mail, Lock, ArrowLeft, Loader2, User, Clock, AlertCircle, MapPin } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
+import { BookOpen, Mail, Lock, ArrowLeft, Loader2, User, Clock, AlertCircle, MapPin, Phone, Briefcase, Award } from 'lucide-react';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import { supabase } from '@/integrations/supabase/client';
@@ -21,6 +22,7 @@ const signupSchema = z.object({
   lastName: z.string().min(2, 'Le nom doit contenir au moins 2 caractères'),
   email: z.string().email('Email invalide'),
   password: z.string().min(6, 'Le mot de passe doit contenir au moins 6 caractères'),
+  phone: z.string().min(8, 'Numéro de téléphone invalide'),
 });
 
 type AccountStatus = 'none' | 'pending' | 'approved' | 'rejected';
@@ -32,6 +34,9 @@ export default function TeacherAuth() {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [city, setCity] = useState('');
+  const [phone, setPhone] = useState('');
+  const [specialization, setSpecialization] = useState('');
+  const [yearsExperience, setYearsExperience] = useState('');
   const [activeTab, setActiveTab] = useState('login');
   const [accountStatus, setAccountStatus] = useState<AccountStatus>('none');
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
@@ -80,14 +85,12 @@ export default function TeacherAuth() {
         return;
       }
 
-      // First check if this teacher account exists and its status
       const { data: existingUser } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (existingUser?.user) {
-        // Check the teacher status before allowing login
         const { data: roleData, error: roleError } = await supabase
           .from('user_roles')
           .select('status, role')
@@ -117,7 +120,6 @@ export default function TeacherAuth() {
           }
         }
 
-        // If approved or other role, proceed with normal auth flow
         const { error } = await signIn(email, password);
         if (error) {
           if (error.message.includes('Invalid login credentials')) {
@@ -145,7 +147,8 @@ export default function TeacherAuth() {
         firstName, 
         lastName, 
         email, 
-        password 
+        password,
+        phone,
       });
       
       if (!validation.success) {
@@ -192,7 +195,21 @@ export default function TeacherAuth() {
           return;
         }
 
-        // Sign out the user immediately - they should not be logged in until approved
+        // Update profile with additional teacher info
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .update({
+            phone: phone || null,
+            specialization: specialization || null,
+            years_experience: yearsExperience ? parseInt(yearsExperience) : 0,
+            city: city || null,
+          })
+          .eq('user_id', authData.user.id);
+
+        if (profileError) {
+          console.error('Error updating teacher profile:', profileError);
+        }
+
         await supabase.auth.signOut();
         
         setRegistrationSuccess(true);
@@ -376,6 +393,53 @@ export default function TeacherAuth() {
                   </div>
 
                   <div className="space-y-2">
+                    <Label htmlFor="phone">Numéro de téléphone</Label>
+                    <div className="relative">
+                      <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="phone"
+                        type="tel"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        placeholder="0612345678"
+                        className="pl-10"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="specialization">Spécialité / Matière enseignée</Label>
+                    <div className="relative">
+                      <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="specialization"
+                        type="text"
+                        value={specialization}
+                        onChange={(e) => setSpecialization(e.target.value)}
+                        placeholder="Mathématiques, Physique..."
+                        className="pl-10"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="experience">Années d'expérience</Label>
+                    <div className="relative">
+                      <Award className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="experience"
+                        type="number"
+                        min="0"
+                        value={yearsExperience}
+                        onChange={(e) => setYearsExperience(e.target.value)}
+                        placeholder="5"
+                        className="pl-10"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
                     <Label htmlFor="city">Ville</Label>
                     <div className="relative">
                       <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -459,33 +523,25 @@ export default function TeacherAuth() {
             transition={{ delay: 0.3, duration: 0.5 }}
             className="max-w-lg"
           >
-            <h2 className="text-4xl font-bold mb-6">
-              Rejoignez notre équipe
+            <h2 className="text-3xl font-bold mb-6">
+              Rejoignez notre équipe pédagogique
             </h2>
             <p className="text-lg opacity-90 mb-8">
-              Devenez enseignant sur ClassConnect et accédez à des outils 
-              modernes pour gérer vos cours et suivre vos élèves.
+              Partagez votre expertise et accompagnez les élèves vers la réussite scolaire.
             </p>
-            
             <div className="space-y-4">
               {[
-                'Sessions de cours en direct',
-                'Création de devoirs et évaluations',
-                'Suivi des présences',
-                'Communication avec les parents',
-              ].map((feature, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.5 + i * 0.1, duration: 0.5 }}
-                  className="flex items-center gap-3"
-                >
-                  <div className="h-6 w-6 rounded-full bg-white/20 flex items-center justify-center">
-                    <span className="text-sm">✓</span>
+                "Emploi du temps flexible",
+                "Outils pédagogiques modernes",
+                "Communauté d'enseignants",
+                "Support administratif complet"
+              ].map((feature) => (
+                <div key={feature} className="flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center">
+                    <BookOpen className="h-4 w-4" />
                   </div>
-                  <span>{feature}</span>
-                </motion.div>
+                  <span className="text-sm">{feature}</span>
+                </div>
               ))}
             </div>
           </motion.div>

@@ -106,7 +106,7 @@ export const Pricing = () => {
       name: language === 'ar' ? "الابتدائي" : "Primaire",
       subtitle: language === 'ar' ? "السنة السادسة ابتدائي" : "6ème année primaire",
       price: { monthly: 150, annual: 500 },
-      subjects: language === 'ar' ? "العربية | الفرنسية | الرياضيات" : "Arabe | Français | Math",
+      subjects: language === 'ar' ? "العربية | الفرنسية | الرياضيات" : "Arabe | Français | Mathématiques",
       features: language === 'ar' ? [
         "3 حصص / أسبوع",
         "3 ساعات / حصة",
@@ -128,7 +128,7 @@ export const Pricing = () => {
       name: language === 'ar' ? "إعدادي - الأساسي" : "Collège 3AC Essentiel",
       subtitle: language === 'ar' ? "الثالثة إعدادي - المواد الأساسية" : "3ème année collège - Pack essentiel",
       price: { monthly: 200, annual: 700 },
-      subjects: language === 'ar' ? "الرياضيات | ف.ك | ع.ح.أ | الفرنسية" : "Math | PC | SVT | Français",
+      subjects: language === 'ar' ? "الرياضيات | الفيزياء والكيمياء | علوم الحياة والأرض | الفرنسية" : "Mathématiques | Physique-Chimie | SVT | Français",
       features: language === 'ar' ? [
         "4 حصص / أسبوع",
         "تمارين موجهة + واجبات محددة",
@@ -150,7 +150,7 @@ export const Pricing = () => {
       name: language === 'ar' ? "إعدادي - الجهوي" : "Collège Pack Régional",
       subtitle: language === 'ar' ? "الثالثة إعدادي - جميع المواد" : "3ème année collège - Toutes matières",
       price: { monthly: 300, annual: 1000 },
-      subjects: language === 'ar' ? "الرياضيات | ف.ك | ع.ح.أ | الفرنسية | الإنجليزية | العربية" : "Math | PC | SVT | FR | Anglais | Arabe",
+      subjects: language === 'ar' ? "الرياضيات | الفيزياء والكيمياء | علوم الحياة والأرض | الفرنسية | الإنجليزية | العربية" : "Mathématiques | Physique-Chimie | SVT | Français | Anglais | Arabe",
       features: language === 'ar' ? [
         "6 حصص / أسبوع",
         "تمارين موجهة + واجبات محددة",
@@ -172,7 +172,7 @@ export const Pricing = () => {
       name: language === 'ar' ? "1 باك" : "1 Bac",
       subtitle: language === 'ar' ? "السنة الأولى باكالوريا" : "1ère année Bac",
       price: { monthly: 200, annual: 900 },
-      subjects: language === 'ar' ? "الرياضيات | ف.ك | ع.ح.أ | الفرنسية" : "Math | PC | SVT | Français",
+      subjects: language === 'ar' ? "الرياضيات | الفيزياء والكيمياء | علوم الحياة والأرض | الفرنسية" : "Mathématiques | Physique-Chimie | SVT | Français",
       features: language === 'ar' ? [
         "4 حصص / أسبوع",
         "تمارين موجهة + فروض",
@@ -194,7 +194,7 @@ export const Pricing = () => {
       name: language === 'ar' ? "1 باك الجهوي" : "1 Bac Pack Aljihawi",
       subtitle: language === 'ar' ? "الأولى باك - مواد الامتحان الجهوي" : "1ère Bac - Matières régional",
       price: { monthly: 250, annual: 1000 },
-      subjects: language === 'ar' ? "الفرنسية | الجغرافيا | العربية | التربية الإسلامية" : "Français | Géo | Arabe | Éducation islamique",
+      subjects: language === 'ar' ? "الفرنسية | الجغرافيا | العربية | التربية الإسلامية" : "Français | Géographie | Arabe | Éducation islamique",
       features: language === 'ar' ? [
         "4 حصص / أسبوع",
         "تمارين موجهة + فروض",
@@ -216,7 +216,7 @@ export const Pricing = () => {
       name: language === 'ar' ? "2 باك أساسي" : "2 Bac Essentiel",
       subtitle: language === 'ar' ? "الثانية باك - المواد الأساسية" : "2ème Bac - Matières principales",
       price: { monthly: 250, annual: 1000 },
-      subjects: language === 'ar' ? "الرياضيات | ف.ك | ع.ح.أ" : "Math | PC | SVT",
+      subjects: language === 'ar' ? "الرياضيات | الفيزياء والكيمياء | علوم الحياة والأرض" : "Mathématiques | Physique-Chimie | SVT",
       features: language === 'ar' ? [
         "3 حصص / أسبوع",
         "فروض مراقبة + محاكاة",
@@ -240,7 +240,7 @@ export const Pricing = () => {
       name: language === 'ar' ? "2 باك الوطني الكامل" : "2 Bac National Complet",
       subtitle: language === 'ar' ? "الثانية باك - جميع المواد" : "2ème Bac - Toutes matières",
       price: { monthly: 350, annual: 1300 },
-      subjects: language === 'ar' ? "الرياضيات | ف.ك | ع.ح.أ | الإنجليزية | الفلسفة | الفرنسية" : "Math | PC | SVT | Anglais | Philo | Français",
+      subjects: language === 'ar' ? "الرياضيات | الفيزياء والكيمياء | علوم الحياة والأرض | الإنجليزية | الفلسفة | الفرنسية" : "Mathématiques | Physique-Chimie | SVT | Anglais | Philosophie | Français",
       features: language === 'ar' ? [
         "6 حصص / أسبوع",
         "فروض مراقبة + محاكاة كاملة",

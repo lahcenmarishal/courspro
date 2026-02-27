@@ -13,6 +13,8 @@ import {
   UserCheck,
   UserX,
   MapPin,
+  Phone,
+  BookOpen,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -42,6 +44,8 @@ interface StudentRequest {
     last_name: string;
     email: string;
     city: string | null;
+    phone: string | null;
+    selected_plan: string | null;
   } | null;
 }
 
@@ -74,7 +78,7 @@ export function StudentRequests() {
       const userIds = studentRoles.map((r) => r.user_id);
       const { data: profiles, error: profilesError } = await supabase
         .from("profiles")
-        .select("user_id, first_name, last_name, email, city")
+        .select("user_id, first_name, last_name, email, city, phone, selected_plan")
         .in("user_id", userIds);
 
       if (profilesError) throw profilesError;
@@ -321,20 +325,26 @@ function StudentRequestCard({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, x: -10 }}
-      className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 bg-card rounded-lg border border-border"
+      className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 p-4 bg-card rounded-lg border border-border"
     >
-      <div className="flex items-center gap-4">
-        <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center">
+      <div className="flex items-start gap-4">
+        <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
           <span className="text-sm font-semibold text-primary">
             {request.profile?.first_name?.charAt(0) || "?"}
             {request.profile?.last_name?.charAt(0) || ""}
           </span>
         </div>
-        <div className="min-w-0">
+        <div className="min-w-0 space-y-1">
           <div className="font-medium truncate">
             {request.profile?.first_name || "Nom inconnu"}{" "}
             {request.profile?.last_name || ""}
           </div>
+          {request.profile?.phone && (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Phone className="h-3 w-3" />
+              <span>{request.profile.phone}</span>
+            </div>
+          )}
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Mail className="h-3 w-3" />
             <span className="truncate">{request.profile?.email || "Email inconnu"}</span>
@@ -345,7 +355,15 @@ function StudentRequestCard({
               <span className="truncate">{request.profile.city}</span>
             </div>
           )}
-          <div className="text-xs text-muted-foreground mt-1">
+          {request.profile?.selected_plan && (
+            <div className="flex items-center gap-2 text-sm">
+              <BookOpen className="h-3 w-3 text-primary" />
+              <Badge variant="outline" className="text-xs bg-primary/10 text-primary border-primary/30">
+                {request.profile.selected_plan}
+              </Badge>
+            </div>
+          )}
+          <div className="text-xs text-muted-foreground">
             Demande le {format(new Date(request.created_at), "d MMM yyyy à HH:mm", { locale: fr })}
           </div>
         </div>

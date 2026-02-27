@@ -12,6 +12,10 @@ import {
   AlertCircle,
   UserCheck,
   UserX,
+  MapPin,
+  Phone,
+  Briefcase,
+  Award,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -40,6 +44,10 @@ interface TeacherRequest {
     first_name: string;
     last_name: string;
     email: string;
+    phone: string | null;
+    city: string | null;
+    specialization: string | null;
+    years_experience: number | null;
   } | null;
 }
 
@@ -55,7 +63,6 @@ export function TeacherRequests() {
   const fetchTeacherRequests = async () => {
     setLoading(true);
     try {
-      // Get all teacher roles
       const { data: teacherRoles, error: rolesError } = await supabase
         .from("user_roles")
         .select("id, user_id, status, created_at")
@@ -70,11 +77,10 @@ export function TeacherRequests() {
         return;
       }
 
-      // Get profiles for all teachers
       const userIds = teacherRoles.map((r) => r.user_id);
       const { data: profiles, error: profilesError } = await supabase
         .from("profiles")
-        .select("user_id, first_name, last_name, email")
+        .select("user_id, first_name, last_name, email, phone, city, specialization, years_experience")
         .in("user_id", userIds);
 
       if (profilesError) throw profilesError;
@@ -138,7 +144,6 @@ export function TeacherRequests() {
   const handleDelete = async (roleId: string, userId: string) => {
     setActionLoading(roleId);
     try {
-      // Delete the role first
       const { error: roleError } = await supabase
         .from("user_roles")
         .delete()
@@ -198,7 +203,6 @@ export function TeacherRequests() {
 
   return (
     <div className="space-y-4 lg:space-y-6">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h2 className="text-base lg:text-lg font-semibold">Gestion des Enseignants</h2>
@@ -212,7 +216,6 @@ export function TeacherRequests() {
         </Button>
       </div>
 
-      {/* Pending Requests */}
       {pendingRequests.length > 0 && (
         <div className="space-y-3">
           <div className="flex items-center gap-2">
@@ -238,7 +241,6 @@ export function TeacherRequests() {
         </div>
       )}
 
-      {/* Approved Teachers */}
       {approvedTeachers.length > 0 && (
         <div className="space-y-3">
           <div className="flex items-center gap-2">
@@ -262,7 +264,6 @@ export function TeacherRequests() {
         </div>
       )}
 
-      {/* Rejected Requests */}
       {rejectedRequests.length > 0 && (
         <div className="space-y-3">
           <div className="flex items-center gap-2">
@@ -287,7 +288,6 @@ export function TeacherRequests() {
         </div>
       )}
 
-      {/* Empty State */}
       {requests.length === 0 && (
         <div className="text-center py-12">
           <User className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
@@ -329,25 +329,49 @@ function TeacherRequestCard({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, x: -10 }}
-      className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 bg-card rounded-lg border border-border"
+      className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 p-4 bg-card rounded-lg border border-border"
     >
-      <div className="flex items-center gap-4">
-        <div className="h-10 w-10 rounded-full bg-secondary/20 flex items-center justify-center">
+      <div className="flex items-start gap-4">
+        <div className="h-10 w-10 rounded-full bg-secondary/20 flex items-center justify-center flex-shrink-0">
           <span className="text-sm font-semibold text-secondary">
             {request.profile?.first_name?.charAt(0) || "?"}
             {request.profile?.last_name?.charAt(0) || ""}
           </span>
         </div>
-        <div className="min-w-0">
+        <div className="min-w-0 space-y-1">
           <div className="font-medium truncate">
             {request.profile?.first_name || "Nom inconnu"}{" "}
             {request.profile?.last_name || ""}
           </div>
+          {request.profile?.phone && (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Phone className="h-3 w-3" />
+              <span>{request.profile.phone}</span>
+            </div>
+          )}
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Mail className="h-3 w-3" />
             <span className="truncate">{request.profile?.email || "Email inconnu"}</span>
           </div>
-          <div className="text-xs text-muted-foreground mt-1">
+          {request.profile?.city && (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <MapPin className="h-3 w-3" />
+              <span className="truncate">{request.profile.city}</span>
+            </div>
+          )}
+          {request.profile?.specialization && (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Briefcase className="h-3 w-3" />
+              <span>{request.profile.specialization}</span>
+            </div>
+          )}
+          {request.profile?.years_experience != null && request.profile.years_experience > 0 && (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Award className="h-3 w-3" />
+              <span>{request.profile.years_experience} an(s) d'expérience</span>
+            </div>
+          )}
+          <div className="text-xs text-muted-foreground">
             Demande le {format(new Date(request.created_at), "d MMM yyyy à HH:mm", { locale: fr })}
           </div>
         </div>
