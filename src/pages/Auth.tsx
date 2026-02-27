@@ -6,15 +6,8 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { 
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { GraduationCap, Mail, Lock, User, ArrowLeft, Loader2, Check, Star, BookOpen, Clock, AlertCircle, MapPin } from 'lucide-react';
+import { GraduationCap, Lock, User, ArrowLeft, Loader2, Check, Star, BookOpen, Clock, AlertCircle, MapPin, Phone, Mail } from 'lucide-react';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import { cn } from '@/lib/utils';
@@ -32,7 +25,7 @@ const primaireCollegePlans = [
     level: "Primaire",
     levelAr: "الابتدائي",
     price: { monthly: 150, annual: 500 },
-    subjects: "Arabe | Français | Math",
+    subjects: "Arabe | Français | Mathématiques",
     subjectsAr: "العربية | الفرنسية | الرياضيات",
     features: [
       "3 séances / semaine",
@@ -56,8 +49,8 @@ const primaireCollegePlans = [
     level: "Collège",
     levelAr: "الإعدادي",
     price: { monthly: 200, annual: 700 },
-    subjects: "Math | PC | SVT | Français",
-    subjectsAr: "الرياضيات | ف.ك | ع.ح.أ | الفرنسية",
+    subjects: "Mathématiques | Physique-Chimie | SVT | Français",
+    subjectsAr: "الرياضيات | الفيزياء والكيمياء | علوم الحياة والأرض | الفرنسية",
     features: [
       "4 séances / semaine",
       "Exercices guidés + devoirs ciblés",
@@ -80,8 +73,8 @@ const primaireCollegePlans = [
     level: "Collège",
     levelAr: "الإعدادي",
     price: { monthly: 300, annual: 1000 },
-    subjects: "Math | PC | SVT | FR | Anglais | Arabe",
-    subjectsAr: "الرياضيات | ف.ك | ع.ح.أ | الفرنسية | الإنجليزية | العربية",
+    subjects: "Mathématiques | Physique-Chimie | SVT | Français | Anglais | Arabe",
+    subjectsAr: "الرياضيات | الفيزياء والكيمياء | علوم الحياة والأرض | الفرنسية | الإنجليزية | العربية",
     features: [
       "6 séances / semaine",
       "Exercices guidés + devoirs ciblés",
@@ -109,8 +102,8 @@ const lyceePlans = [
     subtitle: "1ère année Bac",
     subtitleAr: "السنة الأولى باكالوريا",
     price: { monthly: 200, annual: 900 },
-    subjects: "Math | PC | SVT | Français",
-    subjectsAr: "الرياضيات | ف.ك | ع.ح.أ | الفرنسية",
+    subjects: "Mathématiques | Physique-Chimie | SVT | Français",
+    subjectsAr: "الرياضيات | الفيزياء والكيمياء | علوم الحياة والأرض | الفرنسية",
     features: [
       "4 séances / semaine",
       "Exercices guidés + devoirs",
@@ -137,7 +130,7 @@ const lyceePlans = [
     subtitle: "1ère Bac - Matières régional",
     subtitleAr: "الأولى باك - مواد الامتحان الجهوي",
     price: { monthly: 250, annual: 1000 },
-    subjects: "Français | Géo | Arabe | Éducation islamique",
+    subjects: "Français | Géographie | Arabe | Éducation islamique",
     subjectsAr: "الفرنسية | الجغرافيا | العربية | التربية الإسلامية",
     features: [
       "4 séances / semaine",
@@ -165,8 +158,8 @@ const lyceePlans = [
     subtitle: "2ème Bac - Matières principales",
     subtitleAr: "الثانية باك - المواد الأساسية",
     price: { monthly: 250, annual: 1000 },
-    subjects: "Math | PC | SVT",
-    subjectsAr: "الرياضيات | ف.ك | ع.ح.أ",
+    subjects: "Mathématiques | Physique-Chimie | SVT",
+    subjectsAr: "الرياضيات | الفيزياء والكيمياء | علوم الحياة والأرض",
     features: [
       "3 séances / semaine",
       "Devoirs surveillés + simulations",
@@ -193,8 +186,8 @@ const lyceePlans = [
     subtitle: "2ème Bac - Toutes matières",
     subtitleAr: "الثانية باك - جميع المواد",
     price: { monthly: 350, annual: 1300 },
-    subjects: "Math | PC | SVT | Anglais | Philo | Français",
-    subjectsAr: "الرياضيات | ف.ك | ع.ح.أ | الإنجليزية | الفلسفة | الفرنسية",
+    subjects: "Mathématiques | Physique-Chimie | SVT | Anglais | Philosophie | Français",
+    subjectsAr: "الرياضيات | الفيزياء والكيمياء | علوم الحياة والأرض | الإنجليزية | الفلسفة | الفرنسية",
     features: [
       "6 séances / semaine",
       "DS + simulations complètes",
@@ -273,7 +266,7 @@ export default function Auth() {
   const [searchParams] = useSearchParams();
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -287,14 +280,19 @@ export default function Auth() {
   const navigate = useNavigate();
   const isArabic = language === 'ar';
 
+  // For login we still use email
+  const [loginEmail, setLoginEmail] = useState('');
+
   const loginSchema = z.object({
     email: z.string().email(t('auth.invalidEmail')),
     password: z.string().min(6, t('auth.passwordMinLength')),
   });
 
-  const signupSchema = loginSchema.extend({
+  const signupSchema = z.object({
     firstName: z.string().min(2, t('auth.firstNameMinLength')),
     lastName: z.string().min(2, t('auth.lastNameMinLength')),
+    phone: z.string().min(8, isArabic ? 'رقم الهاتف غير صالح' : 'Numéro de téléphone invalide'),
+    password: z.string().min(6, t('auth.passwordMinLength')),
   });
 
   // Check student status after login
@@ -366,14 +364,14 @@ export default function Auth() {
 
     try {
       if (isLogin) {
-        const validation = loginSchema.safeParse({ email, password });
+        const validation = loginSchema.safeParse({ email: loginEmail, password });
         if (!validation.success) {
           toast.error(validation.error.errors[0].message);
           setLoading(false);
           return;
         }
 
-        const { error } = await signIn(email, password);
+        const { error } = await signIn(loginEmail, password);
         if (error) {
           if (error.message.includes('Invalid login credentials')) {
             toast.error(t('auth.invalidCredentials'));
@@ -385,10 +383,10 @@ export default function Auth() {
         }
       } else {
         const validation = signupSchema.safeParse({ 
-          email, 
-          password, 
           firstName, 
-          lastName
+          lastName,
+          phone,
+          password,
         });
         
         if (!validation.success) {
@@ -397,19 +395,21 @@ export default function Auth() {
           return;
         }
 
-        const { error } = await signUp(email, password, firstName, lastName, 'student');
+        // Generate a pseudo-email from phone number for auth
+        const pseudoEmail = `${phone.replace(/[^0-9]/g, '')}@student.courspro.ma`;
+
+        const { error } = await signUp(pseudoEmail, password, firstName, lastName, 'student', city, phone, selectedPlan || undefined);
         if (error) {
           if (error.message.includes('already registered')) {
-            toast.error(t('auth.emailAlreadyUsed'));
+            toast.error(isArabic ? 'هذا الرقم مسجل بالفعل' : 'Ce numéro est déjà enregistré');
           } else {
             toast.error(error.message);
           }
         } else {
-          // Update profile with city if provided
-          if (city.trim()) {
-            // We need to get the user id - since student is signed out, use a workaround
-            // The profile is created by trigger, city will be updated by admin or later
-          }
+          // Update profile with phone and selected plan
+          // The profile is created by trigger. We update it via edge function or directly
+          // Since the student is signed out after signup, we use the edge function approach
+          // For now, store the phone and plan in user metadata
           setRegistrationSuccess(true);
           toast.success(isArabic ? 'تم إرسال طلبك بنجاح! في انتظار التفعيل.' : 'Demande envoyée ! En attente d\'activation par l\'administrateur.');
         }
@@ -420,25 +420,6 @@ export default function Auth() {
       setLoading(false);
     }
   };
-
-  const handleLogin = async () => {
-    // Check student status on login
-    const { data: roleData } = await supabase
-      .from('user_roles')
-      .select('status, role')
-      .eq('user_id', user?.id || '')
-      .single();
-
-    if (roleData?.role === 'student' && roleData?.status === 'pending') {
-      await supabase.auth.signOut();
-      setAccountStatus('pending');
-      toast.error(isArabic ? 'حسابك في انتظار التفعيل' : 'Votre compte est en attente d\'activation');
-      return;
-    }
-  };
-
-
-
 
   const handlePlanSelect = (planId: string) => {
     setSelectedPlan(planId);
@@ -580,12 +561,13 @@ export default function Auth() {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="mb-12 space-y-12"
           >
+            {/* Primaire & Collège */}
             <div>
               <h2 className="text-xl font-semibold text-center mb-6">
                 <BookOpen className="inline-block h-5 w-5 mr-2" />
                 {t('auth.primaireCollege')}
               </h2>
-              <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
                 {primaireCollegePlans.map((plan, index) => (
                   <motion.div
                     key={plan.id}
@@ -638,19 +620,20 @@ export default function Auth() {
               </div>
             </div>
 
+            {/* Lycée */}
             <div>
               <h2 className="text-xl font-semibold text-center mb-6">
                 <GraduationCap className="inline-block h-5 w-5 mr-2" />
                 {t('auth.lyceePacks')}
               </h2>
-              <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
                 {lyceePlans.map((plan, index) => (
                   <motion.div
                     key={plan.id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 + 0.2 }}
-                    className={cn("relative", plan.popular && "md:scale-105 z-10")}
+                    className={cn("relative", plan.popular && "lg:scale-105 z-10")}
                   >
                     {plan.popular && (
                       <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
@@ -710,19 +693,20 @@ export default function Auth() {
               </div>
             </div>
 
+            {/* Cours particuliers */}
             <div>
               <h2 className="text-xl font-semibold text-center mb-6">
                 <User className="inline-block h-5 w-5 mr-2" />
-                {isArabic ? 'Cours particuliers' : 'Cours particuliers'}
+                {isArabic ? 'حصص خاصة' : 'Cours particuliers'}
               </h2>
-              <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
                 {individualPlans.map((plan, index) => (
                   <motion.div
                     key={plan.id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 + 0.2 }}
-                    className={cn("relative", plan.popular && "md:scale-105 z-10")}
+                    className={cn("relative", plan.popular && "sm:scale-105 z-10")}
                   >
                     {plan.popular && (
                       <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
@@ -821,24 +805,41 @@ export default function Auth() {
                         />
                       </div>
                     </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="phone">{isArabic ? 'رقم الهاتف' : 'Numéro de téléphone'}</Label>
+                      <div className="relative">
+                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          id="phone"
+                          type="tel"
+                          value={phone}
+                          onChange={(e) => setPhone(e.target.value)}
+                          placeholder="0612345678"
+                          className="pl-10"
+                          required
+                        />
+                      </div>
+                    </div>
                   </>
                 )}
 
-                <div className="space-y-2">
-                  <Label htmlFor="email">{t('auth.email')}</Label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="email"
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder={isArabic ? "أنت@مثال.com" : "vous@example.com"}
-                      className="pl-10"
-                      required
-                    />
+                {isLogin && (
+                  <div className="space-y-2">
+                    <Label htmlFor="email">{t('auth.email')}</Label>
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        id="email"
+                        type="email"
+                        value={loginEmail}
+                        onChange={(e) => setLoginEmail(e.target.value)}
+                        placeholder={isArabic ? "أنت@مثال.com" : "vous@example.com"}
+                        className="pl-10"
+                        required
+                      />
+                    </div>
                   </div>
-                </div>
+                )}
 
                 <div className="space-y-2">
                   <Label htmlFor="password">{t('auth.password')}</Label>
@@ -855,7 +856,6 @@ export default function Auth() {
                     />
                   </div>
                 </div>
-
 
                 {!isLogin && selectedPlan && (
                   <div className="p-3 bg-muted rounded-lg text-sm">

@@ -10,6 +10,8 @@ type Body = {
   last_name?: string;
   email?: string;
   city?: string;
+  phone?: string;
+  selected_plan?: string;
 };
 
 Deno.serve(async (req) => {
@@ -67,6 +69,8 @@ Deno.serve(async (req) => {
     const last_name = body.last_name?.trim() || (user.user_metadata?.last_name as string) || "";
     const email = body.email?.trim().toLowerCase() || user.email || "";
     const city = body.city?.trim() || null;
+    const phone = body.phone?.trim() || null;
+    const selected_plan = body.selected_plan?.trim() || null;
 
     const { data: existingRoles, error: existingRolesError } = await supabaseAdmin
       .from("user_roles")
@@ -100,6 +104,8 @@ Deno.serve(async (req) => {
           last_name,
           email,
           city,
+          phone,
+          selected_plan,
         },
         { onConflict: "user_id" },
       );

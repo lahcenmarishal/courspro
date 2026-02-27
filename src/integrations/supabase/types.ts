@@ -520,6 +520,7 @@ export type Database = {
           id: string
           last_name: string
           phone: string | null
+          selected_plan: string | null
           specialization: string | null
           updated_at: string
           user_id: string
@@ -538,6 +539,7 @@ export type Database = {
           id?: string
           last_name: string
           phone?: string | null
+          selected_plan?: string | null
           specialization?: string | null
           updated_at?: string
           user_id: string
@@ -556,6 +558,7 @@ export type Database = {
           id?: string
           last_name?: string
           phone?: string | null
+          selected_plan?: string | null
           specialization?: string | null
           updated_at?: string
           user_id?: string
