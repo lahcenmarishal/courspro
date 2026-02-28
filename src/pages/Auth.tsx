@@ -375,7 +375,13 @@ export default function Auth() {
           return;
         }
 
-        const { error } = await signUp(email, password, firstName, lastName, 'student', city, phone, selectedPlan || undefined);
+        if (!selectedPlan) {
+          toast.error(isArabic ? 'يرجى اختيار باقة أو حصص خاصة' : 'Veuillez choisir un pack ou cours particulier');
+          setLoading(false);
+          return;
+        }
+
+        const { error } = await signUp(email, password, firstName, lastName, 'student', city, phone, selectedPlan);
         if (error) {
           if (error.message.includes('already registered')) {
             toast.error(isArabic ? 'هذا البريد الإلكتروني مسجل بالفعل' : 'Cet email est déjà enregistré');
@@ -845,16 +851,32 @@ export default function Auth() {
                   </div>
                 </div>
 
-                {!isLogin && selectedPlan && (
-                  <div className="p-3 bg-muted rounded-lg text-sm">
-                    <span className="font-medium">{t('auth.selectedPack')}</span>
-                    {isArabic 
-                      ? (allPlans.find(p => p.id === selectedPlan) as any)?.nameAr 
-                      : allPlans.find(p => p.id === selectedPlan)?.name}
-                    {'subtitle' in (allPlans.find(p => p.id === selectedPlan) || {}) && (
-                      <span className="text-muted-foreground"> - {isArabic 
-                        ? (allPlans.find(p => p.id === selectedPlan) as any)?.subtitleAr 
-                        : (allPlans.find(p => p.id === selectedPlan) as any)?.subtitle}</span>
+                {!isLogin && (
+                  <div className={cn(
+                    "p-3 rounded-lg text-sm border",
+                    selectedPlan 
+                      ? "bg-muted border-border" 
+                      : "bg-destructive/10 border-destructive/30"
+                  )}>
+                    {selectedPlan ? (
+                      <>
+                        <span className="font-medium">{t('auth.selectedPack')}</span>
+                        {isArabic 
+                          ? (allPlans.find(p => p.id === selectedPlan) as any)?.nameAr 
+                          : allPlans.find(p => p.id === selectedPlan)?.name}
+                        {'subtitle' in (allPlans.find(p => p.id === selectedPlan) || {}) && (
+                          <span className="text-muted-foreground"> - {isArabic 
+                            ? (allPlans.find(p => p.id === selectedPlan) as any)?.subtitleAr 
+                            : (allPlans.find(p => p.id === selectedPlan) as any)?.subtitle}</span>
+                        )}
+                      </>
+                    ) : (
+                      <div className="flex items-center gap-2 text-destructive">
+                        <AlertCircle className="h-4 w-4" />
+                        <span className="font-medium">
+                          {isArabic ? 'يرجى اختيار باقة أو حصص خاصة أعلاه' : 'Veuillez choisir un pack ou cours particulier ci-dessus'}
+                        </span>
+                      </div>
                     )}
                   </div>
                 )}
