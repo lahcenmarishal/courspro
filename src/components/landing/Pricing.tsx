@@ -128,7 +128,7 @@ export const Pricing = () => {
       name: language === 'ar' ? "إعدادي - الأساسي" : "Collège 3AC Essentiel",
       subtitle: language === 'ar' ? "الثالثة إعدادي - المواد الأساسية" : "3ème année collège - Pack essentiel",
       price: { monthly: 200, annual: 700 },
-      subjects: language === 'ar' ? "الرياضيات | الفيزياء والكيمياء | علوم الحياة والأرض | الفرنسية" : "Mathématiques | Physique-Chimie | SVT | Français",
+      subjects: language === 'ar' ? "الرياضيات | الفيزياء والكيمياء | علوم الحياة والأرض | الفرنسية | العربية | التربية الإسلامية" : "Toutes matières",
       features: language === 'ar' ? [
         "4 حصص / أسبوع",
         "تمارين موجهة + واجبات محددة",
@@ -265,24 +265,6 @@ export const Pricing = () => {
 
   const individualOptions = [
     {
-      name: language === 'ar' ? "حصة واحدة" : "Séance unique",
-      subtitle: language === 'ar' ? "جميع المستويات" : "Tous niveaux",
-      features: language === 'ar' ? [
-        "اختيار المادة والمستوى",
-        "بدون التزام",
-        "حصة تجريبية متاحة"
-      ] : [
-        "Choix de la matière et du niveau",
-        "Sans engagement",
-        "Séance d'essai disponible"
-      ],
-      color: "from-rose-600 to-rose-500",
-      borderColor: "border-rose-500",
-      textColor: "text-rose-600",
-      icon: UserRound,
-      plan: "particulier-seance",
-    },
-    {
       name: language === 'ar' ? "متابعة فردية" : "Suivi individuel",
       subtitle: language === 'ar' ? "حصص خاصة" : "Cours particuliers",
       features: language === 'ar' ? [
@@ -358,7 +340,7 @@ export const Pricing = () => {
             <UserRound className="inline-block h-6 w-6 mr-2" />
             {language === 'ar' ? 'حصص خاصة - بدون باقة' : 'Cours particuliers — Sans pack'}
           </h3>
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="flex justify-center max-w-md mx-auto">
             {individualOptions.map((opt, index) => (
               <motion.div
                 key={opt.name}
