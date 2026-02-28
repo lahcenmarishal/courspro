@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Play, GraduationCap, Users, Calendar, Video } from "lucide-react";
+import { GraduationCap, Users, Calendar, Video } from "lucide-react";
 import heroImage from "@/assets/hero-education.jpg";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -42,19 +42,19 @@ export const Hero = () => {
 
             <p className="text-base sm:text-lg text-muted-foreground max-w-xl">{t("hero.description")}</p>
 
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-              <Link to="/auth" className="w-full sm:w-auto">
-                <Button variant="hero" size="lg" className="w-full text-sm sm:text-base">
-                  <GraduationCap className="mr-2 h-4 w-4 rtl:ml-2 rtl:mr-0" />
-                  {t("hero.cta.signup")}
-                  <ArrowRight className="ml-2 h-4 w-4 rtl:mr-2 rtl:ml-0 rtl:rotate-180" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-lg">
+              <Link to="/auth">
+                <Button variant="hero" size="xl" className="w-full flex-col h-auto py-4 gap-1">
+                  <GraduationCap className="h-6 w-6" />
+                  <span className="text-sm sm:text-base font-bold">{t("hero.cta.signup")}</span>
+                  <span className="text-[10px] sm:text-xs opacity-80 font-normal">{t("hero.cta.signupSub")}</span>
                 </Button>
               </Link>
-              <Link to="/auth/teacher" className="w-full sm:w-auto">
-                <Button variant="hero-outline" size="lg" className="w-full text-sm sm:text-base">
-                  <Users className="mr-2 h-4 w-4 rtl:ml-2 rtl:mr-0" />
-                  {t("hero.cta.discover")}
-                  <ArrowRight className="ml-2 h-4 w-4 rtl:mr-2 rtl:ml-0 rtl:rotate-180" />
+              <Link to="/auth/teacher">
+                <Button variant="hero-outline" size="xl" className="w-full flex-col h-auto py-4 gap-1">
+                  <Users className="h-6 w-6" />
+                  <span className="text-sm sm:text-base font-bold">{t("hero.cta.discover")}</span>
+                  <span className="text-[10px] sm:text-xs opacity-80 font-normal">{t("hero.cta.discoverSub")}</span>
                 </Button>
               </Link>
             </div>
