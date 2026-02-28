@@ -102,8 +102,8 @@ const lyceePlans = [
     subtitle: "1ère année Bac",
     subtitleAr: "السنة الأولى باكالوريا",
     price: { monthly: 200, annual: 900 },
-    subjects: "Mathématiques | Physique-Chimie | SVT | Français",
-    subjectsAr: "الرياضيات | الفيزياء والكيمياء | علوم الحياة والأرض | الفرنسية",
+    subjects: "Toutes matières",
+    subjectsAr: "جميع المواد",
     features: [
       "4 séances / semaine",
       "Exercices guidés + devoirs",
@@ -210,29 +210,6 @@ const lyceePlans = [
 
 const individualPlans = [
   {
-    id: 'particulier-seance',
-    name: "Séance unique",
-    nameAr: "حصة واحدة",
-    level: "Particulier",
-    levelAr: "حصص خاصة",
-    subtitle: "Tous niveaux",
-    subtitleAr: "جميع المستويات",
-    features: [
-      "Choix de la matière et du niveau",
-      "Sans engagement",
-      "Séance d'essai disponible"
-    ],
-    featuresAr: [
-      "اختيار المادة والمستوى",
-      "بدون التزام",
-      "حصة تجريبية متاحة"
-    ],
-    color: "from-rose-600 to-rose-500",
-    textColor: "text-rose-600",
-    borderColor: "border-rose-500",
-    bgColor: "bg-rose-600"
-  },
-  {
     id: 'particulier-suivi',
     name: "Suivi individuel",
     nameAr: "متابعة فردية",
@@ -267,6 +244,7 @@ export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
   const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -291,6 +269,7 @@ export default function Auth() {
   const signupSchema = z.object({
     firstName: z.string().min(2, t('auth.firstNameMinLength')),
     lastName: z.string().min(2, t('auth.lastNameMinLength')),
+    email: z.string().email(isArabic ? 'البريد الإلكتروني غير صالح' : 'Email invalide'),
     phone: z.string().min(8, isArabic ? 'رقم الهاتف غير صالح' : 'Numéro de téléphone invalide'),
     password: z.string().min(6, t('auth.passwordMinLength')),
   });
@@ -385,6 +364,7 @@ export default function Auth() {
         const validation = signupSchema.safeParse({ 
           firstName, 
           lastName,
+          email,
           phone,
           password,
         });
@@ -395,21 +375,14 @@ export default function Auth() {
           return;
         }
 
-        // Generate a pseudo-email from phone number for auth
-        const pseudoEmail = `${phone.replace(/[^0-9]/g, '')}@student.courspro.ma`;
-
-        const { error } = await signUp(pseudoEmail, password, firstName, lastName, 'student', city, phone, selectedPlan || undefined);
+        const { error } = await signUp(email, password, firstName, lastName, 'student', city, phone, selectedPlan || undefined);
         if (error) {
           if (error.message.includes('already registered')) {
-            toast.error(isArabic ? 'هذا الرقم مسجل بالفعل' : 'Ce numéro est déjà enregistré');
+            toast.error(isArabic ? 'هذا البريد الإلكتروني مسجل بالفعل' : 'Cet email est déjà enregistré');
           } else {
             toast.error(error.message);
           }
         } else {
-          // Update profile with phone and selected plan
-          // The profile is created by trigger. We update it via edge function or directly
-          // Since the student is signed out after signup, we use the edge function approach
-          // For now, store the phone and plan in user metadata
           setRegistrationSuccess(true);
           toast.success(isArabic ? 'تم إرسال طلبك بنجاح! في انتظار التفعيل.' : 'Demande envoyée ! En attente d\'activation par l\'administrateur.');
         }
@@ -699,7 +672,7 @@ export default function Auth() {
                 <User className="inline-block h-5 w-5 mr-2" />
                 {isArabic ? 'حصص خاصة' : 'Cours particuliers'}
               </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
+              <div className="flex justify-center max-w-md mx-auto">
                 {individualPlans.map((plan, index) => (
                   <motion.div
                     key={plan.id}
@@ -802,6 +775,21 @@ export default function Auth() {
                           onChange={(e) => setCity(e.target.value)}
                           placeholder={isArabic ? "الدار البيضاء" : "Casablanca"}
                           className="pl-10"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="email">{t('auth.email')}</Label>
+                      <div className="relative">
+                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          id="signupEmail"
+                          type="email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          placeholder={isArabic ? "أنت@مثال.com" : "vous@example.com"}
+                          className="pl-10"
+                          required
                         />
                       </div>
                     </div>

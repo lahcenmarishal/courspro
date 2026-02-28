@@ -45,16 +45,18 @@ export const Hero = () => {
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
               <Link to="/auth" className="w-full sm:w-auto">
                 <Button variant="hero" size="lg" className="w-full text-sm sm:text-base">
+                  <GraduationCap className="mr-2 h-4 w-4 rtl:ml-2 rtl:mr-0" />
                   {t("hero.cta.signup")}
                   <ArrowRight className="ml-2 h-4 w-4 rtl:mr-2 rtl:ml-0 rtl:rotate-180" />
                 </Button>
               </Link>
-              <a href="#features" className="w-full sm:w-auto">
+              <Link to="/auth/teacher" className="w-full sm:w-auto">
                 <Button variant="hero-outline" size="lg" className="w-full text-sm sm:text-base">
-                  <Play className="mr-2 h-4 w-4 rtl:ml-2 rtl:mr-0" />
+                  <Users className="mr-2 h-4 w-4 rtl:ml-2 rtl:mr-0" />
                   {t("hero.cta.discover")}
+                  <ArrowRight className="ml-2 h-4 w-4 rtl:mr-2 rtl:ml-0 rtl:rotate-180" />
                 </Button>
-              </a>
+              </Link>
             </div>
 
             <div className="grid grid-cols-3 gap-3 sm:gap-8 pt-6 sm:pt-8 border-t border-border/50">
