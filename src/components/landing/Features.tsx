@@ -19,7 +19,7 @@ export const Features = () => {
     { icon: BookOpen, title: t("features.resources"), description: t("features.resources.desc"), color: "primary" },
     { icon: BarChart3, title: t("features.grades"), description: t("features.grades.desc"), color: "secondary" },
     { icon: Bell, title: t("features.notifications"), description: t("features.notifications.desc"), color: "primary" },
-    { icon: Award, title: t("features.certificates"), description: t("features.certificates.desc"), color: "accent" },
+    { icon: Award, title: t("features.progress"), description: t("features.progress.desc"), color: "accent" },
   ];
 
   return (

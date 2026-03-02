@@ -13,21 +13,10 @@ const colorClasses = {
 };
 
 export const RoleShowcase = () => {
-  const [activeRole, setActiveRole] = useState("admin");
+  const [activeRole, setActiveRole] = useState("teacher");
   const { t } = useLanguage();
 
   const roles = [
-    {
-      id: "admin", title: t("roles.admin"), subtitle: t("roles.admin.subtitle"), icon: Shield, color: "primary", image: null,
-      features: [
-        { icon: Users, text: t("roles.feature.userManagement") },
-        { icon: Calendar, text: t("roles.feature.globalSchedule") },
-        { icon: Video, text: t("roles.feature.meetSupervision") },
-        { icon: CreditCard, text: t("roles.feature.subscriptions") },
-        { icon: BarChart3, text: t("roles.feature.stats") },
-        { icon: Settings, text: t("roles.feature.settings") },
-      ],
-    },
     {
       id: "teacher", title: t("roles.teacher"), subtitle: t("roles.teacher.subtitle"), icon: BookOpen, color: "accent", image: teacherImage,
       features: [

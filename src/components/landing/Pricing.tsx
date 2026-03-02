@@ -103,6 +103,77 @@ export const Pricing = () => {
 
   const levels = [
     {
+      name: language === 'ar' ? "إعدادي - الجهوي" : "Collège Pack Régional",
+      subtitle: language === 'ar' ? "الثالثة إعدادي - جميع المواد" : "3ème année collège - Toutes matières",
+      price: { monthly: 300, annual: 1000 },
+      subjects: language === 'ar' ? "الرياضيات | الفيزياء والكيمياء | علوم الحياة والأرض | الفرنسية | الإنجليزية | العربية" : "Mathématiques | Physique-Chimie | SVT | Français | Anglais | Arabe",
+      features: language === 'ar' ? [
+        "6 حصص / أسبوع",
+        "تمارين موجهة + واجبات محددة",
+        "متابعة أساسية طول فترة الاشتراك"
+      ] : [
+        "6 séances / semaine",
+        "Exercices guidés + devoirs ciblés",
+        "Suivi basique tout au long de l'abonnement"
+      ],
+      option: language === 'ar' ? "100 درهم / شهر للمادة الواحدة" : "100 DH / mois pour une seule matière",
+      color: "from-teal-600 to-teal-500",
+      borderColor: "border-teal-500",
+      textColor: "text-teal-600",
+      icon: Users,
+      link: "/programmes/college",
+      plan: "college-regional",
+      popular: true
+    },
+    {
+      name: language === 'ar' ? "1 باك الجهوي" : "1 Bac Pack Aljihawi",
+      subtitle: language === 'ar' ? "الأولى باك - مواد الامتحان الجهوي" : "1ère Bac - Matières régional",
+      price: { monthly: 250, annual: 1000 },
+      subjects: language === 'ar' ? "الفرنسية | الجغرافيا | العربية | التربية الإسلامية" : "Français | Géographie | Arabe | Éducation islamique",
+      features: language === 'ar' ? [
+        "4 حصص / أسبوع",
+        "تمارين موجهة + فروض",
+        "متابعة أساسية طول فترة الاشتراك"
+      ] : [
+        "4 séances / semaine",
+        "Exercices guidés + devoirs",
+        "Suivi basique tout au long de l'abonnement"
+      ],
+      option: language === 'ar' ? "100 درهم / شهر للمادة الواحدة" : "100 DH / mois pour une seule matière",
+      color: "from-cyan-600 to-cyan-500",
+      borderColor: "border-cyan-500",
+      textColor: "text-cyan-600",
+      icon: GraduationCap,
+      link: "/programmes/lycee/1bac-jihawi",
+      plan: "lycee-1bac-jihawi",
+      popular: true
+    },
+    {
+      name: language === 'ar' ? "2 باك الوطني الكامل" : "2 Bac National Complet",
+      subtitle: language === 'ar' ? "الثانية باك - جميع المواد" : "2ème Bac - Toutes matières",
+      price: { monthly: 350, annual: 1300 },
+      subjects: language === 'ar' ? "الرياضيات | الفيزياء والكيمياء | علوم الحياة والأرض | الإنجليزية | الفلسفة" : "Mathématiques | Physique-Chimie | SVT | Anglais | Philosophie",
+      features: language === 'ar' ? [
+        "5 حصص / أسبوع",
+        "فروض مراقبة + محاكاة كاملة",
+        "متابعة أساسية طول فترة الاشتراك",
+        "تحضير شامل للامتحان الوطني"
+      ] : [
+        "5 séances / semaine",
+        "DS + simulations complètes",
+        "Suivi basique tout au long de l'abonnement",
+        "Préparation complète au national"
+      ],
+      option: language === 'ar' ? "100 درهم / شهر للمادة الواحدة" : "100 DH / mois pour une seule matière",
+      color: "from-amber-600 to-amber-500",
+      borderColor: "border-amber-500",
+      textColor: "text-amber-600",
+      icon: GraduationCap,
+      link: "/programmes/lycee/2bac-total",
+      plan: "lycee-2bac-total",
+      popular: true
+    },
+    {
       name: language === 'ar' ? "الابتدائي" : "Primaire",
       subtitle: language === 'ar' ? "السنة السادسة ابتدائي" : "6ème année primaire",
       price: { monthly: 150, annual: 500 },
@@ -147,38 +218,16 @@ export const Pricing = () => {
       plan: "college-essentiel"
     },
     {
-      name: language === 'ar' ? "إعدادي - الجهوي" : "Collège Pack Régional",
-      subtitle: language === 'ar' ? "الثالثة إعدادي - جميع المواد" : "3ème année collège - Toutes matières",
-      price: { monthly: 300, annual: 1000 },
-      subjects: language === 'ar' ? "الرياضيات | الفيزياء والكيمياء | علوم الحياة والأرض | الفرنسية | الإنجليزية | العربية" : "Mathématiques | Physique-Chimie | SVT | Français | Anglais | Arabe",
-      features: language === 'ar' ? [
-        "6 حصص / أسبوع",
-        "تمارين موجهة + واجبات محددة",
-        "متابعة أساسية طول فترة الاشتراك"
-      ] : [
-        "6 séances / semaine",
-        "Exercices guidés + devoirs ciblés",
-        "Suivi basique tout au long de l'abonnement"
-      ],
-      option: language === 'ar' ? "100 درهم / شهر للمادة الواحدة" : "100 DH / mois pour une seule matière",
-      color: "from-teal-600 to-teal-500",
-      borderColor: "border-teal-500",
-      textColor: "text-teal-600",
-      icon: Users,
-      link: "/programmes/college",
-      plan: "college-regional"
-    },
-    {
       name: language === 'ar' ? "1 باك" : "1 Bac",
       subtitle: language === 'ar' ? "السنة الأولى باكالوريا" : "1ère année Bac",
-      price: { monthly: 200, annual: 900 },
-      subjects: language === 'ar' ? "الرياضيات | الفيزياء والكيمياء | علوم الحياة والأرض | الفرنسية" : "Mathématiques | Physique-Chimie | SVT | Français",
+      price: { monthly: 350, annual: 1000 },
+      subjects: language === 'ar' ? "جميع المواد" : "Toutes matières",
       features: language === 'ar' ? [
-        "4 حصص / أسبوع",
+        "7 حصص / أسبوع",
         "تمارين موجهة + فروض",
         "متابعة أساسية طول فترة الاشتراك"
       ] : [
-        "4 séances / semaine",
+        "7 séances / semaine",
         "Exercices guidés + devoirs",
         "Suivi basique tout au long de l'abonnement"
       ],
@@ -189,28 +238,6 @@ export const Pricing = () => {
       icon: GraduationCap,
       link: "/programmes/lycee/1bac",
       plan: "lycee-1bac"
-    },
-    {
-      name: language === 'ar' ? "1 باك الجهوي" : "1 Bac Pack Aljihawi",
-      subtitle: language === 'ar' ? "الأولى باك - مواد الامتحان الجهوي" : "1ère Bac - Matières régional",
-      price: { monthly: 250, annual: 1000 },
-      subjects: language === 'ar' ? "الفرنسية | الجغرافيا | العربية | التربية الإسلامية" : "Français | Géographie | Arabe | Éducation islamique",
-      features: language === 'ar' ? [
-        "4 حصص / أسبوع",
-        "تمارين موجهة + فروض",
-        "متابعة أساسية طول فترة الاشتراك"
-      ] : [
-        "4 séances / semaine",
-        "Exercices guidés + devoirs",
-        "Suivi basique tout au long de l'abonnement"
-      ],
-      option: language === 'ar' ? "100 درهم / شهر للمادة الواحدة" : "100 DH / mois pour une seule matière",
-      color: "from-cyan-600 to-cyan-500",
-      borderColor: "border-cyan-500",
-      textColor: "text-cyan-600",
-      icon: GraduationCap,
-      link: "/programmes/lycee/1bac-jihawi",
-      plan: "lycee-1bac-jihawi"
     },
     {
       name: language === 'ar' ? "2 باك أساسي" : "2 Bac Essentiel",
@@ -235,31 +262,6 @@ export const Pricing = () => {
       icon: GraduationCap,
       link: "/programmes/lycee/2bac-essentiel",
       plan: "lycee-2bac-essentiel"
-    },
-    {
-      name: language === 'ar' ? "2 باك الوطني الكامل" : "2 Bac National Complet",
-      subtitle: language === 'ar' ? "الثانية باك - جميع المواد" : "2ème Bac - Toutes matières",
-      price: { monthly: 350, annual: 1300 },
-      subjects: language === 'ar' ? "الرياضيات | الفيزياء والكيمياء | علوم الحياة والأرض | الإنجليزية | الفلسفة | الفرنسية" : "Mathématiques | Physique-Chimie | SVT | Anglais | Philosophie | Français",
-      features: language === 'ar' ? [
-        "6 حصص / أسبوع",
-        "فروض مراقبة + محاكاة كاملة",
-        "متابعة أساسية طول فترة الاشتراك",
-        "تحضير شامل للامتحان الوطني"
-      ] : [
-        "6 séances / semaine",
-        "DS + simulations complètes",
-        "Suivi basique tout au long de l'abonnement",
-        "Préparation complète au national"
-      ],
-      option: language === 'ar' ? "100 درهم / شهر للمادة الواحدة" : "100 DH / mois pour une seule matière",
-      color: "from-amber-600 to-amber-500",
-      borderColor: "border-amber-500",
-      textColor: "text-amber-600",
-      icon: GraduationCap,
-      link: "/programmes/lycee/2bac-total",
-      plan: "lycee-2bac-total",
-      popular: true
     }
   ];
 

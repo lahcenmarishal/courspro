@@ -43,7 +43,7 @@ export const Hero = () => {
             <p className="text-base sm:text-lg text-muted-foreground max-w-xl">{t("hero.description")}</p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-lg">
-              <Link to="/auth">
+              <Link to="/auth?signup=true">
                 <Button variant="hero" size="xl" className="w-full flex-col h-auto py-4 gap-1">
                   <GraduationCap className="h-6 w-6" />
                   <span className="text-sm sm:text-base font-bold">{t("hero.cta.signup")}</span>

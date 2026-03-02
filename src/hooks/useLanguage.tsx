@@ -85,8 +85,8 @@ const fr: Record<string, string> = {
   "features.grades.desc": "Consultez vos notes, moyennes et bulletins téléchargeables.",
   "features.notifications": "Notifications",
   "features.notifications.desc": "Soyez alerté avant chaque cours et pour les annonces importantes.",
-  "features.certificates": "Certificats",
-  "features.certificates.desc": "Obtenez vos certificats et attestations de réussite.",
+  "features.progress": "Suivi de progression",
+  "features.progress.desc": "Suivez l'évolution de votre enfant avec des rapports détaillés et personnalisés.",
 
   // Role Showcase
   "roles.label": "Rôles utilisateurs",
@@ -993,8 +993,8 @@ const ar: Record<string, string> = {
   "features.grades.desc": "اطلع على نقطك ومعدلاتك وقم بتحميل البيانات.",
   "features.notifications": "الإشعارات",
   "features.notifications.desc": "تلقي تنبيه قبل كل درس وللإعلانات المهمة.",
-  "features.certificates": "الشهادات",
-  "features.certificates.desc": "احصل على شهاداتك وإفادات النجاح.",
+  "features.progress": "متابعة التقدم",
+  "features.progress.desc": "تابع تطور طفلك من خلال تقارير مفصلة وشخصية.",
 
   // Role Showcase
   "roles.label": "أدوار المستخدمين",
