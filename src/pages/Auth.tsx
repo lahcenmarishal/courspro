@@ -19,6 +19,31 @@ type AppRole = 'admin' | 'teacher' | 'student';
 // Packs par niveau
 const primaireCollegePlans = [
   {
+    id: 'college-regional',
+    name: "Collège Pack Régional",
+    nameAr: "إعدادي - الجهوي",
+    level: "Collège",
+    levelAr: "الإعدادي",
+    price: { monthly: 300, annual: 1000 },
+    subjects: "Mathématiques | Physique-Chimie | SVT | Français | Anglais | Arabe",
+    subjectsAr: "الرياضيات | الفيزياء والكيمياء | علوم الحياة والأرض | الفرنسية | الإنجليزية | العربية",
+    features: [
+      "6 séances / semaine",
+      "Exercices guidés + devoirs ciblés",
+      "Suivi basique tout au long de l'abonnement"
+    ],
+    featuresAr: [
+      "6 حصص / أسبوع",
+      "تمارين موجهة + واجبات محددة",
+      "متابعة أساسية طول فترة الاشتراك"
+    ],
+    color: "from-teal-600 to-teal-500",
+    textColor: "text-teal-600",
+    borderColor: "border-teal-500",
+    bgColor: "bg-teal-600",
+    popular: true
+  },
+  {
     id: 'primaire',
     name: "6ème année primaire",
     nameAr: "السنة السادسة ابتدائي",
@@ -49,7 +74,7 @@ const primaireCollegePlans = [
     level: "Collège",
     levelAr: "الإعدادي",
     price: { monthly: 200, annual: 700 },
-    subjects: "Mathématiques | Physique-Chimie | SVT | Français",
+    subjects: "Toutes matières",
     subjectsAr: "الرياضيات | الفيزياء والكيمياء | علوم الحياة والأرض | الفرنسية",
     features: [
       "4 séances / semaine",
@@ -65,30 +90,6 @@ const primaireCollegePlans = [
     textColor: "text-emerald-600",
     borderColor: "border-emerald-500",
     bgColor: "bg-emerald-600"
-  },
-  {
-    id: 'college-regional',
-    name: "Collège Pack Régional",
-    nameAr: "إعدادي - الجهوي",
-    level: "Collège",
-    levelAr: "الإعدادي",
-    price: { monthly: 300, annual: 1000 },
-    subjects: "Mathématiques | Physique-Chimie | SVT | Français | Anglais | Arabe",
-    subjectsAr: "الرياضيات | الفيزياء والكيمياء | علوم الحياة والأرض | الفرنسية | الإنجليزية | العربية",
-    features: [
-      "6 séances / semaine",
-      "Exercices guidés + devoirs ciblés",
-      "Suivi basique tout au long de l'abonnement"
-    ],
-    featuresAr: [
-      "6 حصص / أسبوع",
-      "تمارين موجهة + واجبات محددة",
-      "متابعة أساسية طول فترة الاشتراك"
-    ],
-    color: "from-teal-600 to-teal-500",
-    textColor: "text-teal-600",
-    borderColor: "border-teal-500",
-    bgColor: "bg-teal-600"
   }
 ];
 
@@ -101,16 +102,16 @@ const lyceePlans = [
     levelAr: "الثانوي",
     subtitle: "1ère année Bac",
     subtitleAr: "السنة الأولى باكالوريا",
-    price: { monthly: 200, annual: 900 },
+    price: { monthly: 350, annual: 1000 },
     subjects: "Toutes matières",
     subjectsAr: "جميع المواد",
     features: [
-      "4 séances / semaine",
+      "7 séances / semaine",
       "Exercices guidés + devoirs",
       "Suivi basique tout au long de l'abonnement"
     ],
     featuresAr: [
-      "4 حصص / أسبوع",
+      "7 حصص / أسبوع",
       "تمارين موجهة + فروض",
       "متابعة أساسية طول فترة الاشتراك"
     ],
@@ -147,7 +148,8 @@ const lyceePlans = [
     color: "from-cyan-600 to-cyan-500",
     textColor: "text-cyan-600",
     borderColor: "border-cyan-500",
-    bgColor: "bg-cyan-600"
+    bgColor: "bg-cyan-600",
+    popular: true
   },
   {
     id: 'lycee-2bac-essentiel',
@@ -186,15 +188,15 @@ const lyceePlans = [
     subtitle: "2ème Bac - Toutes matières",
     subtitleAr: "الثانية باك - جميع المواد",
     price: { monthly: 350, annual: 1300 },
-    subjects: "Mathématiques | Physique-Chimie | SVT | Anglais | Philosophie | Français",
-    subjectsAr: "الرياضيات | الفيزياء والكيمياء | علوم الحياة والأرض | الإنجليزية | الفلسفة | الفرنسية",
+    subjects: "Mathématiques | Physique-Chimie | SVT | Anglais | Philosophie",
+    subjectsAr: "الرياضيات | الفيزياء والكيمياء | علوم الحياة والأرض | الإنجليزية | الفلسفة",
     features: [
-      "6 séances / semaine",
+      "5 séances / semaine",
       "DS + simulations complètes",
       "Préparation complète au national"
     ],
     featuresAr: [
-      "6 حصص / أسبوع",
+      "5 حصص / أسبوع",
       "فروض مراقبة + محاكاة كاملة",
       "تحضير شامل للامتحان الوطني"
     ],
@@ -326,6 +328,10 @@ export default function Auth() {
 
   useEffect(() => {
     const plan = searchParams.get('plan');
+    const signupParam = searchParams.get('signup');
+    if (signupParam === 'true') {
+      setIsLogin(false);
+    }
     if (plan) {
       if (plan === 'lycee') {
         setSelectedPlan('lycee-2bac-total');
@@ -553,8 +559,15 @@ export default function Auth() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 + 0.2 }}
-                    className="relative"
+                    className={cn("relative", (plan as any).popular && "sm:scale-105 z-10")}
                   >
+                    {(plan as any).popular && (
+                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
+                        <span className="inline-flex items-center gap-1 px-3 py-1 bg-amber-500 text-white text-xs font-semibold rounded-full">
+                          <Star className="h-3 w-3" /> {t('auth.popular')}
+                        </span>
+                      </div>
+                    )}
                     <Card 
                       className={cn(
                         "h-full cursor-pointer transition-all duration-300 hover:shadow-lg",
