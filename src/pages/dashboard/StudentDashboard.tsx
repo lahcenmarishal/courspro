@@ -47,6 +47,7 @@ const StudentDashboard = () => {
     lastName: '',
     className: null,
     levelName: null,
+    selectedPlan: null,
   });
   const [schedule, setSchedule] = useState<ScheduleItem[]>([]);
   const [loading, setLoading] = useState(true);
