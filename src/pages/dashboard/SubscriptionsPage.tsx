@@ -596,6 +596,7 @@ export default function SubscriptionsPage() {
                               <Badge variant="outline" className="text-xs">🔬 Physique-Chimie</Badge>
                               <Badge variant="outline" className="text-xs">🌿 SVT</Badge>
                               <Badge variant="outline" className="text-xs">GB Anglais</Badge>
+                              <Badge variant="outline" className="text-xs">🌍 Arabe</Badge>
                             </div>
                           </div>
                           <div className="space-y-2 text-sm text-muted-foreground">
