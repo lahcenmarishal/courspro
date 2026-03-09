@@ -602,7 +602,7 @@ export default function SubscriptionsPage() {
                           <div className="space-y-2 text-sm text-muted-foreground">
                             <div className="flex items-center gap-2">
                               <Clock className="h-4 w-4" />
-                              5 séances / semaine
+                              6 séances / semaine
                             </div>
                             <div className="flex items-center gap-2">
                               <Users className="h-4 w-4" />
