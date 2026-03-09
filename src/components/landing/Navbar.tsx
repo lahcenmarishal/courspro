@@ -12,7 +12,7 @@ export const Navbar = () => {
   const { user, role, loading } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   const navLinks = [
     { label: t("nav.primary"), href: "/programmes/primaire", isAnchor: false },
