@@ -191,6 +191,12 @@ const StudentDashboard = () => {
                 : format(new Date(), "EEEE d MMMM yyyy", { locale: dateLocale })
               }
             </p>
+            {studentInfo.selectedPlan && (
+              <Badge variant="outline" className="mt-1 bg-primary/10 text-primary border-primary/30">
+                <CreditCard className="h-3 w-3 mr-1" />
+                {planLabels[studentInfo.selectedPlan] || studentInfo.selectedPlan}
+              </Badge>
+            )}
           </div>
           <div className="flex items-center gap-2 lg:gap-3">
             <Button variant="outline" size="icon" className="h-9 w-9 lg:h-10 lg:w-10">
