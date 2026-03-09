@@ -540,159 +540,202 @@ export default function SubscriptionsPage() {
 
                 {/* Available Plans for students/parents */}
                 {role !== 'admin' && (
-                  <div className="space-y-6">
-                    <h2 className="text-xl font-bold">Nos offres disponibles</h2>
+                  <div className="space-y-8">
+                    <h2 className="text-xl font-bold">Programmes éducatifs</h2>
                     
-                    {/* Primaire & Collège */}
-                    <div>
-                      <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                        <BookOpen className="h-5 w-5 text-primary" />
-                        Primaire & Collège
-                      </h3>
-                      <div className="grid md:grid-cols-2 gap-4">
-                        {[...pricingPlans.primaire, ...pricingPlans.college].map((plan) => (
-                          <motion.div
-                            key={plan.id}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                          >
-                            <Card className={cn("h-full", plan.popular && "border-primary")}>
-                              <CardHeader className="pb-2">
-                                <div className="flex items-start justify-between">
-                                  <div>
-                                    <CardTitle className="text-lg">{plan.name}</CardTitle>
-                                    <CardDescription>{plan.subtitle}</CardDescription>
-                                  </div>
-                                  {plan.popular && (
-                                    <Badge className="bg-primary/10 text-primary">
-                                      <Star className="h-3 w-3 mr-1" />Populaire
-                                    </Badge>
-                                  )}
-                                </div>
-                              </CardHeader>
-                              <CardContent>
-                                <div className="mb-4">
-                                  <span className="text-3xl font-bold">{plan.price.monthly}</span>
-                                  <span className="text-muted-foreground"> DH/mois</span>
-                                  <p className="text-sm text-muted-foreground">{plan.price.annual} DH/an</p>
-                                </div>
-                                <p className="text-sm font-medium text-primary mb-3">{plan.subjects}</p>
-                                <ul className="space-y-2 mb-4">
-                                  {plan.features.map((feature, i) => (
-                                    <li key={i} className="flex items-center gap-2 text-sm">
-                                      <Check className="h-4 w-4 text-primary" />
-                                      {feature}
-                                    </li>
-                                  ))}
-                                </ul>
-                                <Button className="w-full" variant={plan.popular ? "default" : "outline"} asChild>
-                                  <Link to="/contact">Nous contacter</Link>
-                                </Button>
-                              </CardContent>
-                            </Card>
-                          </motion.div>
-                        ))}
-                      </div>
-                    </div>
+                    {/* 3 cards layout matching screenshot */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      {/* Primaire Card */}
+                      <Card className="overflow-hidden border-2 border-primary/20">
+                        <div className="bg-gradient-to-r from-primary to-primary/80 p-4 text-white">
+                          <div className="flex items-center gap-2 mb-2">
+                            <BookOpen className="h-6 w-6" />
+                            <h3 className="font-bold text-lg">Primaire</h3>
+                          </div>
+                          <p className="text-sm opacity-90">6ème année primaire</p>
+                          <div className="mt-3">
+                            <span className="text-3xl font-bold">100</span>
+                            <span className="text-sm"> MAD/mois</span>
+                            <span className="text-xs ml-2 opacity-80">• 500 DH/an</span>
+                          </div>
+                        </div>
+                        <CardContent className="p-4">
+                          <p className="text-sm text-muted-foreground mb-4">
+                            Construire des bases solides avec un accompagnement bienveillant
+                          </p>
+                          <div className="mb-4">
+                            <p className="text-sm font-medium mb-2">Matières enseignées</p>
+                            <div className="flex flex-wrap gap-2">
+                              <Badge variant="outline" className="text-xs">🌍 Arabe</Badge>
+                              <Badge variant="outline" className="text-xs">FR Français</Badge>
+                              <Badge variant="outline" className="text-xs">📐 Mathématiques</Badge>
+                            </div>
+                          </div>
+                          <div className="space-y-2 text-sm text-muted-foreground">
+                            <div className="flex items-center gap-2">
+                              <Clock className="h-4 w-4" />
+                              3 séances / semaine • 3h / séance
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Users className="h-4 w-4" />
+                              Cours interactifs
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
 
-                    {/* Lycée */}
-                    <div>
-                      <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                        <GraduationCap className="h-5 w-5 text-amber-600" />
-                        Lycée - Préparation BAC
-                      </h3>
-                      <div className="grid md:grid-cols-3 gap-4">
-                        {pricingPlans.lycee.map((plan) => (
-                          <motion.div
-                            key={plan.id}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                          >
-                            <Card className={cn("h-full", plan.popular && "border-amber-500")}>
-                              <CardHeader className="pb-2">
-                                <div className="flex items-start justify-between">
-                                  <div>
-                                    <CardTitle className="text-base">{plan.name}</CardTitle>
-                                    <CardDescription className="text-xs">{plan.subtitle}</CardDescription>
-                                  </div>
-                                  {plan.popular && (
-                                    <Badge className="bg-amber-500/10 text-amber-600 text-xs">
-                                      <Star className="h-3 w-3 mr-1" />Top
-                                    </Badge>
-                                  )}
-                                </div>
-                              </CardHeader>
-                              <CardContent>
-                                <div className="mb-3">
-                                  <span className="text-2xl font-bold">{plan.price.monthly}</span>
-                                  <span className="text-muted-foreground text-sm"> DH/mois</span>
-                                  <p className="text-xs text-muted-foreground">{plan.price.annual} DH/an</p>
-                                </div>
-                                <p className="text-xs font-medium text-amber-600 mb-2">{plan.subjects}</p>
-                                <ul className="space-y-1 mb-4">
-                                  {plan.features.map((feature, i) => (
-                                    <li key={i} className="flex items-center gap-2 text-xs">
-                                      <Check className="h-3 w-3 text-amber-600" />
-                                      {feature}
-                                    </li>
-                                  ))}
-                                </ul>
-                                <Button 
-                                  className={cn("w-full", plan.popular && "bg-amber-600 hover:bg-amber-700")} 
-                                  variant={plan.popular ? "default" : "outline"} 
-                                  size="sm"
-                                  asChild
-                                >
-                                  <Link to="/contact">Nous contacter</Link>
-                                </Button>
-                              </CardContent>
-                            </Card>
-                          </motion.div>
-                        ))}
-                      </div>
+                      {/* Collège Card */}
+                      <Card className="overflow-hidden border-2 border-teal-500">
+                        <div className="bg-gradient-to-r from-teal-600 to-teal-500 p-4 text-white">
+                          <div className="flex items-center gap-2 mb-2">
+                            <GraduationCap className="h-6 w-6" />
+                            <h3 className="font-bold text-lg">Collège</h3>
+                          </div>
+                          <p className="text-sm opacity-90">3ème année collège</p>
+                          <div className="mt-3">
+                            <span className="text-3xl font-bold">150</span>
+                            <span className="text-sm"> MAD/mois</span>
+                            <span className="text-xs ml-2 opacity-80">• 700 DH/an</span>
+                          </div>
+                        </div>
+                        <CardContent className="p-4">
+                          <p className="text-sm text-muted-foreground mb-4">
+                            Préparer l'excellence avec autonomie pour le brevet
+                          </p>
+                          <div className="mb-4">
+                            <p className="text-sm font-medium mb-2">Matières enseignées</p>
+                            <div className="flex flex-wrap gap-2">
+                              <Badge variant="outline" className="text-xs">📐 Mathématiques</Badge>
+                              <Badge variant="outline" className="text-xs">FR Français</Badge>
+                              <Badge variant="outline" className="text-xs">🔬 Physique-Chimie</Badge>
+                              <Badge variant="outline" className="text-xs">🌿 SVT</Badge>
+                              <Badge variant="outline" className="text-xs">GB Anglais</Badge>
+                            </div>
+                          </div>
+                          <div className="space-y-2 text-sm text-muted-foreground">
+                            <div className="flex items-center gap-2">
+                              <Clock className="h-4 w-4" />
+                              5 séances / semaine
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Users className="h-4 w-4" />
+                              Cours interactifs
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <CheckCircle className="h-4 w-4 text-green-500" />
+                              95% taux de réussite au Brevet
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      {/* Lycée Card */}
+                      <Card className="overflow-hidden border-2 border-amber-500">
+                        <div className="bg-gradient-to-r from-amber-600 to-amber-500 p-4 text-white">
+                          <div className="flex items-center gap-2 mb-2">
+                            <GraduationCap className="h-6 w-6" />
+                            <h3 className="font-bold text-lg">Lycée</h3>
+                          </div>
+                          <p className="text-sm opacity-90">1ère & 2ème année BAC</p>
+                          <div className="mt-3">
+                            <span className="text-3xl font-bold">200–350</span>
+                            <span className="text-sm"> MAD/mois</span>
+                          </div>
+                        </div>
+                        <CardContent className="p-4">
+                          <p className="text-sm text-muted-foreground mb-4">
+                            Objectif Baccalauréat avec préparation intensive
+                          </p>
+                          
+                          {/* Pack Jihawi */}
+                          <div className="p-3 rounded-lg bg-cyan-50 dark:bg-cyan-950/30 border border-cyan-200 dark:border-cyan-800 mb-2">
+                            <p className="font-semibold text-sm text-cyan-700 dark:text-cyan-400">Pack Jihawi (1ère BAC)</p>
+                            <p className="text-xs text-muted-foreground">Français | Arabe | Éducation islamique | GEO</p>
+                            <p className="text-xs font-semibold text-cyan-600">200 MAD/mois • 900 DH/an</p>
+                          </div>
+                          
+                          {/* Pack Essentiel */}
+                          <div className="p-3 rounded-lg bg-orange-50 dark:bg-orange-950/30 border border-orange-200 dark:border-orange-800 mb-2">
+                            <p className="font-semibold text-sm text-orange-700 dark:text-orange-400">Pack Essentiel (2ème BAC)</p>
+                            <p className="text-xs text-muted-foreground">Math | Physique chimie | SVT</p>
+                            <p className="text-xs font-semibold text-orange-600">250 MAD/mois • 1200 DH/an</p>
+                          </div>
+                          
+                          {/* Pack Total Watani */}
+                          <div className="p-3 rounded-lg bg-amber-100 dark:bg-amber-950/40 border-2 border-amber-400 dark:border-amber-600">
+                            <div className="flex items-center gap-1">
+                              <p className="font-semibold text-sm text-amber-700 dark:text-amber-400">Pack Total Watani (2ème BAC)</p>
+                              <Star className="h-3 w-3 text-amber-500" />
+                            </div>
+                            <p className="text-xs text-muted-foreground">Math | PC | SVT | Anglais | Philosophie</p>
+                            <p className="text-xs font-semibold text-amber-600">350 MAD/mois • 1500 DH/an</p>
+                          </div>
+
+                          <div className="mt-4">
+                            <p className="text-sm font-medium mb-2">Toutes les matières</p>
+                            <div className="flex flex-wrap gap-2">
+                              <Badge variant="outline" className="text-xs">📐 Math</Badge>
+                              <Badge variant="outline" className="text-xs">🔬 PC</Badge>
+                              <Badge variant="outline" className="text-xs">🌿 SVT</Badge>
+                              <Badge variant="outline" className="text-xs">📖 Philo</Badge>
+                              <Badge variant="outline" className="text-xs">🌍 Anglais</Badge>
+                              <Badge variant="outline" className="text-xs">FR Français</Badge>
+                            </div>
+                          </div>
+
+                          <div className="mt-3 text-sm text-muted-foreground">
+                            <div className="flex items-center gap-2">
+                              <Clock className="h-4 w-4" />
+                              Jusqu'à 8h / semaine
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
                     </div>
 
                     {/* Cours particuliers */}
-                    <div>
+                    <div className="mt-8">
                       <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                         <UserRound className="h-5 w-5 text-indigo-600" />
                         Cours particuliers — Sans pack
                       </h3>
                       <div className="max-w-md">
-                        {pricingPlans.particulier.map((plan) => (
-                          <motion.div
-                            key={plan.id}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                          >
-                            <Card className="h-full border-indigo-500">
-                              <CardHeader className="pb-2">
-                                <div className="flex items-start justify-between">
-                                  <div>
-                                    <CardTitle className="text-lg">{plan.name}</CardTitle>
-                                    <CardDescription>{plan.subtitle}</CardDescription>
-                                  </div>
-                                  <Badge className="bg-indigo-500/10 text-indigo-600">
-                                    <Star className="h-3 w-3 mr-1" />Recommandé
-                                  </Badge>
-                                </div>
-                              </CardHeader>
-                              <CardContent>
-                                <ul className="space-y-2 mb-4">
-                                  {plan.features.map((feature, i) => (
-                                    <li key={i} className="flex items-center gap-2 text-sm">
-                                      <Check className="h-4 w-4 text-indigo-600" />
-                                      {feature}
-                                    </li>
-                                  ))}
-                                </ul>
-                                <Button className="w-full" asChild>
-                                  <Link to="/contact">Demander un support</Link>
-                                </Button>
-                              </CardContent>
-                            </Card>
-                          </motion.div>
-                        ))}
+                        <Card className="border-indigo-500">
+                          <CardHeader className="pb-2">
+                            <div className="flex items-start justify-between">
+                              <div>
+                                <CardTitle className="text-lg">Suivi individuel</CardTitle>
+                                <CardDescription>Cours particuliers</CardDescription>
+                              </div>
+                              <Badge className="bg-indigo-500/10 text-indigo-600">
+                                <Star className="h-3 w-3 mr-1" />Recommandé
+                              </Badge>
+                            </div>
+                          </CardHeader>
+                          <CardContent>
+                            <ul className="space-y-2 mb-4">
+                              <li className="flex items-center gap-2 text-sm">
+                                <Check className="h-4 w-4 text-indigo-600" />
+                                Séance individuelle avec le prof
+                              </li>
+                              <li className="flex items-center gap-2 text-sm">
+                                <Check className="h-4 w-4 text-indigo-600" />
+                                Programme personnalisé
+                              </li>
+                              <li className="flex items-center gap-2 text-sm">
+                                <Check className="h-4 w-4 text-indigo-600" />
+                                Suivi personnel complet
+                              </li>
+                              <li className="flex items-center gap-2 text-sm">
+                                <Check className="h-4 w-4 text-indigo-600" />
+                                Flexibilité des horaires
+                              </li>
+                            </ul>
+                            <Button className="w-full" asChild>
+                              <Link to="/contact">Demander un support</Link>
+                            </Button>
+                          </CardContent>
+                        </Card>
                       </div>
                     </div>
                   </div>

@@ -88,6 +88,7 @@ const StudentDashboard = () => {
         lastName: studentProfile?.last_name || '',
         className: (enrollmentData?.classes as any)?.name || null,
         levelName: (enrollmentData?.classes as any)?.levels?.name || null,
+        selectedPlan: studentProfile?.selected_plan || null,
       });
 
       if (enrollmentData) {
