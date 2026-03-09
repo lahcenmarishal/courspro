@@ -11,15 +11,26 @@ import {
   ArrowRight,
   Play,
   Bell,
-  Loader2
+  Loader2,
+  CreditCard
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { format } from "date-fns";
 import { fr as frLocale, arSA } from "date-fns/locale";
 import { useLanguage } from "@/hooks/useLanguage";
+
+const planLabels: Record<string, string> = {
+  'primaire': 'Primaire - 6ème année',
+  'college-regional': 'Collège Pack Régional',
+  'lycee-1bac-jihawi': '1 Bac Pack Aljihawi',
+  'lycee-2bac-total': '2 Bac National Complet',
+  'lycee-2bac-essentiel': 'Pack Essentiel 2 Bac',
+  'particulier-suivi': 'Suivi individuel',
+};
 
 interface ScheduleItem {
   id: string;
@@ -35,6 +46,7 @@ interface StudentInfo {
   lastName: string;
   className: string | null;
   levelName: string | null;
+  selectedPlan: string | null;
 }
 
 const StudentDashboard = () => {
@@ -46,6 +58,7 @@ const StudentDashboard = () => {
     lastName: '',
     className: null,
     levelName: null,
+    selectedPlan: null,
   });
   const [schedule, setSchedule] = useState<ScheduleItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -62,7 +75,7 @@ const StudentDashboard = () => {
     try {
       const { data: profileData } = await supabase
         .from('profiles')
-        .select('first_name, last_name')
+        .select('first_name, last_name, selected_plan')
         .eq('user_id', user.id)
         .single();
 
@@ -86,6 +99,7 @@ const StudentDashboard = () => {
         lastName: studentProfile?.last_name || '',
         className: (enrollmentData?.classes as any)?.name || null,
         levelName: (enrollmentData?.classes as any)?.levels?.name || null,
+        selectedPlan: studentProfile?.selected_plan || null,
       });
 
       if (enrollmentData) {
@@ -177,6 +191,12 @@ const StudentDashboard = () => {
                 : format(new Date(), "EEEE d MMMM yyyy", { locale: dateLocale })
               }
             </p>
+            {studentInfo.selectedPlan && (
+              <Badge variant="outline" className="mt-1 bg-primary/10 text-primary border-primary/30">
+                <CreditCard className="h-3 w-3 mr-1" />
+                {planLabels[studentInfo.selectedPlan] || studentInfo.selectedPlan}
+              </Badge>
+            )}
           </div>
           <div className="flex items-center gap-2 lg:gap-3">
             <Button variant="outline" size="icon" className="h-9 w-9 lg:h-10 lg:w-10">

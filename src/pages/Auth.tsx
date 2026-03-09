@@ -418,18 +418,18 @@ export default function Auth() {
         </Link>
       </div>
 
-      <div className="container mx-auto px-4 pb-16">
+      <div className="container mx-auto px-3 sm:px-4 pb-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-12"
+          className="text-center mb-8 lg:mb-12"
         >
-          <div className="inline-flex items-center gap-3 mb-6">
-            <div className="h-12 w-12 rounded-xl gradient-primary flex items-center justify-center">
-              <GraduationCap className="h-6 w-6 text-primary-foreground" />
+          <div className="inline-flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+            <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl gradient-primary flex items-center justify-center">
+              <GraduationCap className="h-5 w-5 sm:h-6 sm:w-6 text-primary-foreground" />
             </div>
-            <h1 className="text-3xl font-bold">
+            <h1 className="text-2xl sm:text-3xl font-bold">
               {isLogin ? t('auth.login') : t('auth.signup')}
             </h1>
           </div>
@@ -439,22 +439,22 @@ export default function Auth() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="max-w-2xl mx-auto mb-8 p-6 rounded-2xl bg-gradient-to-r from-primary/10 via-amber-500/10 to-emerald-500/10 border border-primary/20"
+              className="max-w-2xl mx-auto mb-6 sm:mb-8 p-4 sm:p-6 rounded-2xl bg-gradient-to-r from-primary/10 via-amber-500/10 to-emerald-500/10 border border-primary/20"
             >
-              <p className="text-xl font-semibold text-foreground mb-2">
+              <p className="text-lg sm:text-xl font-semibold text-foreground mb-2">
                 {t('auth.inspiringTitle')}
               </p>
-              <p className="text-muted-foreground leading-relaxed">
+              <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
                 {t('auth.inspiringText')}
                 <span className="font-medium text-foreground">{t('auth.inspiringHighlight')}</span>
               </p>
-              <p className="mt-3 text-sm font-medium text-primary">
+              <p className="mt-3 text-xs sm:text-sm font-medium text-primary">
                 {t('auth.inspiringWelcome')}
               </p>
             </motion.div>
           )}
 
-          <p className="text-foreground/70 font-medium max-w-md mx-auto">
+          <p className="text-sm sm:text-base text-foreground/70 font-medium max-w-md mx-auto px-2">
             {isLogin ? t('auth.loginSubtitle') : t('auth.signupSubtitle')}
           </p>
         </motion.div>
@@ -464,15 +464,15 @@ export default function Auth() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="mb-12 space-y-12"
+            className="mb-8 lg:mb-12 space-y-8 lg:space-y-12"
           >
             {/* Primaire & Collège */}
             <div>
-              <h2 className="text-xl font-semibold text-center mb-6">
-                <BookOpen className="inline-block h-5 w-5 mr-2" />
+              <h2 className="text-lg sm:text-xl font-semibold text-center mb-4 sm:mb-6">
+                <BookOpen className="inline-block h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                 {t('auth.primaireCollege')}
               </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 max-w-5xl mx-auto">
                 {primaireCollegePlans.map((plan, index) => (
                   <motion.div
                     key={plan.id}
@@ -534,11 +534,11 @@ export default function Auth() {
 
             {/* Lycée */}
             <div>
-              <h2 className="text-xl font-semibold text-center mb-6">
-                <GraduationCap className="inline-block h-5 w-5 mr-2" />
+              <h2 className="text-lg sm:text-xl font-semibold text-center mb-4 sm:mb-6">
+                <GraduationCap className="inline-block h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                 {t('auth.lyceePacks')}
               </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-4xl mx-auto">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 max-w-4xl mx-auto">
                 {lyceePlans.map((plan, index) => (
                   <motion.div
                     key={plan.id}
@@ -607,61 +607,63 @@ export default function Auth() {
 
             {/* Cours particuliers */}
             <div>
-              <h2 className="text-xl font-semibold text-center mb-6">
-                <User className="inline-block h-5 w-5 mr-2" />
+              <h2 className="text-lg sm:text-xl font-semibold text-center mb-4 sm:mb-6">
+                <User className="inline-block h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                 {isArabic ? 'حصص خاصة' : 'Cours particuliers'}
               </h2>
-              <div className="flex justify-center max-w-md mx-auto">
-                {individualPlans.map((plan, index) => (
-                  <motion.div
-                    key={plan.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 + 0.2 }}
-                    className={cn("relative", plan.popular && "sm:scale-105 z-10")}
-                  >
-                    {plan.popular && (
-                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
-                        <span className="inline-flex items-center gap-1 px-3 py-1 bg-indigo-500 text-white text-xs font-semibold rounded-full">
-                          <Star className="h-3 w-3" /> {t('auth.popular')}
-                        </span>
-                      </div>
-                    )}
-                    <Card
-                      className={cn(
-                        "h-full cursor-pointer transition-all duration-300 hover:shadow-lg",
-                        selectedPlan === plan.id
-                          ? `${plan.borderColor} border-2 shadow-lg scale-[1.02]`
-                          : "border-border hover:border-muted-foreground/50",
-                        plan.popular && "shadow-xl"
-                      )}
-                      onClick={() => handlePlanSelect(plan.id)}
+              <div className="flex justify-center px-2 sm:px-0">
+                <div className="w-full max-w-md">
+                  {individualPlans.map((plan, index) => (
+                    <motion.div
+                      key={plan.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 + 0.2 }}
+                      className={cn("relative", plan.popular && "sm:scale-105 z-10")}
                     >
-                      <CardHeader className={cn("text-white rounded-t-lg bg-gradient-to-r", plan.color)}>
-                        <CardTitle className="text-center">
-                          <span className="text-xs font-medium opacity-80">{isArabic ? plan.levelAr : plan.level}</span>
-                          <p className="text-lg font-bold mt-1">{isArabic ? plan.nameAr : plan.name}</p>
-                          <p className="text-sm opacity-90 mt-1">{isArabic ? plan.subtitleAr : plan.subtitle}</p>
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="p-4">
-                        <ul className="space-y-2">
-                          {(isArabic ? plan.featuresAr : plan.features).map((feature) => (
-                            <li key={feature} className="flex items-start gap-2 text-sm">
-                              <Check className={cn("h-4 w-4 flex-shrink-0 mt-0.5", plan.textColor)} />
-                              {feature}
-                            </li>
-                          ))}
-                        </ul>
-                        {selectedPlan === plan.id && (
-                          <div className={cn("mt-4 text-center text-sm font-medium", plan.textColor)}>
-                            {t('auth.selected')}
-                          </div>
+                      {plan.popular && (
+                        <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
+                          <span className="inline-flex items-center gap-1 px-3 py-1 bg-indigo-500 text-white text-xs font-semibold rounded-full">
+                            <Star className="h-3 w-3" /> {t('auth.popular')}
+                          </span>
+                        </div>
+                      )}
+                      <Card
+                        className={cn(
+                          "h-full cursor-pointer transition-all duration-300 hover:shadow-lg",
+                          selectedPlan === plan.id
+                            ? `${plan.borderColor} border-2 shadow-lg scale-[1.02]`
+                            : "border-border hover:border-muted-foreground/50",
+                          plan.popular && "shadow-xl"
                         )}
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                ))}
+                        onClick={() => handlePlanSelect(plan.id)}
+                      >
+                        <CardHeader className={cn("text-white rounded-t-lg bg-gradient-to-r", plan.color)}>
+                          <CardTitle className="text-center">
+                            <span className="text-xs font-medium opacity-80">{isArabic ? plan.levelAr : plan.level}</span>
+                            <p className="text-lg font-bold mt-1">{isArabic ? plan.nameAr : plan.name}</p>
+                            <p className="text-sm opacity-90 mt-1">{isArabic ? plan.subtitleAr : plan.subtitle}</p>
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-4">
+                          <ul className="space-y-2">
+                            {(isArabic ? plan.featuresAr : plan.features).map((feature) => (
+                              <li key={feature} className="flex items-start gap-2 text-sm">
+                                <Check className={cn("h-4 w-4 flex-shrink-0 mt-0.5", plan.textColor)} />
+                                {feature}
+                              </li>
+                            ))}
+                          </ul>
+                          {selectedPlan === plan.id && (
+                            <div className={cn("mt-4 text-center text-sm font-medium", plan.textColor)}>
+                              {t('auth.selected')}
+                            </div>
+                          )}
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  ))}
+                </div>
               </div>
             </div>
           </motion.div>

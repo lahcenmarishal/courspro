@@ -42,6 +42,15 @@ const planLabels: Record<string, string> = {
   'particulier-suivi': 'Suivi individuel',
 };
 
+const planPrices: Record<string, { monthly: number; annual: number }> = {
+  'primaire': { monthly: 100, annual: 500 },
+  'college-regional': { monthly: 150, annual: 700 },
+  'lycee-1bac-jihawi': { monthly: 200, annual: 900 },
+  'lycee-2bac-essentiel': { monthly: 250, annual: 1200 },
+  'lycee-2bac-total': { monthly: 350, annual: 1500 },
+  'particulier-suivi': { monthly: 0, annual: 0 },
+};
+
 interface StudentRequest {
   id: string;
   user_id: string;
@@ -107,9 +116,10 @@ export function StudentRequests() {
     }
   };
 
-  const handleApprove = async (roleId: string) => {
+  const handleApprove = async (roleId: string, userId: string, selectedPlan: string | null) => {
     setActionLoading(roleId);
     try {
+      // Approve the student role
       const { error } = await supabase
         .from("user_roles")
         .update({ status: "approved" })
@@ -117,7 +127,34 @@ export function StudentRequests() {
 
       if (error) throw error;
 
-      toast.success("Élève approuvé avec succès");
+      // Auto-create subscription if a plan was selected (not particulier-suivi)
+      if (selectedPlan && selectedPlan !== 'particulier-suivi') {
+        const prices = planPrices[selectedPlan] || { monthly: 0, annual: 0 };
+        
+        const startDate = new Date();
+        const endDate = new Date();
+        endDate.setMonth(endDate.getMonth() + 1);
+
+        const { error: subError } = await supabase.from("subscriptions").insert({
+          student_id: userId,
+          type: 'monthly',
+          status: 'active',
+          start_date: startDate.toISOString().split('T')[0],
+          end_date: endDate.toISOString().split('T')[0],
+          price_paid: prices.monthly,
+          auto_renew: false,
+        });
+
+        if (subError) {
+          console.error("Error creating subscription:", subError);
+          toast.warning("Élève approuvé mais erreur lors de la création de l'abonnement");
+        } else {
+          toast.success("Élève approuvé et abonnement créé avec succès");
+        }
+      } else {
+        toast.success("Élève approuvé avec succès");
+      }
+
       fetchStudentRequests();
     } catch (error) {
       console.error("Error approving student:", error);
@@ -234,7 +271,7 @@ export function StudentRequests() {
                 <StudentRequestCard
                   key={request.id}
                   request={request}
-                  onApprove={handleApprove}
+                  onApprove={() => handleApprove(request.id, request.user_id, request.profile?.selected_plan || null)}
                   onReject={handleReject}
                   onDelete={handleDelete}
                   getStatusBadge={getStatusBadge}
@@ -258,7 +295,7 @@ export function StudentRequests() {
               <StudentRequestCard
                 key={request.id}
                 request={request}
-                onApprove={handleApprove}
+                onApprove={() => handleApprove(request.id, request.user_id, request.profile?.selected_plan || null)}
                 onReject={handleReject}
                 onDelete={handleDelete}
                 getStatusBadge={getStatusBadge}
@@ -280,7 +317,7 @@ export function StudentRequests() {
               <StudentRequestCard
                 key={request.id}
                 request={request}
-                onApprove={handleApprove}
+                onApprove={() => handleApprove(request.id, request.user_id, request.profile?.selected_plan || null)}
                 onReject={handleReject}
                 onDelete={handleDelete}
                 getStatusBadge={getStatusBadge}
@@ -307,7 +344,7 @@ export function StudentRequests() {
 
 interface StudentRequestCardProps {
   request: StudentRequest;
-  onApprove: (roleId: string) => void;
+  onApprove: () => void;
   onReject: (roleId: string) => void;
   onDelete: (roleId: string) => void;
   getStatusBadge: (status: string) => React.ReactNode;
@@ -386,7 +423,7 @@ function StudentRequestCard({
               size="sm"
               variant="outline"
               className="bg-green-500/10 text-green-600 border-green-500/30 hover:bg-green-500/20"
-              onClick={() => onApprove(request.id)}
+              onClick={onApprove}
               disabled={isLoading}
             >
               {isLoading ? (
@@ -422,7 +459,7 @@ function StudentRequestCard({
             size="sm"
             variant="outline"
             className="bg-green-500/10 text-green-600 border-green-500/30 hover:bg-green-500/20"
-            onClick={() => onApprove(request.id)}
+            onClick={onApprove}
             disabled={isLoading}
           >
             {isLoading ? (
