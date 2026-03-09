@@ -84,12 +84,18 @@ export default function AdminTestimonialsPage() {
     try {
       const url = await uploadTestimonialImage(file);
       setFormData(prev => ({ ...prev, image_url: url }));
-      toast.success(isArabic ? 'تم رفع الصورة' : 'Image téléchargée');
+      toast.success(isArabic ? 'تم تحديث الصورة' : 'Image mise à jour');
     } catch (error) {
       toast.error(isArabic ? 'خطأ في رفع الصورة' : 'Erreur lors du téléchargement');
     } finally {
       setUploading(false);
+      // Reset input so same file can be re-selected
+      e.target.value = '';
     }
+  };
+
+  const handleRemoveImage = () => {
+    setFormData(prev => ({ ...prev, image_url: '' }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
