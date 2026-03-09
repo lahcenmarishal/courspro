@@ -30,12 +30,12 @@ interface PricingPlan {
   popular?: boolean;
 }
 
-const pricingPlans: { primaire: PricingPlan[]; college: PricingPlan[]; lycee: PricingPlan[] } = {
+const pricingPlans: { primaire: PricingPlan[]; college: PricingPlan[]; lycee: PricingPlan[]; particulier: PricingPlan[] } = {
   primaire: [
     {
       id: 'primaire',
-      name: '6ème année primaire',
-      subtitle: 'Primaire',
+      name: 'Primaire',
+      subtitle: '6ème année primaire',
       level: 'primaire',
       price: { monthly: 150, annual: 500 },
       subjects: 'Arabe | Français | Mathématiques',
@@ -77,6 +77,19 @@ const pricingPlans: { primaire: PricingPlan[]; college: PricingPlan[]; lycee: Pr
       subjects: 'Mathématiques | Physique-Chimie | SVT | Anglais | Philosophie',
       features: ['5 séances / semaine', 'DS + simulations complètes', 'Préparation complète au national'],
       singleSession: 100,
+      popular: true,
+    }
+  ],
+  particulier: [
+    {
+      id: 'particulier-suivi',
+      name: 'Suivi individuel',
+      subtitle: 'Cours particuliers',
+      level: 'particulier',
+      price: { monthly: 0, annual: 0 },
+      subjects: 'Toutes matières',
+      features: ['Séance individuelle avec le prof', 'Programme personnalisé', 'Suivi personnel complet', 'Flexibilité des horaires'],
+      singleSession: 0,
       popular: true,
     }
   ]
