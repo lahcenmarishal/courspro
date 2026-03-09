@@ -35,6 +35,7 @@ interface StudentInfo {
   lastName: string;
   className: string | null;
   levelName: string | null;
+  selectedPlan: string | null;
 }
 
 const StudentDashboard = () => {
