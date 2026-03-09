@@ -70,7 +70,7 @@ Deno.serve(async (req) => {
     const email = body.email?.trim().toLowerCase() || user.email || "";
     const city = body.city?.trim() || null;
     const phone = body.phone?.trim() || null;
-    const selected_plan = body.selected_plan?.trim() || null;
+    const selected_plan = body.selected_plan?.trim() || (user.user_metadata?.selected_plan as string) || null;
 
     const { data: existingRoles, error: existingRolesError } = await supabaseAdmin
       .from("user_roles")
