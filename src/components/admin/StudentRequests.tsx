@@ -34,6 +34,14 @@ import { toast } from "sonner";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 
+const planLabels: Record<string, string> = {
+  'primaire': 'Primaire - 6ème année',
+  'college-regional': 'Collège Pack Régional',
+  'lycee-1bac-jihawi': '1 Bac Pack Aljihawi',
+  'lycee-2bac-total': '2 Bac National Complet',
+  'particulier-suivi': 'Suivi individuel',
+};
+
 interface StudentRequest {
   id: string;
   user_id: string;
@@ -359,7 +367,7 @@ function StudentRequestCard({
             <div className="flex items-center gap-2 text-sm">
               <BookOpen className="h-3 w-3 text-primary" />
               <Badge variant="outline" className="text-xs bg-primary/10 text-primary border-primary/30">
-                {request.profile.selected_plan}
+                {planLabels[request.profile.selected_plan] || request.profile.selected_plan}
               </Badge>
             </div>
           )}
