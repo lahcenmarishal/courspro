@@ -66,62 +66,10 @@ const primaireCollegePlans = [
     textColor: "text-primary",
     borderColor: "border-primary",
     bgColor: "bg-primary"
-  },
-  {
-    id: 'college-essentiel',
-    name: "Collège 3AC Essentiel",
-    nameAr: "إعدادي - الأساسي",
-    level: "Collège",
-    levelAr: "الإعدادي",
-    price: { monthly: 200, annual: 700 },
-    subjects: "Toutes matières",
-    subjectsAr: "الرياضيات | الفيزياء والكيمياء | علوم الحياة والأرض | الفرنسية",
-    features: [
-      "4 séances / semaine",
-      "Exercices guidés + devoirs ciblés",
-      "Suivi basique tout au long de l'abonnement"
-    ],
-    featuresAr: [
-      "4 حصص / أسبوع",
-      "تمارين موجهة + واجبات محددة",
-      "متابعة أساسية طول فترة الاشتراك"
-    ],
-    color: "from-emerald-600 to-emerald-500",
-    textColor: "text-emerald-600",
-    borderColor: "border-emerald-500",
-    bgColor: "bg-emerald-600"
   }
 ];
 
 const lyceePlans = [
-  {
-    id: 'lycee-1bac',
-    name: "1 Bac",
-    nameAr: "1 باك",
-    level: "Lycée",
-    levelAr: "الثانوي",
-    subtitle: "1ère année Bac",
-    subtitleAr: "السنة الأولى باكالوريا",
-    price: { monthly: 350, annual: 1000 },
-    subjects: "Toutes matières",
-    subjectsAr: "جميع المواد",
-    features: [
-      "7 séances / semaine",
-      "Exercices guidés + devoirs",
-      "Suivi basique tout au long de l'abonnement"
-    ],
-    featuresAr: [
-      "7 حصص / أسبوع",
-      "تمارين موجهة + فروض",
-      "متابعة أساسية طول فترة الاشتراك"
-    ],
-    option: "100 DH / mois pour une seule matière",
-    optionAr: "100 درهم / شهر للمادة الواحدة",
-    color: "from-blue-600 to-blue-500",
-    textColor: "text-blue-600",
-    borderColor: "border-blue-500",
-    bgColor: "bg-blue-600"
-  },
   {
     id: 'lycee-1bac-jihawi',
     name: "1 Bac Pack Aljihawi",
@@ -150,34 +98,6 @@ const lyceePlans = [
     borderColor: "border-cyan-500",
     bgColor: "bg-cyan-600",
     popular: true
-  },
-  {
-    id: 'lycee-2bac-essentiel',
-    name: "2 Bac Essentiel",
-    nameAr: "2 باك أساسي",
-    level: "Lycée",
-    levelAr: "الثانوي",
-    subtitle: "2ème Bac - Matières principales",
-    subtitleAr: "الثانية باك - المواد الأساسية",
-    price: { monthly: 250, annual: 1000 },
-    subjects: "Mathématiques | Physique-Chimie | SVT",
-    subjectsAr: "الرياضيات | الفيزياء والكيمياء | علوم الحياة والأرض",
-    features: [
-      "3 séances / semaine",
-      "Devoirs surveillés + simulations",
-      "Préparation intensive au national"
-    ],
-    featuresAr: [
-      "3 حصص / أسبوع",
-      "فروض مراقبة + محاكاة",
-      "تحضير مكثف للامتحان الوطني"
-    ],
-    option: "100 DH / mois pour une seule matière",
-    optionAr: "100 درهم / شهر للمادة الواحدة",
-    color: "from-purple-600 to-purple-500",
-    textColor: "text-purple-600",
-    borderColor: "border-purple-500",
-    bgColor: "bg-purple-600"
   },
   {
     id: 'lycee-2bac-total',
@@ -618,7 +538,7 @@ export default function Auth() {
                 <GraduationCap className="inline-block h-5 w-5 mr-2" />
                 {t('auth.lyceePacks')}
               </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-4xl mx-auto">
                 {lyceePlans.map((plan, index) => (
                   <motion.div
                     key={plan.id}

@@ -21,7 +21,8 @@ import {
   Clock,
   Menu,
   UserPlus,
-  Newspaper
+  Newspaper,
+  MessageCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -35,6 +36,7 @@ interface DashboardSidebarProps {
 const getAdminLinks = (t: (key: string) => string) => [
   { label: t("sidebar.dashboard"), href: "/dashboard", icon: LayoutDashboard },
   { label: t("sidebar.blog"), href: "/dashboard/blog", icon: Newspaper },
+  { label: "Témoignages", href: "/dashboard/testimonials", icon: MessageCircle },
   { label: t("sidebar.studentRequests"), href: "/dashboard/student-requests", icon: UserPlus },
   { label: t("sidebar.teacherRequests"), href: "/dashboard/teacher-requests", icon: UserPlus },
   { label: t("sidebar.teachers"), href: "/dashboard/teachers", icon: GraduationCap },

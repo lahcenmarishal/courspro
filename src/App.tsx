@@ -50,6 +50,8 @@ import NotFound from "./pages/NotFound";
 import BlogPage from "./pages/BlogPage";
 import BlogPostPage from "./pages/BlogPostPage";
 import AdminBlogPage from "./pages/admin/BlogPage";
+import TestimonialsPage from "./pages/TestimonialsPage";
+import AdminTestimonialsPage from "./pages/admin/TestimonialsPage";
 
 const queryClient = new QueryClient();
 
@@ -85,7 +87,9 @@ const App = () => (
             <Route path="/enseignants/:id" element={<TeacherProfilePage />} />
             <Route path="/blog" element={<BlogPage />} />
             <Route path="/blog/:slug" element={<BlogPostPage />} />
+            <Route path="/temoignages" element={<TestimonialsPage />} />
             <Route path="/dashboard/blog" element={<AdminBlogPage />} />
+            <Route path="/dashboard/testimonials" element={<AdminTestimonialsPage />} />
             <Route path="/login" element={<Auth />} />
             <Route path="/register" element={<Auth />} />
             <Route path="/dashboard" element={<Dashboard />} />
