@@ -66,13 +66,11 @@ const App = () => (
             <Route path="/auth/teacher" element={<TeacherAuth />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
-            <Route path="/programmes/primaire" element={<PrimairePage />} />
-            <Route path="/programmes/college" element={<CollegePage />} />
-            <Route path="/programmes/lycee" element={<LyceePage />} />
-            <Route path="/programmes/lycee/1bac" element={<Lycee1BacPage />} />
-            <Route path="/programmes/lycee/1bac-jihawi" element={<Lycee1BacJihawiPage />} />
-            <Route path="/programmes/lycee/2bac-essentiel" element={<Lycee2BacEssentielPage />} />
-            <Route path="/programmes/lycee/2bac-total" element={<Lycee2BacTotalPage />} />
+            <Route path="/programmes" element={<ProgrammesPage />} />
+            <Route path="/programmes/primaire" element={<ProgrammesPage />} />
+            <Route path="/programmes/college" element={<ProgrammesPage />} />
+            <Route path="/programmes/lycee" element={<ProgrammesPage />} />
+            <Route path="/programmes/lycee/*" element={<ProgrammesPage />} />
             <Route path="/confidentialite" element={<PrivacyPolicy />} />
             <Route path="/cgu" element={<TermsOfService />} />
             <Route path="/tarifs" element={<PricingPage />} />

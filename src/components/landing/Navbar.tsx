@@ -15,9 +15,7 @@ export const Navbar = () => {
   const { t, language } = useLanguage();
 
   const navLinks = [
-    { label: t("nav.primary"), href: "/programmes/primaire", isAnchor: false },
-    { label: t("nav.college"), href: "/programmes/college", isAnchor: false },
-    { label: t("nav.lycee"), href: "/programmes/lycee", isAnchor: false },
+    { label: language === 'ar' ? 'البرامج' : 'Programmes', href: "/programmes", isAnchor: false },
     { label: t("nav.teachers"), href: "/enseignants", isAnchor: false },
     { label: "Blog", href: "/blog", isAnchor: false },
     { label: language === 'ar' ? 'آراء العملاء' : 'Témoignages', href: "/temoignages", isAnchor: false },
