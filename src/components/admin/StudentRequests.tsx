@@ -294,7 +294,7 @@ export function StudentRequests() {
               <StudentRequestCard
                 key={request.id}
                 request={request}
-                onApprove={handleApprove}
+                onApprove={() => handleApprove(request.id, request.user_id, request.profile?.selected_plan || null)}
                 onReject={handleReject}
                 onDelete={handleDelete}
                 getStatusBadge={getStatusBadge}
