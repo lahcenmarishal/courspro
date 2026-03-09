@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
-import { Loader2, Plus, CreditCard, Calendar, Users, TrendingUp, Search, CheckCircle, XCircle, Clock, GraduationCap, BookOpen, Star, Check } from 'lucide-react';
+import { Loader2, Plus, CreditCard, Calendar, Users, TrendingUp, Search, CheckCircle, XCircle, Clock, GraduationCap, BookOpen, Star, Check, UserRound } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import { format } from 'date-fns';
