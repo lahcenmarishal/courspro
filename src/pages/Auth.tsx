@@ -418,18 +418,18 @@ export default function Auth() {
         </Link>
       </div>
 
-      <div className="container mx-auto px-4 pb-16">
+      <div className="container mx-auto px-3 sm:px-4 pb-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-12"
+          className="text-center mb-8 lg:mb-12"
         >
-          <div className="inline-flex items-center gap-3 mb-6">
-            <div className="h-12 w-12 rounded-xl gradient-primary flex items-center justify-center">
-              <GraduationCap className="h-6 w-6 text-primary-foreground" />
+          <div className="inline-flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+            <div className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl gradient-primary flex items-center justify-center">
+              <GraduationCap className="h-5 w-5 sm:h-6 sm:w-6 text-primary-foreground" />
             </div>
-            <h1 className="text-3xl font-bold">
+            <h1 className="text-2xl sm:text-3xl font-bold">
               {isLogin ? t('auth.login') : t('auth.signup')}
             </h1>
           </div>
@@ -439,22 +439,22 @@ export default function Auth() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="max-w-2xl mx-auto mb-8 p-6 rounded-2xl bg-gradient-to-r from-primary/10 via-amber-500/10 to-emerald-500/10 border border-primary/20"
+              className="max-w-2xl mx-auto mb-6 sm:mb-8 p-4 sm:p-6 rounded-2xl bg-gradient-to-r from-primary/10 via-amber-500/10 to-emerald-500/10 border border-primary/20"
             >
-              <p className="text-xl font-semibold text-foreground mb-2">
+              <p className="text-lg sm:text-xl font-semibold text-foreground mb-2">
                 {t('auth.inspiringTitle')}
               </p>
-              <p className="text-muted-foreground leading-relaxed">
+              <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
                 {t('auth.inspiringText')}
                 <span className="font-medium text-foreground">{t('auth.inspiringHighlight')}</span>
               </p>
-              <p className="mt-3 text-sm font-medium text-primary">
+              <p className="mt-3 text-xs sm:text-sm font-medium text-primary">
                 {t('auth.inspiringWelcome')}
               </p>
             </motion.div>
           )}
 
-          <p className="text-foreground/70 font-medium max-w-md mx-auto">
+          <p className="text-sm sm:text-base text-foreground/70 font-medium max-w-md mx-auto px-2">
             {isLogin ? t('auth.loginSubtitle') : t('auth.signupSubtitle')}
           </p>
         </motion.div>
@@ -464,7 +464,7 @@ export default function Auth() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="mb-12 space-y-12"
+            className="mb-8 lg:mb-12 space-y-8 lg:space-y-12"
           >
             {/* Primaire & Collège */}
             <div>
