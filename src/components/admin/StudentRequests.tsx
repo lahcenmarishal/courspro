@@ -34,6 +34,14 @@ import { toast } from "sonner";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 
+const planLabels: Record<string, string> = {
+  'primaire': 'Primaire - 6ème année',
+  'college-regional': 'Collège Pack Régional',
+  'lycee-1bac-jihawi': '1 Bac Pack Aljihawi',
+  'lycee-2bac-total': '2 Bac National Complet',
+  'particulier-suivi': 'Suivi individuel',
+};
+
 interface StudentRequest {
   id: string;
   user_id: string;
