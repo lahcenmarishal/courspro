@@ -46,6 +46,7 @@ const planPrices: Record<string, { monthly: number; annual: number }> = {
   'primaire': { monthly: 100, annual: 500 },
   'college-regional': { monthly: 150, annual: 700 },
   'lycee-1bac-jihawi': { monthly: 200, annual: 900 },
+  'lycee-2bac-essentiel': { monthly: 250, annual: 1200 },
   'lycee-2bac-total': { monthly: 350, annual: 1500 },
   'particulier-suivi': { monthly: 0, annual: 0 },
 };
