@@ -422,7 +422,7 @@ function StudentRequestCard({
               size="sm"
               variant="outline"
               className="bg-green-500/10 text-green-600 border-green-500/30 hover:bg-green-500/20"
-              onClick={() => onApprove(request.id)}
+              onClick={onApprove}
               disabled={isLoading}
             >
               {isLoading ? (
