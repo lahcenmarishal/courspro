@@ -991,6 +991,57 @@ export type Database = {
           },
         ]
       }
+      testimonials: {
+        Row: {
+          content: string
+          content_ar: string | null
+          created_at: string
+          display_order: number | null
+          id: string
+          image_url: string | null
+          is_featured: boolean | null
+          is_published: boolean | null
+          name: string
+          name_ar: string | null
+          rating: number | null
+          role: string
+          role_ar: string | null
+          updated_at: string
+        }
+        Insert: {
+          content: string
+          content_ar?: string | null
+          created_at?: string
+          display_order?: number | null
+          id?: string
+          image_url?: string | null
+          is_featured?: boolean | null
+          is_published?: boolean | null
+          name: string
+          name_ar?: string | null
+          rating?: number | null
+          role: string
+          role_ar?: string | null
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          content_ar?: string | null
+          created_at?: string
+          display_order?: number | null
+          id?: string
+          image_url?: string | null
+          is_featured?: boolean | null
+          is_published?: boolean | null
+          name?: string
+          name_ar?: string | null
+          rating?: number | null
+          role?: string
+          role_ar?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_google_tokens: {
         Row: {
           access_token: string

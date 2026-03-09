@@ -71,34 +71,6 @@ const primaireCollegePlans = [
 
 const lyceePlans = [
   {
-    id: 'lycee-1bac',
-    name: "1 Bac",
-    nameAr: "1 باك",
-    level: "Lycée",
-    levelAr: "الثانوي",
-    subtitle: "1ère année Bac",
-    subtitleAr: "السنة الأولى باكالوريا",
-    price: { monthly: 350, annual: 1000 },
-    subjects: "Toutes matières",
-    subjectsAr: "جميع المواد",
-    features: [
-      "7 séances / semaine",
-      "Exercices guidés + devoirs",
-      "Suivi basique tout au long de l'abonnement"
-    ],
-    featuresAr: [
-      "7 حصص / أسبوع",
-      "تمارين موجهة + فروض",
-      "متابعة أساسية طول فترة الاشتراك"
-    ],
-    option: "100 DH / mois pour une seule matière",
-    optionAr: "100 درهم / شهر للمادة الواحدة",
-    color: "from-blue-600 to-blue-500",
-    textColor: "text-blue-600",
-    borderColor: "border-blue-500",
-    bgColor: "bg-blue-600"
-  },
-  {
     id: 'lycee-1bac-jihawi',
     name: "1 Bac Pack Aljihawi",
     nameAr: "1 باك الجهوي",
@@ -126,34 +98,6 @@ const lyceePlans = [
     borderColor: "border-cyan-500",
     bgColor: "bg-cyan-600",
     popular: true
-  },
-  {
-    id: 'lycee-2bac-essentiel',
-    name: "2 Bac Essentiel",
-    nameAr: "2 باك أساسي",
-    level: "Lycée",
-    levelAr: "الثانوي",
-    subtitle: "2ème Bac - Matières principales",
-    subtitleAr: "الثانية باك - المواد الأساسية",
-    price: { monthly: 250, annual: 1000 },
-    subjects: "Mathématiques | Physique-Chimie | SVT",
-    subjectsAr: "الرياضيات | الفيزياء والكيمياء | علوم الحياة والأرض",
-    features: [
-      "3 séances / semaine",
-      "Devoirs surveillés + simulations",
-      "Préparation intensive au national"
-    ],
-    featuresAr: [
-      "3 حصص / أسبوع",
-      "فروض مراقبة + محاكاة",
-      "تحضير مكثف للامتحان الوطني"
-    ],
-    option: "100 DH / mois pour une seule matière",
-    optionAr: "100 درهم / شهر للمادة الواحدة",
-    color: "from-purple-600 to-purple-500",
-    textColor: "text-purple-600",
-    borderColor: "border-purple-500",
-    bgColor: "bg-purple-600"
   },
   {
     id: 'lycee-2bac-total',
