@@ -534,11 +534,11 @@ export default function Auth() {
 
             {/* Lycée */}
             <div>
-              <h2 className="text-xl font-semibold text-center mb-6">
-                <GraduationCap className="inline-block h-5 w-5 mr-2" />
+              <h2 className="text-lg sm:text-xl font-semibold text-center mb-4 sm:mb-6">
+                <GraduationCap className="inline-block h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                 {t('auth.lyceePacks')}
               </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-4xl mx-auto">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 max-w-4xl mx-auto">
                 {lyceePlans.map((plan, index) => (
                   <motion.div
                     key={plan.id}
