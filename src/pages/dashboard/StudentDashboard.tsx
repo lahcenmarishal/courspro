@@ -23,14 +23,7 @@ import { format } from "date-fns";
 import { fr as frLocale, arSA } from "date-fns/locale";
 import { useLanguage } from "@/hooks/useLanguage";
 
-const planLabels: Record<string, string> = {
-  'primaire': 'Primaire - 6ème année',
-  'college-regional': 'Collège Pack Régional',
-  'lycee-1bac-jihawi': '1 Bac Pack Aljihawi',
-  'lycee-2bac-total': '2 Bac National Complet',
-  'lycee-2bac-essentiel': 'Pack Essentiel 2 Bac',
-  'particulier-suivi': 'Suivi individuel',
-};
+import { planLabels } from "@/lib/plans";
 
 interface ScheduleItem {
   id: string;

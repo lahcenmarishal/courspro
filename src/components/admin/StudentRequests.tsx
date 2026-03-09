@@ -34,22 +34,7 @@ import { toast } from "sonner";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
 
-const planLabels: Record<string, string> = {
-  'primaire': 'Primaire - 6ème année',
-  'college-regional': 'Collège Pack Régional',
-  'lycee-1bac-jihawi': '1 Bac Pack Aljihawi',
-  'lycee-2bac-total': '2 Bac National Complet',
-  'particulier-suivi': 'Suivi individuel',
-};
-
-const planPrices: Record<string, { monthly: number; annual: number }> = {
-  'primaire': { monthly: 100, annual: 500 },
-  'college-regional': { monthly: 150, annual: 700 },
-  'lycee-1bac-jihawi': { monthly: 200, annual: 900 },
-  'lycee-2bac-essentiel': { monthly: 250, annual: 1200 },
-  'lycee-2bac-total': { monthly: 350, annual: 1500 },
-  'particulier-suivi': { monthly: 0, annual: 0 },
-};
+import { planLabels, planPrices } from "@/lib/plans";
 
 interface StudentRequest {
   id: string;
