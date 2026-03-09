@@ -636,26 +636,19 @@ export default function SubscriptionsPage() {
                           
                           {/* Pack Jihawi */}
                           <div className="p-3 rounded-lg bg-cyan-50 dark:bg-cyan-950/30 border border-cyan-200 dark:border-cyan-800 mb-2">
-                            <p className="font-semibold text-sm text-cyan-700 dark:text-cyan-400">Pack Jihawi (1ère BAC)</p>
-                            <p className="text-xs text-muted-foreground">Français | Arabe | Éducation islamique | GEO</p>
-                            <p className="text-xs font-semibold text-cyan-600">200 MAD/mois • 900 DH/an</p>
-                          </div>
-                          
-                          {/* Pack Essentiel */}
-                          <div className="p-3 rounded-lg bg-orange-50 dark:bg-orange-950/30 border border-orange-200 dark:border-orange-800 mb-2">
-                            <p className="font-semibold text-sm text-orange-700 dark:text-orange-400">Pack Essentiel (2ème BAC)</p>
-                            <p className="text-xs text-muted-foreground">Math | Physique chimie | SVT</p>
-                            <p className="text-xs font-semibold text-orange-600">250 MAD/mois • 1200 DH/an</p>
+                            <p className="font-semibold text-sm text-cyan-700 dark:text-cyan-400">1 Bac Pack Aljihawi</p>
+                            <p className="text-xs text-muted-foreground">Français | Géographie | Arabe | Éducation islamique</p>
+                            <p className="text-xs font-semibold text-cyan-600">250 MAD/mois • 1000 DH/an</p>
                           </div>
                           
                           {/* Pack Total Watani */}
                           <div className="p-3 rounded-lg bg-amber-100 dark:bg-amber-950/40 border-2 border-amber-400 dark:border-amber-600">
                             <div className="flex items-center gap-1">
-                              <p className="font-semibold text-sm text-amber-700 dark:text-amber-400">Pack Total Watani (2ème BAC)</p>
+                              <p className="font-semibold text-sm text-amber-700 dark:text-amber-400">2 Bac National Complet</p>
                               <Star className="h-3 w-3 text-amber-500" />
                             </div>
-                            <p className="text-xs text-muted-foreground">Math | PC | SVT | Anglais | Philosophie</p>
-                            <p className="text-xs font-semibold text-amber-600">350 MAD/mois • 1500 DH/an</p>
+                            <p className="text-xs text-muted-foreground">Mathématiques | Physique-Chimie | SVT | Anglais | Philosophie</p>
+                            <p className="text-xs font-semibold text-amber-600">350 MAD/mois • 1300 DH/an</p>
                           </div>
 
                           <div className="mt-4">
