@@ -538,7 +538,7 @@ export default function Auth() {
                 <GraduationCap className="inline-block h-5 w-5 mr-2" />
                 {t('auth.lyceePacks')}
               </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-4xl mx-auto">
                 {lyceePlans.map((plan, index) => (
                   <motion.div
                     key={plan.id}
