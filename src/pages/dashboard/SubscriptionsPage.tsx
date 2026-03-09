@@ -17,7 +17,9 @@ import { fr } from 'date-fns/locale';
 import { Link } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 
-// Plans tarifaires selon le design demandé
+import { planLabels, planPrices, allPlans as sharedAllPlans } from "@/lib/plans";
+
+// Plans tarifaires depuis la config partagée
 interface PricingPlan {
   id: string;
   name: string;
@@ -26,7 +28,6 @@ interface PricingPlan {
   price: { monthly: number; annual: number };
   subjects: string[];
   features: string[];
-  singleSession: number;
   popular?: boolean;
   highlight?: boolean;
   color?: string;
@@ -36,26 +37,24 @@ const pricingPlans: { primaire: PricingPlan[]; college: PricingPlan[]; lycee: Pr
   primaire: [
     {
       id: 'primaire',
-      name: 'Primaire',
+      name: '6ème année primaire',
       subtitle: '6ème année primaire',
       level: 'primaire',
-      price: { monthly: 100, annual: 500 },
+      price: { monthly: 150, annual: 500 },
       subjects: ['Arabe', 'Français', 'Mathématiques'],
-      features: ['3 séances / semaine', '3h / séance', 'Cours interactifs'],
-      singleSession: 70,
+      features: ['3 séances / semaine', '3h / séance', 'Suivi basique'],
       color: 'from-primary to-primary/80',
     }
   ],
   college: [
     {
       id: 'college-regional',
-      name: 'Collège',
-      subtitle: '3ème année collège',
+      name: 'Collège Pack Régional',
+      subtitle: '3ème année collège - Toutes matières',
       level: 'college',
-      price: { monthly: 150, annual: 700 },
-      subjects: ['Mathématiques', 'Français', 'Physique-Chimie', 'SVT', 'Anglais'],
-      features: ['5 séances / semaine', 'Cours interactifs', '95% taux de réussite au Brevet'],
-      singleSession: 100,
+      price: { monthly: 300, annual: 1000 },
+      subjects: ['Mathématiques', 'Physique-Chimie', 'SVT', 'Français', 'Anglais', 'Arabe'],
+      features: ['6 séances / semaine', 'Exercices guidés + devoirs ciblés', 'Suivi basique'],
       popular: true,
       color: 'from-teal-600 to-teal-500',
     }
@@ -63,35 +62,23 @@ const pricingPlans: { primaire: PricingPlan[]; college: PricingPlan[]; lycee: Pr
   lycee: [
     {
       id: 'lycee-1bac-jihawi',
-      name: 'Pack Jihawi (1ère BAC)',
-      subtitle: 'Préparation Régional',
+      name: '1 Bac Pack Aljihawi',
+      subtitle: '1ère Bac - Matières régional',
       level: 'lycee',
-      price: { monthly: 200, annual: 900 },
-      subjects: ['Français', 'Arabe', 'Éducation islamique', 'GEO'],
-      features: ['4 séances / semaine', 'Préparation intensive'],
-      singleSession: 100,
+      price: { monthly: 250, annual: 1000 },
+      subjects: ['Français', 'Géographie', 'Arabe', 'Éducation islamique'],
+      features: ['4 séances / semaine', 'Exercices guidés + devoirs', 'Suivi basique'],
       color: 'from-cyan-600 to-cyan-500',
-    },
-    {
-      id: 'lycee-2bac-essentiel',
-      name: 'Pack Essentiel (2ème BAC)',
-      subtitle: 'Matières scientifiques',
-      level: 'lycee',
-      price: { monthly: 250, annual: 1200 },
-      subjects: ['Math', 'Physique chimie', 'SVT'],
-      features: ['3 séances / semaine', 'Exercices ciblés'],
-      singleSession: 100,
-      color: 'from-orange-600 to-orange-500',
+      popular: true,
     },
     {
       id: 'lycee-2bac-total',
-      name: 'Pack Total Watani (2ème BAC)',
-      subtitle: 'Toutes les matières',
+      name: '2 Bac National Complet',
+      subtitle: '2ème Bac - Toutes matières',
       level: 'lycee',
-      price: { monthly: 350, annual: 1500 },
-      subjects: ['Math', 'PC', 'SVT', 'Anglais', 'Philosophie'],
-      features: ['Jusqu\'à 8h / semaine', 'Simulations complètes', 'Suivi personnalisé'],
-      singleSession: 100,
+      price: { monthly: 350, annual: 1300 },
+      subjects: ['Mathématiques', 'Physique-Chimie', 'SVT', 'Anglais', 'Philosophie'],
+      features: ['5 séances / semaine', 'DS + simulations complètes', 'Préparation complète au national'],
       popular: true,
       highlight: true,
       color: 'from-amber-600 to-amber-500',
@@ -106,7 +93,6 @@ const pricingPlans: { primaire: PricingPlan[]; college: PricingPlan[]; lycee: Pr
       price: { monthly: 0, annual: 0 },
       subjects: ['Toutes matières'],
       features: ['Séance individuelle avec le prof', 'Programme personnalisé', 'Suivi personnel complet', 'Flexibilité des horaires'],
-      singleSession: 0,
       popular: true,
     }
   ]
