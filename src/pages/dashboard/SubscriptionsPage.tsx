@@ -680,7 +680,6 @@ export default function SubscriptionsPage() {
                     </div>
                   </div>
                 )}
-                )}
               </>
             ) : (
               filteredSubscriptions.map((subscription, index) => (
