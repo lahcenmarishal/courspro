@@ -575,13 +575,13 @@ export default function SubscriptionsPage() {
                         <div className="bg-gradient-to-r from-teal-600 to-teal-500 p-4 text-white">
                           <div className="flex items-center gap-2 mb-2">
                             <GraduationCap className="h-6 w-6" />
-                            <h3 className="font-bold text-lg">Collège</h3>
+                            <h3 className="font-bold text-lg">Collège Pack Régional</h3>
                           </div>
-                          <p className="text-sm opacity-90">3ème année collège</p>
+                          <p className="text-sm opacity-90">3ème année collège - Toutes matières</p>
                           <div className="mt-3">
-                            <span className="text-3xl font-bold">150</span>
+                            <span className="text-3xl font-bold">300</span>
                             <span className="text-sm"> MAD/mois</span>
-                            <span className="text-xs ml-2 opacity-80">• 700 DH/an</span>
+                            <span className="text-xs ml-2 opacity-80">• 1000 DH/an</span>
                           </div>
                         </div>
                         <CardContent className="p-4">
