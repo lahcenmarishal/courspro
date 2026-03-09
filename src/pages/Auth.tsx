@@ -613,55 +613,57 @@ export default function Auth() {
               </h2>
               <div className="flex justify-center px-2 sm:px-0">
                 <div className="w-full max-w-md">
-                  <motion.div
-                    key={plan.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 + 0.2 }}
-                    className={cn("relative", plan.popular && "sm:scale-105 z-10")}
-                  >
-                    {plan.popular && (
-                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
-                        <span className="inline-flex items-center gap-1 px-3 py-1 bg-indigo-500 text-white text-xs font-semibold rounded-full">
-                          <Star className="h-3 w-3" /> {t('auth.popular')}
-                        </span>
-                      </div>
-                    )}
-                    <Card
-                      className={cn(
-                        "h-full cursor-pointer transition-all duration-300 hover:shadow-lg",
-                        selectedPlan === plan.id
-                          ? `${plan.borderColor} border-2 shadow-lg scale-[1.02]`
-                          : "border-border hover:border-muted-foreground/50",
-                        plan.popular && "shadow-xl"
-                      )}
-                      onClick={() => handlePlanSelect(plan.id)}
+                  {individualPlans.map((plan, index) => (
+                    <motion.div
+                      key={plan.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 + 0.2 }}
+                      className={cn("relative", plan.popular && "sm:scale-105 z-10")}
                     >
-                      <CardHeader className={cn("text-white rounded-t-lg bg-gradient-to-r", plan.color)}>
-                        <CardTitle className="text-center">
-                          <span className="text-xs font-medium opacity-80">{isArabic ? plan.levelAr : plan.level}</span>
-                          <p className="text-lg font-bold mt-1">{isArabic ? plan.nameAr : plan.name}</p>
-                          <p className="text-sm opacity-90 mt-1">{isArabic ? plan.subtitleAr : plan.subtitle}</p>
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="p-4">
-                        <ul className="space-y-2">
-                          {(isArabic ? plan.featuresAr : plan.features).map((feature) => (
-                            <li key={feature} className="flex items-start gap-2 text-sm">
-                              <Check className={cn("h-4 w-4 flex-shrink-0 mt-0.5", plan.textColor)} />
-                              {feature}
-                            </li>
-                          ))}
-                        </ul>
-                        {selectedPlan === plan.id && (
-                          <div className={cn("mt-4 text-center text-sm font-medium", plan.textColor)}>
-                            {t('auth.selected')}
-                          </div>
+                      {plan.popular && (
+                        <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
+                          <span className="inline-flex items-center gap-1 px-3 py-1 bg-indigo-500 text-white text-xs font-semibold rounded-full">
+                            <Star className="h-3 w-3" /> {t('auth.popular')}
+                          </span>
+                        </div>
+                      )}
+                      <Card
+                        className={cn(
+                          "h-full cursor-pointer transition-all duration-300 hover:shadow-lg",
+                          selectedPlan === plan.id
+                            ? `${plan.borderColor} border-2 shadow-lg scale-[1.02]`
+                            : "border-border hover:border-muted-foreground/50",
+                          plan.popular && "shadow-xl"
                         )}
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                ))}
+                        onClick={() => handlePlanSelect(plan.id)}
+                      >
+                        <CardHeader className={cn("text-white rounded-t-lg bg-gradient-to-r", plan.color)}>
+                          <CardTitle className="text-center">
+                            <span className="text-xs font-medium opacity-80">{isArabic ? plan.levelAr : plan.level}</span>
+                            <p className="text-lg font-bold mt-1">{isArabic ? plan.nameAr : plan.name}</p>
+                            <p className="text-sm opacity-90 mt-1">{isArabic ? plan.subtitleAr : plan.subtitle}</p>
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-4">
+                          <ul className="space-y-2">
+                            {(isArabic ? plan.featuresAr : plan.features).map((feature) => (
+                              <li key={feature} className="flex items-start gap-2 text-sm">
+                                <Check className={cn("h-4 w-4 flex-shrink-0 mt-0.5", plan.textColor)} />
+                                {feature}
+                              </li>
+                            ))}
+                          </ul>
+                          {selectedPlan === plan.id && (
+                            <div className={cn("mt-4 text-center text-sm font-medium", plan.textColor)}>
+                              {t('auth.selected')}
+                            </div>
+                          )}
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  ))}
+                </div>
               </div>
             </div>
           </motion.div>
