@@ -607,12 +607,12 @@ export default function Auth() {
 
             {/* Cours particuliers */}
             <div>
-              <h2 className="text-xl font-semibold text-center mb-6">
-                <User className="inline-block h-5 w-5 mr-2" />
+              <h2 className="text-lg sm:text-xl font-semibold text-center mb-4 sm:mb-6">
+                <User className="inline-block h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                 {isArabic ? 'حصص خاصة' : 'Cours particuliers'}
               </h2>
-              <div className="flex justify-center max-w-md mx-auto">
-                {individualPlans.map((plan, index) => (
+              <div className="flex justify-center px-2 sm:px-0">
+                <div className="w-full max-w-md">
                   <motion.div
                     key={plan.id}
                     initial={{ opacity: 0, y: 20 }}
