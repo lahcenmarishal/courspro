@@ -66,30 +66,6 @@ const primaireCollegePlans = [
     textColor: "text-primary",
     borderColor: "border-primary",
     bgColor: "bg-primary"
-  },
-  {
-    id: 'college-essentiel',
-    name: "Collège 3AC Essentiel",
-    nameAr: "إعدادي - الأساسي",
-    level: "Collège",
-    levelAr: "الإعدادي",
-    price: { monthly: 200, annual: 700 },
-    subjects: "Toutes matières",
-    subjectsAr: "الرياضيات | الفيزياء والكيمياء | علوم الحياة والأرض | الفرنسية",
-    features: [
-      "4 séances / semaine",
-      "Exercices guidés + devoirs ciblés",
-      "Suivi basique tout au long de l'abonnement"
-    ],
-    featuresAr: [
-      "4 حصص / أسبوع",
-      "تمارين موجهة + واجبات محددة",
-      "متابعة أساسية طول فترة الاشتراك"
-    ],
-    color: "from-emerald-600 to-emerald-500",
-    textColor: "text-emerald-600",
-    borderColor: "border-emerald-500",
-    bgColor: "bg-emerald-600"
   }
 ];
 
