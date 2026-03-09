@@ -50,6 +50,8 @@ import NotFound from "./pages/NotFound";
 import BlogPage from "./pages/BlogPage";
 import BlogPostPage from "./pages/BlogPostPage";
 import AdminBlogPage from "./pages/admin/BlogPage";
+import TestimonialsPage from "./pages/TestimonialsPage";
+import AdminTestimonialsPage from "./pages/admin/TestimonialsPage";
 
 const queryClient = new QueryClient();
 
