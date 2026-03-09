@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
-import { Loader2, Plus, CreditCard, Calendar, Users, TrendingUp, Search, CheckCircle, XCircle, Clock, GraduationCap, BookOpen, Star, Check } from 'lucide-react';
+import { Loader2, Plus, CreditCard, Calendar, Users, TrendingUp, Search, CheckCircle, XCircle, Clock, GraduationCap, BookOpen, Star, Check, UserRound } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import { format } from 'date-fns';
@@ -30,12 +30,12 @@ interface PricingPlan {
   popular?: boolean;
 }
 
-const pricingPlans: { primaire: PricingPlan[]; college: PricingPlan[]; lycee: PricingPlan[] } = {
+const pricingPlans: { primaire: PricingPlan[]; college: PricingPlan[]; lycee: PricingPlan[]; particulier: PricingPlan[] } = {
   primaire: [
     {
       id: 'primaire',
-      name: '6ème année primaire',
-      subtitle: 'Primaire',
+      name: 'Primaire',
+      subtitle: '6ème année primaire',
       level: 'primaire',
       price: { monthly: 150, annual: 500 },
       subjects: 'Arabe | Français | Mathématiques',
@@ -77,6 +77,19 @@ const pricingPlans: { primaire: PricingPlan[]; college: PricingPlan[]; lycee: Pr
       subjects: 'Mathématiques | Physique-Chimie | SVT | Anglais | Philosophie',
       features: ['5 séances / semaine', 'DS + simulations complètes', 'Préparation complète au national'],
       singleSession: 100,
+      popular: true,
+    }
+  ],
+  particulier: [
+    {
+      id: 'particulier-suivi',
+      name: 'Suivi individuel',
+      subtitle: 'Cours particuliers',
+      level: 'particulier',
+      price: { monthly: 0, annual: 0 },
+      subjects: 'Toutes matières',
+      features: ['Séance individuelle avec le prof', 'Programme personnalisé', 'Suivi personnel complet', 'Flexibilité des horaires'],
+      singleSession: 0,
       popular: true,
     }
   ]
@@ -614,6 +627,50 @@ export default function SubscriptionsPage() {
                                   asChild
                                 >
                                   <Link to="/contact">Nous contacter</Link>
+                                </Button>
+                              </CardContent>
+                            </Card>
+                          </motion.div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Cours particuliers */}
+                    <div>
+                      <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <UserRound className="h-5 w-5 text-indigo-600" />
+                        Cours particuliers — Sans pack
+                      </h3>
+                      <div className="max-w-md">
+                        {pricingPlans.particulier.map((plan) => (
+                          <motion.div
+                            key={plan.id}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                          >
+                            <Card className="h-full border-indigo-500">
+                              <CardHeader className="pb-2">
+                                <div className="flex items-start justify-between">
+                                  <div>
+                                    <CardTitle className="text-lg">{plan.name}</CardTitle>
+                                    <CardDescription>{plan.subtitle}</CardDescription>
+                                  </div>
+                                  <Badge className="bg-indigo-500/10 text-indigo-600">
+                                    <Star className="h-3 w-3 mr-1" />Recommandé
+                                  </Badge>
+                                </div>
+                              </CardHeader>
+                              <CardContent>
+                                <ul className="space-y-2 mb-4">
+                                  {plan.features.map((feature, i) => (
+                                    <li key={i} className="flex items-center gap-2 text-sm">
+                                      <Check className="h-4 w-4 text-indigo-600" />
+                                      {feature}
+                                    </li>
+                                  ))}
+                                </ul>
+                                <Button className="w-full" asChild>
+                                  <Link to="/contact">Demander un support</Link>
                                 </Button>
                               </CardContent>
                             </Card>

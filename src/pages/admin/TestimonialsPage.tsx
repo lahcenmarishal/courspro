@@ -12,7 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Switch } from "@/components/ui/switch";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Pencil, Trash2, Star, Loader2, Upload, Image } from "lucide-react";
+import { Plus, Pencil, Trash2, Star, Loader2, Upload, Image, X } from "lucide-react";
 import { toast } from "sonner";
 
 const defaultFormData: Omit<TestimonialInsert, 'rating' | 'is_featured' | 'is_published' | 'display_order'> & { rating: number; is_featured: boolean; is_published: boolean; display_order: number } = {
@@ -84,12 +84,18 @@ export default function AdminTestimonialsPage() {
     try {
       const url = await uploadTestimonialImage(file);
       setFormData(prev => ({ ...prev, image_url: url }));
-      toast.success(isArabic ? 'تم رفع الصورة' : 'Image téléchargée');
+      toast.success(isArabic ? 'تم تحديث الصورة' : 'Image mise à jour');
     } catch (error) {
       toast.error(isArabic ? 'خطأ في رفع الصورة' : 'Erreur lors du téléchargement');
     } finally {
       setUploading(false);
+      // Reset input so same file can be re-selected
+      e.target.value = '';
     }
+  };
+
+  const handleRemoveImage = () => {
+    setFormData(prev => ({ ...prev, image_url: '' }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -229,10 +235,21 @@ export default function AdminTestimonialsPage() {
                     <Label>{isArabic ? 'الصورة' : 'Photo'}</Label>
                     <div className="flex items-center gap-4">
                       {formData.image_url ? (
-                        <Avatar className="h-16 w-16">
-                          <AvatarImage src={formData.image_url} />
-                          <AvatarFallback><Image className="h-6 w-6" /></AvatarFallback>
-                        </Avatar>
+                        <div className="relative">
+                          <Avatar className="h-16 w-16">
+                            <AvatarImage src={formData.image_url} />
+                            <AvatarFallback><Image className="h-6 w-6" /></AvatarFallback>
+                          </Avatar>
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="icon"
+                            className="absolute -top-2 -right-2 h-6 w-6 rounded-full"
+                            onClick={handleRemoveImage}
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </div>
                       ) : (
                         <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center">
                           <Image className="h-6 w-6 text-muted-foreground" />
@@ -255,7 +272,10 @@ export default function AdminTestimonialsPage() {
                               ) : (
                                 <Upload className="h-4 w-4 mr-2" />
                               )}
-                              {isArabic ? 'رفع صورة' : 'Télécharger'}
+                              {formData.image_url 
+                                ? (isArabic ? 'تغيير الصورة' : 'Changer') 
+                                : (isArabic ? 'رفع صورة' : 'Télécharger')
+                              }
                             </span>
                           </Button>
                         </Label>
