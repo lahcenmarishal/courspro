@@ -343,7 +343,7 @@ export function StudentRequests() {
 
 interface StudentRequestCardProps {
   request: StudentRequest;
-  onApprove: (roleId: string) => void;
+  onApprove: () => void;
   onReject: (roleId: string) => void;
   onDelete: (roleId: string) => void;
   getStatusBadge: (status: string) => React.ReactNode;
