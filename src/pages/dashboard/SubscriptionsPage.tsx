@@ -540,7 +540,7 @@ export default function SubscriptionsPage() {
                           </div>
                           <p className="text-sm opacity-90">6ème année primaire</p>
                           <div className="mt-3">
-                            <span className="text-3xl font-bold">100</span>
+                            <span className="text-3xl font-bold">150</span>
                             <span className="text-sm"> MAD/mois</span>
                             <span className="text-xs ml-2 opacity-80">• 500 DH/an</span>
                           </div>
