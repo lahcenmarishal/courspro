@@ -625,7 +625,7 @@ export default function SubscriptionsPage() {
                           </div>
                           <p className="text-sm opacity-90">1ère & 2ème année BAC</p>
                           <div className="mt-3">
-                            <span className="text-3xl font-bold">200–350</span>
+                            <span className="text-3xl font-bold">250–350</span>
                             <span className="text-sm"> MAD/mois</span>
                           </div>
                         </div>
