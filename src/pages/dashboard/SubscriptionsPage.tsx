@@ -388,7 +388,7 @@ export default function SubscriptionsPage() {
                                     </Badge>
                                   )}
                                 </div>
-                                <p className="text-xs text-muted-foreground mt-1">{plan.subjects}</p>
+                                <p className="text-xs text-muted-foreground mt-1">{plan.subjects.join(' | ')}</p>
                               </div>
                               <div className="text-right">
                                 <p className="font-bold text-primary">{plan.price.monthly} DH<span className="text-xs font-normal">/mois</span></p>
