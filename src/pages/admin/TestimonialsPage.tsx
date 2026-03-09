@@ -12,7 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Switch } from "@/components/ui/switch";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Pencil, Trash2, Star, Loader2, Upload, Image } from "lucide-react";
+import { Plus, Pencil, Trash2, Star, Loader2, Upload, Image, X } from "lucide-react";
 import { toast } from "sonner";
 
 const defaultFormData: Omit<TestimonialInsert, 'rating' | 'is_featured' | 'is_published' | 'display_order'> & { rating: number; is_featured: boolean; is_published: boolean; display_order: number } = {
