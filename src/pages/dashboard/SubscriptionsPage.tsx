@@ -651,23 +651,9 @@ export default function SubscriptionsPage() {
                             <p className="text-xs font-semibold text-amber-600">350 MAD/mois • 1300 DH/an</p>
                           </div>
 
-                          <div className="mt-4">
-                            <p className="text-sm font-medium mb-2">Toutes les matières</p>
-                            <div className="flex flex-wrap gap-2">
-                              <Badge variant="outline" className="text-xs">📐 Math</Badge>
-                              <Badge variant="outline" className="text-xs">🔬 PC</Badge>
-                              <Badge variant="outline" className="text-xs">🌿 SVT</Badge>
-                              <Badge variant="outline" className="text-xs">📖 Philo</Badge>
-                              <Badge variant="outline" className="text-xs">🌍 Anglais</Badge>
-                              <Badge variant="outline" className="text-xs">FR Français</Badge>
-                            </div>
-                          </div>
 
-                          <div className="mt-3 text-sm text-muted-foreground">
-                            <div className="flex items-center gap-2">
-                              <Clock className="h-4 w-4" />
-                              Jusqu'à 8h / semaine
-                            </div>
+                          <div className="mt-3 p-2 rounded bg-muted/50 text-xs text-muted-foreground text-center">
+                            100 DH / mois pour une seule matière
                           </div>
                         </CardContent>
                       </Card>
