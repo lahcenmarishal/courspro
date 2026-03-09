@@ -5,91 +5,90 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/hooks/useLanguage";
+import { primaireCollegePlans, lyceePlans, individualPlans, type PlanConfig } from "@/lib/plans";
+
+const iconMap: Record<string, React.ElementType> = {
+  'primaire': BookOpen,
+  'college-regional': Users,
+  'lycee-1bac-jihawi': GraduationCap,
+  'lycee-2bac-total': GraduationCap,
+};
+
+const linkMap: Record<string, string> = {
+  'primaire': '/programmes#primaire',
+  'college-regional': '/programmes#college',
+  'lycee-1bac-jihawi': '/programmes#lycee',
+  'lycee-2bac-total': '/programmes#lycee',
+};
 
 interface LevelCardProps {
-  level: {
-    name: string;
-    subtitle: string;
-    price: { monthly: number; annual: number };
-    subjects: string;
-    features: string[];
-    option: string;
-    color: string;
-    borderColor: string;
-    textColor: string;
-    icon: React.ElementType;
-    link: string;
-    plan: string;
-    popular?: boolean;
-  };
+  plan: PlanConfig;
   index: number;
-  chooseText: string;
-  perMonthText: string;
-  perYearText: string;
-  seeDetailsText: string;
-  popularText: string;
+  language: string;
+  icon: React.ElementType;
+  link: string;
 }
 
-const LevelCard = ({ level, index, chooseText, perMonthText, perYearText, seeDetailsText, popularText }: LevelCardProps) => (
+const LevelCard = ({ plan, index, language, icon: Icon, link }: LevelCardProps) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true }}
     transition={{ duration: 0.5, delay: index * 0.1 }}
-    className={cn("h-full relative", level.popular && "scale-105 z-10")}
+    className={cn("h-full relative", plan.popular && "scale-105 z-10")}
   >
-    {level.popular && (
+    {plan.popular && (
       <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
         <span className="inline-flex items-center gap-1 px-3 py-1 bg-amber-500 text-white text-xs font-semibold rounded-full">
-          <Star className="h-3 w-3" /> {popularText}
+          <Star className="h-3 w-3" /> {language === 'ar' ? 'الأكثر طلباً' : 'Populaire'}
         </span>
       </div>
     )}
     <Card className={cn(
       "h-full shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2",
-      level.popular ? "border-2" : "",
-      level.borderColor
+      plan.popular ? "border-2" : "",
+      plan.borderColor
     )}>
-      <CardHeader className={cn("text-white rounded-t-lg bg-gradient-to-r", level.color)}>
+      <CardHeader className={cn("text-white rounded-t-lg bg-gradient-to-r", plan.color)}>
         <div className="flex items-center justify-center mb-2">
-          <level.icon className="h-10 w-10 opacity-90" />
+          <Icon className="h-10 w-10 opacity-90" />
         </div>
         <CardTitle className="text-center">
-          <span className="text-2xl font-bold">{level.name}</span>
-          <p className="text-sm opacity-90 mt-1">{level.subtitle}</p>
+          <span className="text-2xl font-bold">{language === 'ar' ? plan.nameAr : plan.name}</span>
+          <p className="text-sm opacity-90 mt-1">{language === 'ar' ? plan.subtitleAr : plan.subtitle}</p>
         </CardTitle>
         <div className="text-center mt-4">
-          <span className="text-5xl font-bold">{level.price.monthly}</span>
-          <span className="text-xl">{perMonthText}</span>
-          <p className="text-sm opacity-80 mt-1">{level.price.annual} DH {perYearText}</p>
+          <span className="text-5xl font-bold">{plan.price.monthly}</span>
+          <span className="text-xl">{language === 'ar' ? ' درهم/شهر' : ' DH/mois'}</span>
+          <p className="text-sm opacity-80 mt-1">{plan.price.annual} DH {language === 'ar' ? '/ سنة' : '/ an'}</p>
         </div>
       </CardHeader>
       <CardContent className="p-6">
-        <p className={cn("text-center font-medium mb-4 text-sm", level.textColor)}>
-          {level.subjects}
+        <p className={cn("text-center font-medium mb-4 text-sm", plan.textColor)}>
+          {language === 'ar' ? plan.subjectsAr : plan.subjects}
         </p>
         <ul className="space-y-3 mb-4">
-          {level.features.map((feature) => (
+          {(language === 'ar' ? plan.featuresAr : plan.features).map((feature) => (
             <li key={feature} className="flex items-start gap-2 text-sm">
-              <Check className={cn("h-4 w-4 flex-shrink-0 mt-0.5", level.textColor)} />
+              <Check className={cn("h-4 w-4 flex-shrink-0 mt-0.5", plan.textColor)} />
               {feature}
             </li>
           ))}
         </ul>
         <p className="text-xs text-muted-foreground text-center mb-4">
-          {level.option}
+          {language === 'ar' ? plan.optionAr : plan.option}
         </p>
         <div className="space-y-2">
           <Button 
-            className={cn("w-full", level.popular && "bg-amber-600 hover:bg-amber-700")} 
+            className={cn("w-full", plan.popular && "bg-amber-600 hover:bg-amber-700")} 
             size="lg" 
             asChild
           >
-            <Link to={`/auth?plan=${level.plan}`}>{chooseText}</Link>
+            <Link to={`/auth?plan=${plan.id}`}>{language === 'ar' ? 'للاستفادة من هذه الباقة' : 'Bénéficier de ce pack'}</Link>
           </Button>
           <Button variant="ghost" className="w-full" size="sm" asChild>
-            <Link to={level.link}>
-              {seeDetailsText} <ArrowRight className="ml-2 h-4 w-4 rtl:mr-2 rtl:ml-0 rtl:rotate-180" />
+            <Link to={link}>
+              {language === 'ar' ? 'عرض التفاصيل' : 'Voir les détails'} <ArrowRight className="ml-2 h-4 w-4 rtl:mr-2 rtl:ml-0 rtl:rotate-180" />
             </Link>
           </Button>
         </div>
@@ -101,125 +100,8 @@ const LevelCard = ({ level, index, chooseText, perMonthText, perYearText, seeDet
 export const Pricing = () => {
   const { t, language } = useLanguage();
 
-  const levels = [
-    {
-      name: language === 'ar' ? "إعدادي - الجهوي" : "Collège Pack Régional",
-      subtitle: language === 'ar' ? "الثالثة إعدادي - جميع المواد" : "3ème année collège - Toutes matières",
-      price: { monthly: 300, annual: 1000 },
-      subjects: language === 'ar' ? "الرياضيات | الفيزياء والكيمياء | علوم الحياة والأرض | الفرنسية | الإنجليزية | العربية" : "Mathématiques | Physique-Chimie | SVT | Français | Anglais | Arabe",
-      features: language === 'ar' ? [
-        "6 حصص / أسبوع",
-        "تمارين موجهة + واجبات محددة",
-        "متابعة أساسية طول فترة الاشتراك"
-      ] : [
-        "6 séances / semaine",
-        "Exercices guidés + devoirs ciblés",
-        "Suivi basique tout au long de l'abonnement"
-      ],
-      option: language === 'ar' ? "100 درهم / شهر للمادة الواحدة" : "100 DH / mois pour une seule matière",
-      color: "from-teal-600 to-teal-500",
-      borderColor: "border-teal-500",
-      textColor: "text-teal-600",
-      icon: Users,
-      link: "/programmes/college",
-      plan: "college-regional",
-      popular: true
-    },
-    {
-      name: language === 'ar' ? "1 باك الجهوي" : "1 Bac Pack Aljihawi",
-      subtitle: language === 'ar' ? "الأولى باك - مواد الامتحان الجهوي" : "1ère Bac - Matières régional",
-      price: { monthly: 250, annual: 1000 },
-      subjects: language === 'ar' ? "الفرنسية | الجغرافيا | العربية | التربية الإسلامية" : "Français | Géographie | Arabe | Éducation islamique",
-      features: language === 'ar' ? [
-        "4 حصص / أسبوع",
-        "تمارين موجهة + فروض",
-        "متابعة أساسية طول فترة الاشتراك"
-      ] : [
-        "4 séances / semaine",
-        "Exercices guidés + devoirs",
-        "Suivi basique tout au long de l'abonnement"
-      ],
-      option: language === 'ar' ? "100 درهم / شهر للمادة الواحدة" : "100 DH / mois pour une seule matière",
-      color: "from-cyan-600 to-cyan-500",
-      borderColor: "border-cyan-500",
-      textColor: "text-cyan-600",
-      icon: GraduationCap,
-      link: "/programmes/lycee/1bac-jihawi",
-      plan: "lycee-1bac-jihawi",
-      popular: true
-    },
-    {
-      name: language === 'ar' ? "2 باك الوطني الكامل" : "2 Bac National Complet",
-      subtitle: language === 'ar' ? "الثانية باك - جميع المواد" : "2ème Bac - Toutes matières",
-      price: { monthly: 350, annual: 1300 },
-      subjects: language === 'ar' ? "الرياضيات | الفيزياء والكيمياء | علوم الحياة والأرض | الإنجليزية | الفلسفة" : "Mathématiques | Physique-Chimie | SVT | Anglais | Philosophie",
-      features: language === 'ar' ? [
-        "5 حصص / أسبوع",
-        "فروض مراقبة + محاكاة كاملة",
-        "متابعة أساسية طول فترة الاشتراك",
-        "تحضير شامل للامتحان الوطني"
-      ] : [
-        "5 séances / semaine",
-        "DS + simulations complètes",
-        "Suivi basique tout au long de l'abonnement",
-        "Préparation complète au national"
-      ],
-      option: language === 'ar' ? "100 درهم / شهر للمادة الواحدة" : "100 DH / mois pour une seule matière",
-      color: "from-amber-600 to-amber-500",
-      borderColor: "border-amber-500",
-      textColor: "text-amber-600",
-      icon: GraduationCap,
-      link: "/programmes/lycee/2bac-total",
-      plan: "lycee-2bac-total",
-      popular: true
-    },
-    {
-      name: language === 'ar' ? "الابتدائي" : "Primaire",
-      subtitle: language === 'ar' ? "السنة السادسة ابتدائي" : "6ème année primaire",
-      price: { monthly: 150, annual: 500 },
-      subjects: language === 'ar' ? "العربية | الفرنسية | الرياضيات" : "Arabe | Français | Mathématiques",
-      features: language === 'ar' ? [
-        "3 حصص / أسبوع",
-        "3 ساعات / حصة",
-        "متابعة أساسية طول فترة الاشتراك"
-      ] : [
-        "3 séances / semaine",
-        "3 heures / séance",
-        "Suivi basique tout au long de l'abonnement"
-      ],
-      option: language === 'ar' ? "70 درهم / شهر للمادة الواحدة" : "70 DH / mois pour une seule matière",
-      color: "from-primary to-primary/80",
-      borderColor: "border-primary",
-      textColor: "text-primary",
-      icon: BookOpen,
-      link: "/programmes/primaire",
-      plan: "primaire"
-    }
-  ];
-
-  const individualOptions = [
-    {
-      name: language === 'ar' ? "متابعة فردية" : "Suivi individuel",
-      subtitle: language === 'ar' ? "حصص خاصة" : "Cours particuliers",
-      features: language === 'ar' ? [
-        "حصة فردية مع الأستاذ",
-        "برنامج مخصص",
-        "متابعة شخصية كاملة",
-        "مرونة في المواعيد"
-      ] : [
-        "Séance individuelle avec le prof",
-        "Programme personnalisé",
-        "Suivi personnel complet",
-        "Flexibilité des horaires"
-      ],
-      color: "from-indigo-600 to-indigo-500",
-      borderColor: "border-indigo-500",
-      textColor: "text-indigo-600",
-      icon: UserRound,
-      popular: true,
-      plan: "particulier-suivi",
-    },
-  ];
+  const allPlans = [...primaireCollegePlans, ...lyceePlans];
+  const individuelPlan = individualPlans[0];
 
   return (
     <section id="pricing" className="py-24 bg-muted/30">
@@ -248,16 +130,14 @@ export const Pricing = () => {
         </motion.div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-7xl mx-auto">
-          {levels.map((level, index) => (
+          {allPlans.map((plan, index) => (
             <LevelCard
-              key={level.name + level.plan}
-              level={level}
+              key={plan.id}
+              plan={plan}
               index={index}
-              chooseText={language === 'ar' ? "للاستفادة من هذه الباقة" : "Bénéficier de ce pack"}
-              perMonthText={language === 'ar' ? " درهم/شهر" : " DH/mois"}
-              perYearText={t("pricing.perYear")}
-              seeDetailsText={language === 'ar' ? "عرض التفاصيل" : "Voir les détails"}
-              popularText={language === 'ar' ? "الأكثر طلباً" : "Populaire"}
+              language={language}
+              icon={iconMap[plan.id] || GraduationCap}
+              link={linkMap[plan.id] || '/programmes'}
             />
           ))}
         </div>
@@ -275,52 +155,43 @@ export const Pricing = () => {
             {language === 'ar' ? 'حصص خاصة - بدون باقة' : 'Cours particuliers — Sans pack'}
           </h3>
           <div className="flex justify-center max-w-md mx-auto">
-            {individualOptions.map((opt, index) => (
-              <motion.div
-                key={opt.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className={cn("relative", opt.popular && "scale-105 z-10")}
-              >
-                {opt.popular && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
-                    <span className="inline-flex items-center gap-1 px-3 py-1 bg-indigo-500 text-white text-xs font-semibold rounded-full">
-                      <Star className="h-3 w-3" /> {language === 'ar' ? 'الأكثر طلباً' : 'Recommandé'}
-                    </span>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="relative scale-105 z-10"
+            >
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
+                <span className="inline-flex items-center gap-1 px-3 py-1 bg-indigo-500 text-white text-xs font-semibold rounded-full">
+                  <Star className="h-3 w-3" /> {language === 'ar' ? 'الأكثر طلباً' : 'Recommandé'}
+                </span>
+              </div>
+              <Card className={cn("h-full shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 border-2", individuelPlan.borderColor)}>
+                <CardHeader className={cn("text-white rounded-t-lg bg-gradient-to-r", individuelPlan.color)}>
+                  <div className="flex items-center justify-center mb-2">
+                    <UserRound className="h-10 w-10 opacity-90" />
                   </div>
-                )}
-                <Card className={cn(
-                  "h-full shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2",
-                  opt.popular ? "border-2" : "",
-                  opt.borderColor
-                )}>
-                  <CardHeader className={cn("text-white rounded-t-lg bg-gradient-to-r", opt.color)}>
-                    <div className="flex items-center justify-center mb-2">
-                      <opt.icon className="h-10 w-10 opacity-90" />
-                    </div>
-                    <CardTitle className="text-center">
-                      <span className="text-2xl font-bold">{opt.name}</span>
-                      <p className="text-sm opacity-90 mt-1">{opt.subtitle}</p>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="p-6">
-                    <ul className="space-y-3 mb-4">
-                      {opt.features.map((feature) => (
-                        <li key={feature} className="flex items-start gap-2 text-sm">
-                          <Check className={cn("h-4 w-4 flex-shrink-0 mt-0.5", opt.textColor)} />
-                          {feature}
-                        </li>
-                      ))}
-                    </ul>
-                    <Button className="w-full" size="lg" asChild>
-                      <Link to={`/auth?plan=${opt.plan}`}>{language === 'ar' ? "طلب الدعم" : "Demander un support"}</Link>
-                    </Button>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
+                  <CardTitle className="text-center">
+                    <span className="text-2xl font-bold">{language === 'ar' ? individuelPlan.nameAr : individuelPlan.name}</span>
+                    <p className="text-sm opacity-90 mt-1">{language === 'ar' ? individuelPlan.subtitleAr : individuelPlan.subtitle}</p>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-6">
+                  <ul className="space-y-3 mb-4">
+                    {(language === 'ar' ? individuelPlan.featuresAr : individuelPlan.features).map((feature) => (
+                      <li key={feature} className="flex items-start gap-2 text-sm">
+                        <Check className="h-4 w-4 flex-shrink-0 mt-0.5 text-indigo-600" />
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                  <Button className="w-full" size="lg" asChild>
+                    <Link to="/auth?plan=particulier-suivi">{language === 'ar' ? 'طلب الدعم' : 'Demander un support'}</Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            </motion.div>
           </div>
         </motion.div>
 

@@ -33,13 +33,7 @@ import SubscriptionsPage from "./pages/dashboard/SubscriptionsPage";
 import SettingsPage from "./pages/dashboard/SettingsPage";
 import TrackingPage from "./pages/dashboard/TrackingPage";
 import CalendarPage from "./pages/dashboard/CalendarPage";
-import PrimairePage from "./pages/programs/PrimairePage";
-import CollegePage from "./pages/programs/CollegePage";
-import LyceePage from "./pages/programs/LyceePage";
-import Lycee1BacPage from "./pages/programs/Lycee1BacPage";
-import Lycee1BacJihawiPage from "./pages/programs/Lycee1BacJihawiPage";
-import Lycee2BacEssentielPage from "./pages/programs/Lycee2BacEssentielPage";
-import Lycee2BacTotalPage from "./pages/programs/Lycee2BacTotalPage";
+import ProgrammesPage from "./pages/programs/ProgrammesPage";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsOfService from "./pages/TermsOfService";
 import TeachersTeamPage from "./pages/TeachersTeamPage";
@@ -72,13 +66,11 @@ const App = () => (
             <Route path="/auth/teacher" element={<TeacherAuth />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
-            <Route path="/programmes/primaire" element={<PrimairePage />} />
-            <Route path="/programmes/college" element={<CollegePage />} />
-            <Route path="/programmes/lycee" element={<LyceePage />} />
-            <Route path="/programmes/lycee/1bac" element={<Lycee1BacPage />} />
-            <Route path="/programmes/lycee/1bac-jihawi" element={<Lycee1BacJihawiPage />} />
-            <Route path="/programmes/lycee/2bac-essentiel" element={<Lycee2BacEssentielPage />} />
-            <Route path="/programmes/lycee/2bac-total" element={<Lycee2BacTotalPage />} />
+            <Route path="/programmes" element={<ProgrammesPage />} />
+            <Route path="/programmes/primaire" element={<ProgrammesPage />} />
+            <Route path="/programmes/college" element={<ProgrammesPage />} />
+            <Route path="/programmes/lycee" element={<ProgrammesPage />} />
+            <Route path="/programmes/lycee/*" element={<ProgrammesPage />} />
             <Route path="/confidentialite" element={<PrivacyPolicy />} />
             <Route path="/cgu" element={<TermsOfService />} />
             <Route path="/tarifs" element={<PricingPage />} />
