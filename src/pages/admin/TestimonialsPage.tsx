@@ -235,10 +235,21 @@ export default function AdminTestimonialsPage() {
                     <Label>{isArabic ? 'الصورة' : 'Photo'}</Label>
                     <div className="flex items-center gap-4">
                       {formData.image_url ? (
-                        <Avatar className="h-16 w-16">
-                          <AvatarImage src={formData.image_url} />
-                          <AvatarFallback><Image className="h-6 w-6" /></AvatarFallback>
-                        </Avatar>
+                        <div className="relative">
+                          <Avatar className="h-16 w-16">
+                            <AvatarImage src={formData.image_url} />
+                            <AvatarFallback><Image className="h-6 w-6" /></AvatarFallback>
+                          </Avatar>
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="icon"
+                            className="absolute -top-2 -right-2 h-6 w-6 rounded-full"
+                            onClick={handleRemoveImage}
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </div>
                       ) : (
                         <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center">
                           <Image className="h-6 w-6 text-muted-foreground" />
@@ -261,7 +272,10 @@ export default function AdminTestimonialsPage() {
                               ) : (
                                 <Upload className="h-4 w-4 mr-2" />
                               )}
-                              {isArabic ? 'رفع صورة' : 'Télécharger'}
+                              {formData.image_url 
+                                ? (isArabic ? 'تغيير الصورة' : 'Changer') 
+                                : (isArabic ? 'رفع صورة' : 'Télécharger')
+                              }
                             </span>
                           </Button>
                         </Label>
