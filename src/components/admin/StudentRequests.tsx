@@ -359,7 +359,7 @@ function StudentRequestCard({
             <div className="flex items-center gap-2 text-sm">
               <BookOpen className="h-3 w-3 text-primary" />
               <Badge variant="outline" className="text-xs bg-primary/10 text-primary border-primary/30">
-                {request.profile.selected_plan}
+                {planLabels[request.profile.selected_plan] || request.profile.selected_plan}
               </Badge>
             </div>
           )}
