@@ -969,10 +969,10 @@ const ar: Record<string, string> = {
   "hero.card.monthProgress": "+2.3 هذا الشهر",
 
   // Features
-  "features.label": "لماذا CoursPro",
-  "features.title": "لماذا تختار",
-  "features.titleHighlight": "CoursPro ؟",
-  "features.description": "منصة تعليمية متكاملة مع متابعة شخصية، أساليب تدريس مبتكرة، ووصول سهل لجميع دروسك ومواردك.",
+  "features.label": "المميزات",
+  "features.title": "ما نقدمه",
+  "features.titleHighlight": "لكم :",
+  "features.description": "CoursPro، تقدم لك تجربة تعليمية مميزة عبر الإنترنت في جميع المواد ولجميع المستويات، حيث يتم تدريس الدروس بواسطة أساتذة محترفين ومتخصصين. يمكنك التفاعل معهم مباشرة أثناء الحصة، وتعلم باستخدام أحدث المعدات التكنولوجية. لضمان تعليم فعال وآمن.",
   "features.followup": "متابعة دورية من طرف الأساتذة",
   "features.followup.desc": "متابعة دورية من طرف الأساتذة مع إمكانية طرح الأسئلة أثناء الحصص.",
   "features.methods": "أساليب تدريس مبتكرة",
