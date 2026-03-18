@@ -31,7 +31,7 @@ export const Features = () => {
             {t("features.title")}{" "}
             <span className="gradient-text">{t("features.titleHighlight")}</span>
           </h2>
-          <p className="text-lg text-muted-foreground">{t("features.description")}</p>
+          
         </motion.div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
