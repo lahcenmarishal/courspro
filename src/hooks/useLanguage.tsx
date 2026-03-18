@@ -36,7 +36,7 @@ const fr: Record<string, string> = {
   "hero.title1": "La première école",
   "hero.title2": "virtuelle",
   "hero.title3": "au Maroc",
-  "hero.description": "CoursPro révolutionne l'enseignement avec le premier concept d'école virtuelle au Maroc. Cours en direct via Google Meet, enseignants certifiés, suivi personnalisé — une nouvelle ère éducative commence ici.",
+  "hero.description": "CoursPro, vous offre une expérience éducative unique en ligne dans toutes les matières et pour tous les niveaux, avec des cours dispensés par des enseignants professionnels et spécialisés. Interagissez directement avec eux pendant les séances et apprenez avec les derniers équipements technologiques, pour un enseignement efficace et sécurisé.",
   "hero.cta.signup": "Vous êtes élève ?",
   "hero.cta.signupSub": "Demandez votre accès maintenant",
   "hero.cta.discover": "Vous êtes enseignant ?",
