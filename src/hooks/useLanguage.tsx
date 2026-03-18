@@ -67,10 +67,10 @@ const fr: Record<string, string> = {
   "hero.card.monthProgress": "+2.3 ce mois",
 
   // Features
-  "features.label": "لماذا CoursPro",
-  "features.title": "لماذا تختار",
-  "features.titleHighlight": "CoursPro ؟",
-  "features.description": "منصة تعليمية متكاملة مع متابعة شخصية، أساليب تدريس مبتكرة، ووصول سهل لجميع دروسك ومواردك.",
+  "features.label": "Fonctionnalités",
+  "features.title": "Ce que nous vous",
+  "features.titleHighlight": "proposons :",
+  "features.description": "CoursPro, vous offre une expérience éducative unique en ligne dans toutes les matières et pour tous les niveaux, avec des cours dispensés par des enseignants professionnels et spécialisés. Interagissez directement avec eux pendant les séances et apprenez avec les derniers équipements technologiques, pour un enseignement efficace et sécurisé.",
   "features.followup": "Suivi périodique par les enseignants",
   "features.followup.desc": "Un accompagnement régulier de la part des enseignants avec la possibilité de poser des questions pendant les cours.",
   "features.methods": "Méthodes d'enseignement innovantes",
