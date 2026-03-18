@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { GraduationCap, Video, Calendar, FileText, Bell, BarChart3, BookOpen, Award } from "lucide-react";
+import { Users, Lightbulb, ClipboardCheck, MonitorPlay, UserCheck } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 
 const colorClasses = {
@@ -12,14 +12,11 @@ export const Features = () => {
   const { t } = useLanguage();
 
   const features = [
-    { icon: Video, title: t("features.liveCourses"), description: t("features.liveCourses.desc"), color: "accent" },
-    { icon: Calendar, title: t("features.schedule"), description: t("features.schedule.desc"), color: "secondary" },
-    { icon: GraduationCap, title: t("features.teachers"), description: t("features.teachers.desc"), color: "primary" },
-    { icon: FileText, title: t("features.homework"), description: t("features.homework.desc"), color: "accent" },
-    { icon: BookOpen, title: t("features.resources"), description: t("features.resources.desc"), color: "primary" },
-    { icon: BarChart3, title: t("features.grades"), description: t("features.grades.desc"), color: "secondary" },
-    { icon: Bell, title: t("features.notifications"), description: t("features.notifications.desc"), color: "primary" },
-    { icon: Award, title: t("features.progress"), description: t("features.progress.desc"), color: "accent" },
+    { icon: Users, title: t("features.followup"), description: t("features.followup.desc"), color: "primary" },
+    { icon: Lightbulb, title: t("features.methods"), description: t("features.methods.desc"), color: "accent" },
+    { icon: ClipboardCheck, title: t("features.revision"), description: t("features.revision.desc"), color: "secondary" },
+    { icon: MonitorPlay, title: t("features.lessons"), description: t("features.lessons.desc"), color: "primary" },
+    { icon: UserCheck, title: t("features.account"), description: t("features.account.desc"), color: "accent" },
   ];
 
   return (
@@ -37,7 +34,7 @@ export const Features = () => {
           <p className="text-lg text-muted-foreground">{t("features.description")}</p>
         </motion.div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
           {features.map((feature, index) => {
             const colors = colorClasses[feature.color as keyof typeof colorClasses];
             return (
