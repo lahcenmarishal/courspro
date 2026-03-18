@@ -969,10 +969,10 @@ const ar: Record<string, string> = {
   "hero.card.monthProgress": "+2.3 هذا الشهر",
 
   // Features
-  "features.label": "المميزات",
-  "features.title": "كل ما تحتاجه لـ",
-  "features.titleHighlight": "إدارة مدرستك",
-  "features.description": "منصة شاملة مصممة لإعادة إنتاج تجربة المدرسة التقليدية في بيئة رقمية 100%.",
+  "features.label": "لماذا CoursPro",
+  "features.title": "لماذا تختار",
+  "features.titleHighlight": "CoursPro ؟",
+  "features.description": "منصة تعليمية متكاملة مع متابعة شخصية، أساليب تدريس مبتكرة، ووصول سهل لجميع دروسك ومواردك.",
   "features.followup": "متابعة دورية من طرف الأساتذة",
   "features.followup.desc": "متابعة دورية من طرف الأساتذة مع إمكانية طرح الأسئلة أثناء الحصص.",
   "features.methods": "أساليب تدريس مبتكرة",
