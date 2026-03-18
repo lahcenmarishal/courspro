@@ -67,13 +67,6 @@ export const Founders = () => {
           ))}
         </div>
 
-        <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.4 }} className="mt-20 text-center">
-          <div className="max-w-3xl mx-auto p-8 bg-gradient-to-r from-primary/5 via-secondary/5 to-primary/5 rounded-2xl border border-primary/10">
-            <h3 className="text-xl md:text-2xl font-semibold text-foreground mb-4">{t("founders.vision.title")}</h3>
-            <p className="text-muted-foreground leading-relaxed">{t("founders.vision.description")}</p>
-          </div>
-        </motion.div>
       </div>
     </section>
   );

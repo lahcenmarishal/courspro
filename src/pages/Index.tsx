@@ -4,6 +4,7 @@ import { Features } from "@/components/landing/Features";
 import { RoleShowcase } from "@/components/landing/RoleShowcase";
 import { Founders } from "@/components/landing/Founders";
 import { Pricing } from "@/components/landing/Pricing";
+import { TestimonialsSection } from "@/components/landing/TestimonialsSection";
 import { Footer } from "@/components/landing/Footer";
 
 const Index = () => {
@@ -18,6 +19,9 @@ const Index = () => {
         <RoleShowcase />
         <section id="founders">
           <Founders />
+        </section>
+        <section id="testimonials">
+          <TestimonialsSection />
         </section>
         <section id="pricing">
           <Pricing />
