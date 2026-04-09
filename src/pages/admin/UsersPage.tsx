@@ -469,12 +469,16 @@ export default function UsersPage() {
                           </Button>
                         </>
                       )}
-                      <Button size="sm" variant="outline" className="text-xs h-8" onClick={() => { setPasswordUser(profile); setPasswordDialogOpen(true); }}>
-                        <Key className="h-3 w-3 mr-1" /> Mot de passe
-                      </Button>
-                      <Button size="sm" variant="outline" className="text-red-600 border-red-300 text-xs h-8" onClick={() => { setUserToDelete(profile); setDeleteDialogOpen(true); }}>
-                        <Trash2 className="h-3 w-3 mr-1" /> Supprimer
-                      </Button>
+                      {userRole !== 'admin' && (
+                        <>
+                          <Button size="sm" variant="outline" className="text-xs h-8" onClick={() => { setPasswordUser(profile); setPasswordDialogOpen(true); }}>
+                            <Key className="h-3 w-3 mr-1" /> Mot de passe
+                          </Button>
+                          <Button size="sm" variant="outline" className="text-red-600 border-red-300 text-xs h-8" onClick={() => { setUserToDelete(profile); setDeleteDialogOpen(true); }}>
+                            <Trash2 className="h-3 w-3 mr-1" /> Supprimer
+                          </Button>
+                        </>
+                      )}
                     </div>
                   </div>
                 );
@@ -548,12 +552,16 @@ export default function UsersPage() {
                                 </Button>
                               </>
                             )}
-                            <Button size="sm" variant="ghost" className="h-8 w-8 p-0" onClick={() => { setPasswordUser(profile); setPasswordDialogOpen(true); }} title="Changer le mot de passe">
-                              <Key className="h-4 w-4" />
-                            </Button>
-                            <Button size="sm" variant="ghost" className="text-red-600 h-8 w-8 p-0" onClick={() => { setUserToDelete(profile); setDeleteDialogOpen(true); }} title="Supprimer">
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
+                            {userRole !== 'admin' && (
+                              <>
+                                <Button size="sm" variant="ghost" className="h-8 w-8 p-0" onClick={() => { setPasswordUser(profile); setPasswordDialogOpen(true); }} title="Changer le mot de passe">
+                                  <Key className="h-4 w-4" />
+                                </Button>
+                                <Button size="sm" variant="ghost" className="text-red-600 h-8 w-8 p-0" onClick={() => { setUserToDelete(profile); setDeleteDialogOpen(true); }} title="Supprimer">
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </>
+                            )}
                           </div>
                         </TableCell>
                       </TableRow>
