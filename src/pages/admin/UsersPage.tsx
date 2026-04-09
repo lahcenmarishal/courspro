@@ -270,8 +270,7 @@ export default function UsersPage() {
 
   const getPlanLabel = (planId: string | null) => {
     if (!planId) return '-';
-    const plan = allPlans.find(p => p.id === planId);
-    return plan ? plan.name : planId;
+    return planLabels[planId] || planId;
   };
 
   const filteredProfiles = profiles.filter((profile) => {
@@ -356,11 +355,14 @@ export default function UsersPage() {
                     <Select value={selectedPlan} onValueChange={setSelectedPlan}>
                       <SelectTrigger><SelectValue placeholder="Sélectionner un pack" /></SelectTrigger>
                       <SelectContent>
-                        {allPlans.map(plan => (
-                          <SelectItem key={plan.id} value={plan.id}>
-                            {plan.name} - {plan.price.monthly} DH/mois
-                          </SelectItem>
-                        ))}
+                        {allPlansWithIndividual.map(plan => {
+                          const price = planPrices[plan.id];
+                          return (
+                            <SelectItem key={plan.id} value={plan.id}>
+                              {plan.name}{price ? ` - ${price.monthly} DH/mois` : ''}
+                            </SelectItem>
+                          );
+                        })}
                       </SelectContent>
                     </Select>
                   </div>
