@@ -1,9 +1,16 @@
 import { useLanguage } from "@/hooks/useLanguage";
 import { Globe } from "lucide-react";
 import { motion } from "framer-motion";
+import { useLocation } from "react-router-dom";
 
 export const FloatingLanguageSwitcher = () => {
   const { language, setLanguage } = useLanguage();
+  const location = useLocation();
+
+  // Hide on dashboard pages - the sidebar already has a language switcher
+  if (location.pathname.startsWith('/dashboard')) {
+    return null;
+  }
 
   return (
     <motion.button
