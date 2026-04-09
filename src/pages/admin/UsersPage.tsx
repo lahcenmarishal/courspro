@@ -46,9 +46,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
-import { allPlansWithIndividual } from "@/lib/plans";
-
-const allPlans = allPlansWithIndividual;
+import { allPlansWithIndividual, planLabels, planPrices } from "@/lib/plans";
 
 const userSchema = z.object({
   email: z.string().trim().email("Email invalide").max(255),
