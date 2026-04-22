@@ -350,13 +350,13 @@ const TeacherDashboard = () => {
               </div>
             </div>
             <div className="p-4 lg:p-6 space-y-2 lg:space-y-3">
-              {schedule.length === 0 ? (
+              {scheduleWithStatus.length === 0 ? (
                 <div className="text-center py-6 lg:py-8 text-muted-foreground">
                   <Clock className="h-10 w-10 lg:h-12 lg:w-12 mx-auto mb-3 lg:mb-4 opacity-50" />
                   <p className="text-sm lg:text-base">{t("teacher.noCourseScheduled")}</p>
                 </div>
               ) : (
-                schedule.map((item, index) => (
+                scheduleWithStatus.map((item, index) => (
                   <motion.div
                     key={item.id}
                     initial={{ opacity: 0, x: -10 }}
