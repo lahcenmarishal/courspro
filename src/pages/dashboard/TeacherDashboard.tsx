@@ -30,6 +30,7 @@ interface ScheduleItem {
   className: string;
   room: string | null;
   status: 'completed' | 'current' | 'upcoming';
+  forceCompleted?: boolean;
 }
 
 interface TeacherStats {
