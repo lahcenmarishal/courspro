@@ -169,13 +169,6 @@ const TeacherDashboard = () => {
       const currentTime = format(now, 'HH:mm:ss');
 
       const transformedSchedule: ScheduleItem[] = (scheduleData || []).map((slot: any) => {
-        let status: 'completed' | 'current' | 'upcoming' = 'upcoming';
-        if (slot.end_time < currentTime) {
-          status = 'completed';
-        } else if (slot.start_time <= currentTime && slot.end_time >= currentTime) {
-          status = 'current';
-        }
-
         return {
           id: slot.id,
           time: slot.start_time?.slice(0, 5) || '',
@@ -184,22 +177,13 @@ const TeacherDashboard = () => {
           subjectColor: slot.teacher_assignments?.subjects?.color || '#3B82F6',
           className: slot.teacher_assignments?.classes?.name || '',
           room: slot.room,
-          status,
+          status: 'upcoming',
         };
       });
 
       const directScheduleItems: ScheduleItem[] = (directSessions || []).map((session: any) => {
-        let status: 'completed' | 'current' | 'upcoming' = 'upcoming';
         const startTime = session.start_time || '00:00:00';
         const endTime = session.end_time || '23:59:00';
-        if (session.status === 'completed') {
-          status = 'completed';
-        } else if (endTime < currentTime) {
-          status = 'completed';
-        } else if (startTime <= currentTime && endTime >= currentTime) {
-          status = 'current';
-        }
-
         return {
           id: session.id,
           time: startTime?.slice(0, 5) || '',
@@ -208,7 +192,8 @@ const TeacherDashboard = () => {
           subjectColor: session.subject?.color || '#F59E0B',
           className: session.class?.name || '',
           room: null,
-          status,
+          status: 'upcoming',
+          forceCompleted: session.status === 'completed',
         };
       });
 
