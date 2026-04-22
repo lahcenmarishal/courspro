@@ -28,6 +28,7 @@ import { planLabels } from "@/lib/plans";
 interface ScheduleItem {
   id: string;
   time: string;
+  endTime: string;
   subject: string;
   subjectColor: string;
   teacher: string;
