@@ -229,8 +229,8 @@ const TeacherDashboard = () => {
     }
   };
 
-  const currentClass = schedule.find(s => s.status === 'current');
-  const nextClass = schedule.find(s => s.status === 'upcoming');
+  const currentClass = scheduleWithStatus.find(s => s.status === 'current');
+  const nextClass = scheduleWithStatus.find(s => s.status === 'upcoming');
   const highlightedClass = currentClass || nextClass;
 
   if (loading) {
