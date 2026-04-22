@@ -292,14 +292,14 @@ const StudentDashboard = () => {
                 </div>
               </div>
               <div className="p-4 lg:p-6">
-                {schedule.length === 0 ? (
+                {scheduleWithStatus.length === 0 ? (
                   <div className="text-center py-6 lg:py-8 text-muted-foreground">
                     <Clock className="h-10 w-10 lg:h-12 lg:w-12 mx-auto mb-3 lg:mb-4 opacity-50" />
                     <p className="text-sm lg:text-base">{t("student.noCourseScheduled")}</p>
                   </div>
                 ) : (
                   <div className="grid grid-cols-2 sm:flex gap-2 lg:gap-3">
-                    {schedule.map((cls, index) => (
+                    {scheduleWithStatus.map((cls, index) => (
                       <motion.div
                         key={cls.id}
                         initial={{ opacity: 0, y: 10 }}
