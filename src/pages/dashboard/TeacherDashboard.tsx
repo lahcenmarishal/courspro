@@ -30,6 +30,7 @@ interface ScheduleItem {
   className: string;
   room: string | null;
   status: 'completed' | 'current' | 'upcoming';
+  forceCompleted?: boolean;
 }
 
 interface TeacherStats {
@@ -52,12 +53,43 @@ const TeacherDashboard = () => {
     weekSessions: 0,
   });
   const [loading, setLoading] = useState(true);
+  const [nowTick, setNowTick] = useState(Date.now());
 
   useEffect(() => {
     if (user) {
       fetchTeacherData();
     }
   }, [user]);
+
+  // Re-evaluate session statuses every 30 seconds
+  useEffect(() => {
+    const interval = setInterval(() => setNowTick(Date.now()), 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Helper: convert "HH:mm" or "HH:mm:ss" to minutes since midnight
+  const toMinutes = (timeStr: string | null | undefined): number => {
+    if (!timeStr) return 0;
+    const parts = timeStr.split(':');
+    const h = parseInt(parts[0] || '0', 10);
+    const m = parseInt(parts[1] || '0', 10);
+    return h * 60 + m;
+  };
+
+  // Recompute statuses based on nowTick
+  const scheduleWithStatus = schedule.map(item => {
+    const now = new Date();
+    const currentMin = now.getHours() * 60 + now.getMinutes();
+    const startMin = toMinutes(item.time);
+    const endMin = toMinutes(item.endTime);
+    let status: 'completed' | 'current' | 'upcoming' = 'upcoming';
+    if (item.forceCompleted) status = 'completed';
+    else if (endMin > 0 && currentMin >= endMin) status = 'completed';
+    else if (currentMin >= startMin && currentMin < endMin) status = 'current';
+    return { ...item, status };
+  });
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const _tickDep = nowTick;
 
   const fetchTeacherData = async () => {
     if (!user) return;
@@ -137,13 +169,6 @@ const TeacherDashboard = () => {
       const currentTime = format(now, 'HH:mm:ss');
 
       const transformedSchedule: ScheduleItem[] = (scheduleData || []).map((slot: any) => {
-        let status: 'completed' | 'current' | 'upcoming' = 'upcoming';
-        if (slot.end_time < currentTime) {
-          status = 'completed';
-        } else if (slot.start_time <= currentTime && slot.end_time >= currentTime) {
-          status = 'current';
-        }
-
         return {
           id: slot.id,
           time: slot.start_time?.slice(0, 5) || '',
@@ -152,22 +177,13 @@ const TeacherDashboard = () => {
           subjectColor: slot.teacher_assignments?.subjects?.color || '#3B82F6',
           className: slot.teacher_assignments?.classes?.name || '',
           room: slot.room,
-          status,
+          status: 'upcoming',
         };
       });
 
       const directScheduleItems: ScheduleItem[] = (directSessions || []).map((session: any) => {
-        let status: 'completed' | 'current' | 'upcoming' = 'upcoming';
         const startTime = session.start_time || '00:00:00';
         const endTime = session.end_time || '23:59:00';
-        if (session.status === 'completed') {
-          status = 'completed';
-        } else if (endTime < currentTime) {
-          status = 'completed';
-        } else if (startTime <= currentTime && endTime >= currentTime) {
-          status = 'current';
-        }
-
         return {
           id: session.id,
           time: startTime?.slice(0, 5) || '',
@@ -176,7 +192,8 @@ const TeacherDashboard = () => {
           subjectColor: session.subject?.color || '#F59E0B',
           className: session.class?.name || '',
           room: null,
-          status,
+          status: 'upcoming',
+          forceCompleted: session.status === 'completed',
         };
       });
 
@@ -199,8 +216,8 @@ const TeacherDashboard = () => {
     }
   };
 
-  const currentClass = schedule.find(s => s.status === 'current');
-  const nextClass = schedule.find(s => s.status === 'upcoming');
+  const currentClass = scheduleWithStatus.find(s => s.status === 'current');
+  const nextClass = scheduleWithStatus.find(s => s.status === 'upcoming');
   const highlightedClass = currentClass || nextClass;
 
   if (loading) {
@@ -320,13 +337,13 @@ const TeacherDashboard = () => {
               </div>
             </div>
             <div className="p-4 lg:p-6 space-y-2 lg:space-y-3">
-              {schedule.length === 0 ? (
+              {scheduleWithStatus.length === 0 ? (
                 <div className="text-center py-6 lg:py-8 text-muted-foreground">
                   <Clock className="h-10 w-10 lg:h-12 lg:w-12 mx-auto mb-3 lg:mb-4 opacity-50" />
                   <p className="text-sm lg:text-base">{t("teacher.noCourseScheduled")}</p>
                 </div>
               ) : (
-                schedule.map((item, index) => (
+                scheduleWithStatus.map((item, index) => (
                   <motion.div
                     key={item.id}
                     initial={{ opacity: 0, x: -10 }}

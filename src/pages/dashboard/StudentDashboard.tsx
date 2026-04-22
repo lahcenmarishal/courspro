@@ -28,6 +28,7 @@ import { planLabels } from "@/lib/plans";
 interface ScheduleItem {
   id: string;
   time: string;
+  endTime: string;
   subject: string;
   subjectColor: string;
   teacher: string;
@@ -55,12 +56,37 @@ const StudentDashboard = () => {
   });
   const [schedule, setSchedule] = useState<ScheduleItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [nowTick, setNowTick] = useState(Date.now());
 
   useEffect(() => {
     if (user) {
       fetchStudentData();
     }
   }, [user]);
+
+  useEffect(() => {
+    const interval = setInterval(() => setNowTick(Date.now()), 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const toMinutes = (timeStr: string | null | undefined): number => {
+    if (!timeStr) return 0;
+    const parts = timeStr.split(':');
+    return (parseInt(parts[0] || '0', 10)) * 60 + (parseInt(parts[1] || '0', 10));
+  };
+
+  const scheduleWithStatus = schedule.map(item => {
+    const now = new Date();
+    const currentMin = now.getHours() * 60 + now.getMinutes();
+    const startMin = toMinutes(item.time);
+    const endMin = toMinutes(item.endTime);
+    let status: 'completed' | 'current' | 'upcoming' = 'upcoming';
+    if (endMin > 0 && currentMin >= endMin) status = 'completed';
+    else if (currentMin >= startMin && currentMin < endMin) status = 'current';
+    return { ...item, status };
+  });
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const _tickDep = nowTick;
 
   const fetchStudentData = async () => {
     if (!user) return;
@@ -117,24 +143,15 @@ const StudentDashboard = () => {
             .eq('teacher_assignments.class_id', classId)
             .order('start_time', { ascending: true });
 
-          const now = new Date();
-          const currentTime = format(now, 'HH:mm:ss');
-
           const transformedSchedule: ScheduleItem[] = (scheduleData || []).map((slot: any) => {
-            let status: 'completed' | 'current' | 'upcoming' = 'upcoming';
-            if (slot.end_time < currentTime) {
-              status = 'completed';
-            } else if (slot.start_time <= currentTime && slot.end_time >= currentTime) {
-              status = 'current';
-            }
-
             return {
               id: slot.id,
               time: slot.start_time?.slice(0, 5) || '',
+              endTime: slot.end_time?.slice(0, 5) || '',
               subject: slot.teacher_assignments?.subjects?.name || '',
               subjectColor: slot.teacher_assignments?.subjects?.color || '#3B82F6',
               teacher: `${slot.teacher_assignments?.profiles?.first_name || ''} ${slot.teacher_assignments?.profiles?.last_name || ''}`.trim(),
-              status,
+              status: 'upcoming',
             };
           });
 
@@ -149,8 +166,8 @@ const StudentDashboard = () => {
     }
   };
 
-  const currentClass = schedule.find(s => s.status === 'current');
-  const nextClass = schedule.find(s => s.status === 'upcoming');
+  const currentClass = scheduleWithStatus.find(s => s.status === 'current');
+  const nextClass = scheduleWithStatus.find(s => s.status === 'upcoming');
   const highlightedClass = currentClass || nextClass;
 
   if (loading) {
@@ -275,14 +292,14 @@ const StudentDashboard = () => {
                 </div>
               </div>
               <div className="p-4 lg:p-6">
-                {schedule.length === 0 ? (
+                {scheduleWithStatus.length === 0 ? (
                   <div className="text-center py-6 lg:py-8 text-muted-foreground">
                     <Clock className="h-10 w-10 lg:h-12 lg:w-12 mx-auto mb-3 lg:mb-4 opacity-50" />
                     <p className="text-sm lg:text-base">{t("student.noCourseScheduled")}</p>
                   </div>
                 ) : (
                   <div className="grid grid-cols-2 sm:flex gap-2 lg:gap-3">
-                    {schedule.map((cls, index) => (
+                    {scheduleWithStatus.map((cls, index) => (
                       <motion.div
                         key={cls.id}
                         initial={{ opacity: 0, y: 10 }}
