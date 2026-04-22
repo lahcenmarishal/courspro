@@ -83,7 +83,8 @@ const TeacherDashboard = () => {
     const startMin = toMinutes(item.time);
     const endMin = toMinutes(item.endTime);
     let status: 'completed' | 'current' | 'upcoming' = 'upcoming';
-    if (currentMin >= endMin && endMin > 0) status = 'completed';
+    if (item.forceCompleted) status = 'completed';
+    else if (endMin > 0 && currentMin >= endMin) status = 'completed';
     else if (currentMin >= startMin && currentMin < endMin) status = 'current';
     return { ...item, status };
   });
