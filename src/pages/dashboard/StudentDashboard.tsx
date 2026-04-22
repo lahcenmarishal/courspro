@@ -56,12 +56,37 @@ const StudentDashboard = () => {
   });
   const [schedule, setSchedule] = useState<ScheduleItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [nowTick, setNowTick] = useState(Date.now());
 
   useEffect(() => {
     if (user) {
       fetchStudentData();
     }
   }, [user]);
+
+  useEffect(() => {
+    const interval = setInterval(() => setNowTick(Date.now()), 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const toMinutes = (timeStr: string | null | undefined): number => {
+    if (!timeStr) return 0;
+    const parts = timeStr.split(':');
+    return (parseInt(parts[0] || '0', 10)) * 60 + (parseInt(parts[1] || '0', 10));
+  };
+
+  const scheduleWithStatus = schedule.map(item => {
+    const now = new Date();
+    const currentMin = now.getHours() * 60 + now.getMinutes();
+    const startMin = toMinutes(item.time);
+    const endMin = toMinutes(item.endTime);
+    let status: 'completed' | 'current' | 'upcoming' = 'upcoming';
+    if (endMin > 0 && currentMin >= endMin) status = 'completed';
+    else if (currentMin >= startMin && currentMin < endMin) status = 'current';
+    return { ...item, status };
+  });
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const _tickDep = nowTick;
 
   const fetchStudentData = async () => {
     if (!user) return;
