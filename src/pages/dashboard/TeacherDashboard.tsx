@@ -52,12 +52,42 @@ const TeacherDashboard = () => {
     weekSessions: 0,
   });
   const [loading, setLoading] = useState(true);
+  const [nowTick, setNowTick] = useState(Date.now());
 
   useEffect(() => {
     if (user) {
       fetchTeacherData();
     }
   }, [user]);
+
+  // Re-evaluate session statuses every 30 seconds
+  useEffect(() => {
+    const interval = setInterval(() => setNowTick(Date.now()), 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Helper: convert "HH:mm" or "HH:mm:ss" to minutes since midnight
+  const toMinutes = (timeStr: string | null | undefined): number => {
+    if (!timeStr) return 0;
+    const parts = timeStr.split(':');
+    const h = parseInt(parts[0] || '0', 10);
+    const m = parseInt(parts[1] || '0', 10);
+    return h * 60 + m;
+  };
+
+  // Recompute statuses based on nowTick
+  const scheduleWithStatus = schedule.map(item => {
+    const now = new Date();
+    const currentMin = now.getHours() * 60 + now.getMinutes();
+    const startMin = toMinutes(item.time);
+    const endMin = toMinutes(item.endTime);
+    let status: 'completed' | 'current' | 'upcoming' = 'upcoming';
+    if (currentMin >= endMin && endMin > 0) status = 'completed';
+    else if (currentMin >= startMin && currentMin < endMin) status = 'current';
+    return { ...item, status };
+  });
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const _tickDep = nowTick;
 
   const fetchTeacherData = async () => {
     if (!user) return;
