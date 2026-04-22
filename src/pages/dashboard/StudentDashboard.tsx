@@ -143,24 +143,15 @@ const StudentDashboard = () => {
             .eq('teacher_assignments.class_id', classId)
             .order('start_time', { ascending: true });
 
-          const now = new Date();
-          const currentTime = format(now, 'HH:mm:ss');
-
           const transformedSchedule: ScheduleItem[] = (scheduleData || []).map((slot: any) => {
-            let status: 'completed' | 'current' | 'upcoming' = 'upcoming';
-            if (slot.end_time < currentTime) {
-              status = 'completed';
-            } else if (slot.start_time <= currentTime && slot.end_time >= currentTime) {
-              status = 'current';
-            }
-
             return {
               id: slot.id,
               time: slot.start_time?.slice(0, 5) || '',
+              endTime: slot.end_time?.slice(0, 5) || '',
               subject: slot.teacher_assignments?.subjects?.name || '',
               subjectColor: slot.teacher_assignments?.subjects?.color || '#3B82F6',
               teacher: `${slot.teacher_assignments?.profiles?.first_name || ''} ${slot.teacher_assignments?.profiles?.last_name || ''}`.trim(),
-              status,
+              status: 'upcoming',
             };
           });
 
