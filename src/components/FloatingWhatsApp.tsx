@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 
 export const FloatingWhatsApp = () => {
-  const phoneNumber = "212522123456"; // Numéro WhatsApp
+  const phoneNumber = "212779842809"; // Numéro WhatsApp
   const message = "Bonjour, je souhaite avoir plus d'informations sur CoursPro.";
   
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
