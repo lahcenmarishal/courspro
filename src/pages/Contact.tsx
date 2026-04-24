@@ -260,9 +260,9 @@ export default function Contact() {
                 <p className="text-sm text-muted-foreground mb-4">
                   {t("contact.urgent.description")}
                 </p>
-                <a href="tel:+212522123456" className="inline-flex items-center gap-2 text-primary font-medium">
+                <a href="tel:+212779842809" className="inline-flex items-center gap-2 text-primary font-medium">
                   <Phone className="h-4 w-4" />
-                  +212 5 22 12 34 56
+                  +212 779-842809
                 </a>
               </div>
             </motion.div>
