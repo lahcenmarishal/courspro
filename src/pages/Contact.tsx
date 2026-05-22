@@ -25,7 +25,7 @@ export default function Contact() {
 
   const contactSchema = z.object({
     name: z.string().min(2, language === 'ar' ? 'الاسم يجب أن يحتوي على حرفين على الأقل' : 'Le nom doit contenir au moins 2 caractères').max(100),
-    email: z.string().email(language === 'ar' ? 'بريد إلكتروني غير صالح' : 'Email invalide').max(255),
+    email: z.string().email(language === 'ar' ? 'البريد الإلكتروني غير صالح' : 'Email invalide').max(255),
     phone: z.string().optional(),
     subject: z.string().min(5, language === 'ar' ? 'الموضوع يجب أن يحتوي على 5 أحرف على الأقل' : 'Le sujet doit contenir au moins 5 caractères').max(200),
     message: z.string().min(20, language === 'ar' ? 'الرسالة يجب أن تحتوي على 20 حرفاً على الأقل' : 'Le message doit contenir au moins 20 caractères').max(2000),
