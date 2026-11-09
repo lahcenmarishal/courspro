@@ -39,7 +39,7 @@ CoursPro propose une plateforme centralisée pour présenter les formations et f
 
 ```bash
 git clone https://github.com/lahcenmarishal/courspro.git
-cd academy-pulse-flow-6375b4cc
+cd courspro
 npm install
 npm run dev
 ```
